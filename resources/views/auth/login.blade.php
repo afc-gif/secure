@@ -24,7 +24,7 @@
 
             <div>
                 <label for="reference_token" class="cca-label">Reference Token</label>
-                <input id="reference_token" class="cca-input mt-2 uppercase" type="text" name="reference_token" value="{{ old('reference_token') }}" required autocomplete="one-time-code" placeholder="CCA-XXXXXXXXXX">
+                <input id="reference_token" class="cca-input mt-2 uppercase" type="text" name="reference_token" value="{{ old('reference_token') }}" autocomplete="one-time-code" placeholder="Required for member accounts">
                 <x-input-error :messages="$errors->get('reference_token')" class="mt-2 text-sm text-red-300" />
             </div>
 

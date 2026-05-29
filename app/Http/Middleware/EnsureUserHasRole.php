@@ -12,7 +12,16 @@ class EnsureUserHasRole
     {
         $user = $request->user();
 
-        abort_unless($user && in_array($user->role, $roles, true), 403);
+        if (! $user || ! in_array($user->role, $roles, true)) {
+            logger()->warning('Role middleware denied access.', [
+                'path' => $request->path(),
+                'required_roles' => $roles,
+                'user_id' => $user?->id,
+                'actual_role' => $user?->role,
+            ]);
+
+            abort(403);
+        }
 
         return $next($request);
     }

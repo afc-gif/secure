@@ -39,12 +39,23 @@ class AuthenticationTest extends TestCase
             ->withSession(['url.intended' => route('member.dashboard', absolute: false)])
             ->post('/login', [
                 'email' => $admin->email,
-                'reference_token' => $admin->reference_token,
                 'password' => 'password',
             ]);
 
         $this->assertAuthenticatedAs($admin);
         $response->assertRedirect(route('admin.dashboard', absolute: false));
+    }
+
+    public function test_members_can_not_authenticate_without_reference_token(): void
+    {
+        $user = User::factory()->create();
+
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertGuest();
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

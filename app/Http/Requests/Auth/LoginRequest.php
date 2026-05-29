@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -29,7 +30,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
-            'reference_token' => ['required', 'string', 'max:40'],
+            'reference_token' => ['nullable', 'string', 'max:40'],
             'password' => ['required', 'string'],
         ];
     }
@@ -44,22 +45,65 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $email = $this->string('email')->lower()->toString();
-        $password = $this->string('password')->toString();
-        $referenceToken = $this->string('reference_token')->upper()->toString();
+        $referenceToken = Str::upper($this->string('reference_token')->trim()->toString());
 
-        // Find user by email and reference_token first
-        $user = \App\Models\User::where('email', $email)
-            ->where('reference_token', $referenceToken)
+        logger()->info('Login attempt received.', [
+            'email' => $email,
+            'has_reference_token' => $referenceToken !== '',
+            'ip' => $this->ip(),
+        ]);
+
+        $user = User::query()
+            ->where('email', $email)
             ->where('status', 'active')
             ->first();
 
-        // Check password and authenticate
-        if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
-            Auth::login($user, $this->boolean('remember'));
-            RateLimiter::clear($this->throttleKey());
-            return;
+        if (! $user) {
+            logger()->warning('Login failed: active user not found.', ['email' => $email]);
+            $this->failAuthentication();
         }
 
+        if (! $user->isAdmin() && $referenceToken === '') {
+            logger()->warning('Login failed: member reference token missing.', ['email' => $email]);
+            $this->failAuthentication();
+        }
+
+        if ($referenceToken !== '' && $user->reference_token !== $referenceToken) {
+            logger()->warning('Login failed: reference token mismatch.', [
+                'email' => $email,
+                'user_id' => $user->id,
+                'role' => $user->role,
+            ]);
+            $this->failAuthentication();
+        }
+
+        if (! Auth::guard('web')->attempt([
+            'email' => $email,
+            'password' => $this->string('password')->toString(),
+            'status' => 'active',
+        ], $this->boolean('remember'))) {
+            logger()->warning('Login failed: password mismatch.', [
+                'email' => $email,
+                'user_id' => $user->id,
+                'role' => $user->role,
+            ]);
+            $this->failAuthentication();
+        }
+
+        logger()->info('Login authenticated successfully.', [
+            'email' => $email,
+            'user_id' => $user->id,
+            'role' => $user->role,
+        ]);
+
+        RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    private function failAuthentication(): never
+    {
         RateLimiter::hit($this->throttleKey());
 
         throw ValidationException::withMessages([
