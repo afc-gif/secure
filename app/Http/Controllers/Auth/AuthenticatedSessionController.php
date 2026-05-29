@@ -29,15 +29,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $redirectPath = AuthRedirector::pathFor($request->user());
+        $user = $request->user();
+        $redirectPath = AuthRedirector::pathFor($user);
 
         logger()->info('Authenticated session regenerated; redirecting user.', [
-            'user_id' => $request->user()->id,
-            'role' => $request->user()->role,
+            'user_id' => $user->id,
+            'role' => $user->role,
             'redirect_path' => $redirectPath,
         ]);
 
-        return redirect($redirectPath);
+        return $user->isAdmin()
+            ? redirect(route('admin.dashboard', absolute: false))
+            : redirect($redirectPath);
     }
 
     /**

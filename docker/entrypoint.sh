@@ -3,6 +3,8 @@ set -e
 
 PORT="${PORT:-8080}"
 
+sed -i "s/listen 8080;/listen ${PORT};/" /etc/nginx/sites-available/default
+
 if [ ! -f .env ]; then
     cp .env.example .env
     # Ensure the copied .env reflects the runtime APP_ENV so Laravel
