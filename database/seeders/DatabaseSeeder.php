@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,18 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->admin()->create([
-            'name' => 'CCA Admin',
-            'email' => 'admin@countrycultureacres.com',
-            'reference_token' => 'CCA-ADMIN0001',
-        ]);
-
-        User::factory()->create([
-            'name' => 'CCA Member',
-            'email' => 'member@countrycultureacres.com',
-            'reference_token' => 'CCA-MEMBER001',
+        $this->call([
+            AdminUserSeeder::class,
+            MemberUserSeeder::class,
+            ContributionSeeder::class,
+            SettlementSeeder::class,
+            AnalyticsSeeder::class,
         ]);
     }
 }

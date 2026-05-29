@@ -154,7 +154,7 @@ class OwnershipAnalyticsService
         }
 
         $active = User::where('role', 'member')
-            ->whereHas('batches', fn ($query) => $query->wherePivot('participation_status', 'active'))
+            ->whereHas('batches', fn ($query) => $query->where('batch_members.participation_status', 'active'))
             ->count();
 
         return round(($active / $members) * 100, 2);

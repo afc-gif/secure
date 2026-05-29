@@ -24,10 +24,23 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $names = [
+            'Adebayo Okafor',
+            'Chioma Nwosu',
+            'Tunde Balogun',
+            'Amina Bello',
+            'Kelechi Eze',
+            'Musa Ibrahim',
+            'Yetunde Adeyemi',
+            'Ifeanyi Obi',
+            'Zainab Sani',
+            'Folake Williams',
+        ];
+
         return [
-            'name' => fake()->name(),
+            'name' => fake()->randomElement($names),
             'email' => fake()->unique()->safeEmail(),
-            'phone' => fake()->optional()->phoneNumber(),
+            'phone' => '080'.fake()->numerify('########'),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'role' => 'member',
