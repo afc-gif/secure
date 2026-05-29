@@ -3,6 +3,8 @@ FROM php:8.3-apache AS base
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git curl unzip libpq-dev libzip-dev libicu-dev \
     && docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip bcmath opcache \
+    && a2dismod mpm_event 2>/dev/null || true \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.* \
     && a2dismod mpm_event \
     && a2enmod mpm_prefork rewrite headers \
     && apache2ctl configtest \
