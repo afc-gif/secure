@@ -31,6 +31,22 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(route('onboarding.index', absolute: false));
     }
 
+    public function test_admin_login_ignores_stale_intended_member_url(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this
+            ->withSession(['url.intended' => route('member.dashboard', absolute: false)])
+            ->post('/login', [
+                'email' => $admin->email,
+                'reference_token' => $admin->reference_token,
+                'password' => 'password',
+            ]);
+
+        $this->assertAuthenticatedAs($admin);
+        $response->assertRedirect(route('admin.dashboard', absolute: false));
+    }
+
     public function test_users_can_not_authenticate_with_invalid_password(): void
     {
         $user = User::factory()->create();
