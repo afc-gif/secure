@@ -5,7 +5,8 @@ RUN apt-get update \
     && docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip bcmath opcache \
     && a2dismod mpm_event 2>/dev/null || true \
     && rm -f /etc/apache2/mods-enabled/mpm_event.* \
-    && a2dismod mpm_event \
+    && rm -f /etc/apache2/mods-available/mpm_event.* \
+    && rm -f /usr/lib/apache2/modules/mod_mpm_event.so \
     && a2enmod mpm_prefork rewrite headers \
     && apache2ctl configtest \
     && rm -rf /var/lib/apt/lists/*
