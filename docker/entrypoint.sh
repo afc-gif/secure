@@ -3,8 +3,13 @@ set -e
 
 PORT="${PORT:-8080}"
 
-if [ ! -f .env ] && [ "${APP_ENV:-local}" != "production" ]; then
+if [ ! -f .env ]; then
     cp .env.example .env
+    # Ensure the copied .env reflects the runtime APP_ENV so Laravel
+    # doesn't fall back to "local" and try to reach a Vite dev server.
+    if [ -n "${APP_ENV:-}" ]; then
+        sed -i "s/^APP_ENV=.*/APP_ENV=${APP_ENV}/" .env
+    fi
 fi
 
 if [ -z "${APP_KEY:-}" ] && [ -f .env ]; then
@@ -46,6 +51,12 @@ if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
 fi
 
 if [ "${APP_ENV:-local}" = "production" ]; then
+    # Verify the Vite manifest was built into the image; without it the
+    # @vite() helper cannot inject asset links into rendered HTML.
+    if [ ! -f public/build/manifest.json ]; then
+        echo "WARNING: public/build/manifest.json not found. Run 'npm run build' during the Docker build step." >&2
+    fi
+
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
