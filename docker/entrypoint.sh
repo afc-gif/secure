@@ -3,9 +3,6 @@ set -e
 
 PORT="${PORT:-8080}"
 
-sed -ri "s/Listen 80|Listen 8080/Listen ${PORT}/" /etc/apache2/ports.conf
-sed -ri "s/<VirtualHost \*:80>|<VirtualHost \*:8080>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
-
 if [ ! -f .env ] && [ "${APP_ENV:-local}" != "production" ]; then
     cp .env.example .env
 fi
@@ -54,4 +51,6 @@ if [ "${APP_ENV:-local}" = "production" ]; then
     php artisan view:cache
 fi
 
-exec "$@"
+# Start PHP-FPM and Nginx
+php-fpm -D
+exec nginx -g "daemon off;"

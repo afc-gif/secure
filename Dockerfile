@@ -1,23 +1,17 @@
-FROM php:8.3-apache AS base
+FROM php:8.3-fpm AS php
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git curl unzip libpq-dev libzip-dev libicu-dev \
     && docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip bcmath opcache \
-    && a2dismod mpm_event 2>/dev/null || true \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.* \
-    && rm -f /etc/apache2/mods-available/mpm_event.* \
-    && rm -f /usr/lib/apache2/modules/mod_mpm_event.so \
-    && a2enmod mpm_prefork rewrite headers \
-    && apache2ctl configtest \
     && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /var/www/html
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --optimize-autoloader
@@ -30,11 +24,17 @@ RUN npm run build \
     && composer dump-autoload --optimize \
     && chown -R www-data:www-data storage bootstrap/cache
 
-COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+FROM nginx:alpine
+
+RUN apk add --no-cache curl
+
+COPY --from=php /var/www/html /var/www/html
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/entrypoint.sh /usr/local/bin/cca-entrypoint
+
 RUN chmod +x /usr/local/bin/cca-entrypoint
 
 EXPOSE 8080
 
 ENTRYPOINT ["cca-entrypoint"]
-CMD ["apache2-foreground"]
+CMD ["nginx", "-g", "daemon off;"]
