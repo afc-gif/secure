@@ -14,7 +14,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
         <meta name="debug" content="manifest-missing">
-        <link rel="stylesheet" href="/build/assets/app-C_7H-5Hs.css">
+        <link rel="stylesheet" href="/build/assets/app-NGirFLSX.css">
         <script src="/build/assets/app-DO2nEFzp.js"></script>
     @endif
 </head>
