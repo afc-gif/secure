@@ -7,7 +7,16 @@
     <title>{{ config('app.name', 'CCA Portal') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Debug: Check if manifest exists -->
+    @if(file_exists(public_path('build/manifest.json')))
+        <meta name="debug" content="manifest-exists">
+        <!-- Try @vite() -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <meta name="debug" content="manifest-missing">
+        <link rel="stylesheet" href="/build/assets/app-C_7H-5Hs.css">
+        <script src="/build/assets/app-DO2nEFzp.js"></script>
+    @endif
 </head>
 <body class="min-h-screen font-sans">
     {{ $slot }}
