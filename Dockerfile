@@ -1,17 +1,13 @@
-FROM php:8.3-fpm AS php
+FROM php:8.3-fpm-alpine AS php
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git curl unzip libpq-dev libzip-dev libicu-dev \
-    && docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip bcmath opcache \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache git curl unzip postgresql-dev libzip-dev icu-dev \
+    && docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip bcmath opcache
 
 WORKDIR /var/www/html
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache nodejs npm
 
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --optimize-autoloader
