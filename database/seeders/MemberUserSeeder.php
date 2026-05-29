@@ -86,13 +86,22 @@ class MemberUserSeeder extends Seeder
     private function seedBatches()
     {
         return collect([
-            ['title' => 'California Greenhouse Harvest Cycle', 'level' => 'premium', 'fee' => 2500],
-            ['title' => 'Iowa Corn Cooperative Yield', 'level' => 'standard', 'fee' => 1500],
-            ['title' => 'Nebraska Irrigation Ownership Acre', 'level' => 'growth', 'fee' => 2000],
-        ])->map(fn (array $batch) => Batch::updateOrCreate(
-            ['slug' => Str::slug($batch['title'])],
-            [
+            ['title' => 'California Greenhouse Harvest Cycle', 'level' => 'premium', 'fee' => 2500, 'legacy_slugs' => ['lagos-greenhouse-harvest-cycle']],
+            ['title' => 'Iowa Corn Cooperative Yield', 'level' => 'standard', 'fee' => 1500, 'legacy_slugs' => ['ogun-cassava-cooperative-yield']],
+            ['title' => 'Nebraska Irrigation Ownership Acre', 'level' => 'growth', 'fee' => 2000, 'legacy_slugs' => ['kaduna-irrigation-ownership-acre']],
+        ])->map(function (array $batch) {
+            $slug = Str::slug($batch['title']);
+            $model = Batch::firstOrNew([
+                'slug' => $slug,
+            ]);
+
+            if (! $model->exists) {
+                $model = Batch::whereIn('slug', $batch['legacy_slugs'])->first() ?? $model;
+            }
+
+            $model->fill([
                 'title' => $batch['title'],
+                'slug' => $slug,
                 'description' => 'Demo Harvest Cycle for ownership intelligence, contribution analytics, and settlement testing.',
                 'batch_code' => 'CCA-BATCH-'.Str::upper(Str::substr(md5($batch['title']), 0, 6)),
                 'start_date' => now()->subMonth()->toDateString(),
@@ -102,8 +111,10 @@ class MemberUserSeeder extends Seeder
                 'ownership_level' => $batch['level'],
                 'participation_fee' => $batch['fee'],
                 'is_active' => true,
-            ]
-        ));
+            ])->save();
+
+            return $model;
+        });
     }
 
     private function seedMemberProfile(User $member, int $index): void

@@ -22,11 +22,13 @@ class ContributionService
         ?string $notes = null,
         string $currency = 'USD'
     ): Contribution {
+        $currency = strtoupper($currency);
+
         $contribution = Contribution::create([
             'user_id' => $user->id,
             'batch_id' => $batch?->id,
             'amount' => $amount,
-            'currency' => strtoupper($currency),
+            'currency' => $currency,
             'contribution_type' => $type,
             'payment_reference' => $this->generatePaymentReference(),
             'status' => 'pending',
@@ -37,7 +39,7 @@ class ContributionService
             'contribution_id' => $contribution->id,
             'batch_id' => $batch?->id,
             'amount' => $amount,
-            'currency' => strtoupper($currency),
+            'currency' => $currency,
         ]);
 
         return $contribution;

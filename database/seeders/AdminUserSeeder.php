@@ -14,7 +14,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'admin@secureportal.test'],
             [
                 'name' => 'Super Admin',
-                'phone' => '08000000000',
+                'phone' => '2125550100',
                 'password' => Hash::make('Admin@12345'),
                 'role' => 'admin',
                 'reference_token' => 'CCA-ADMIN-DEMO',

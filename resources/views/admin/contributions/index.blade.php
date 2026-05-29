@@ -83,7 +83,7 @@
                     @forelse ($stats['top_contributors'] as $member)
                         <div class="flex items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-3">
                             <span class="font-semibold text-white">{{ $member->name }}</span>
-                            <span class="text-sm font-black text-[#d4af62]">{{ number_format((float) $member->confirmed_contributions_total, 2) }}</span>
+                            <span class="text-sm font-black text-[#d4af62]">USD {{ number_format((float) $member->confirmed_contributions_total, 2) }}</span>
                         </div>
                     @empty
                         <p class="text-sm text-slate-500">No confirmed contributors yet.</p>

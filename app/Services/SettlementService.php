@@ -28,10 +28,11 @@ class SettlementService
             'notes' => $notes,
         ]);
 
-        ActivityLogService::log($user, 'settlement_created', "Settlement created for " . number_format($amount, 2) . " from batch {$batch->title}", [
+        ActivityLogService::log($user, 'settlement_created', "Settlement created for USD " . number_format($amount, 2) . " from batch {$batch->title}", [
             'settlement_id' => $settlement->id,
             'batch_id' => $batch->id,
             'amount' => $amount,
+            'currency' => 'USD',
         ]);
 
         return $settlement;
@@ -63,6 +64,7 @@ class SettlementService
         ActivityLogService::log($settlement->user, 'settlement_updated', "Settlement {$settlement->reference_number} completed", [
             'settlement_id' => $settlement->id,
             'amount' => $settlement->amount,
+            'currency' => 'USD',
         ]);
     }
 

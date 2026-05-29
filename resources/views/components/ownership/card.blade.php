@@ -28,7 +28,7 @@
         </div>
         <div>
             <p class="text-xs uppercase tracking-[0.18em] text-slate-500">Participation Fee</p>
-            <p class="mt-1 text-sm font-semibold text-white">{{ $batch->participation_fee ? number_format((float) $batch->participation_fee, 2) : 'Not set' }}</p>
+            <p class="mt-1 text-sm font-semibold text-white">{{ $batch->participation_fee ? 'USD '.number_format((float) $batch->participation_fee, 2) : 'Not set' }}</p>
         </div>
     </div>
     <x-ownership.progress :batch="$batch" class="mt-5" />

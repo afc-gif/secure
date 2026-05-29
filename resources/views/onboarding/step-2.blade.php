@@ -20,7 +20,7 @@
                 </div>
 
                 <div>
-                    <label for="state" class="cca-label">State/Province</label>
+                    <label for="state" class="cca-label">State</label>
                     <input id="state" name="state" value="{{ old('state', $profile->state) }}" class="cca-input mt-2" autocomplete="address-level1" required>
                     <x-input-error :messages="$errors->get('state')" class="mt-2 text-rose-300" />
                 </div>

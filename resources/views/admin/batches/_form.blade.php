@@ -46,7 +46,7 @@
     </div>
 
     <div>
-        <label for="participation_fee" class="cca-label">Participation Fee</label>
+        <label for="participation_fee" class="cca-label">Participation Fee (USD)</label>
         <input id="participation_fee" type="number" min="0" step="0.01" name="participation_fee" value="{{ old('participation_fee', $batch->participation_fee) }}" class="cca-input mt-2">
     </div>
 </div>

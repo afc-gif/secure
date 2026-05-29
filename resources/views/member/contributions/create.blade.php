@@ -30,7 +30,7 @@
             </label>
 
             <label class="block">
-                <span class="text-sm font-bold text-slate-300">Amount</span>
+                <span class="text-sm font-bold text-slate-300">Amount (USD)</span>
                 <input name="amount" value="{{ old('amount') }}" inputmode="decimal" class="mt-2 w-full rounded-lg border-white/10 bg-white/[0.06] text-white focus:border-emerald-300 focus:ring-emerald-300" placeholder="2500.00">
                 <x-input-error :messages="$errors->get('amount')" class="mt-2" />
             </label>
