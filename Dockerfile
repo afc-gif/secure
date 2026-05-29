@@ -29,11 +29,7 @@ FROM nginx:alpine
 RUN apk add --no-cache curl
 
 # Copy PHP installation from build stage
-COPY --from=php /usr/local/bin/php /usr/local/bin/php
-COPY --from=php /usr/local/bin/php-fpm /usr/local/bin/php-fpm
-COPY --from=php /usr/local/lib/php /usr/local/lib/php
-COPY --from=php /usr/local/etc/php /usr/local/etc/php
-COPY --from=php /usr/local/etc/php-fpm.d /usr/local/etc/php-fpm.d
+COPY --from=php /usr/local /usr/local
 
 # Copy application files
 COPY --from=php /var/www/html /var/www/html
