@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('reference_number')->unique();
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             $table->index(['user_id', 'batch_id']);
             $table->index('status');
         });

@@ -32,13 +32,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/tokens/create', [AdminAccessTokenController::class, 'create'])->name('tokens.create');
     Route::post('/tokens', [AdminAccessTokenController::class, 'store'])->name('tokens.store');
     Route::patch('/tokens/{token}/revoke', [AdminAccessTokenController::class, 'revoke'])->name('tokens.revoke');
-    
+
     // Settlement Management
     Route::get('/settlements', [AdminSettlementController::class, 'index'])->name('settlements.index');
     Route::get('/settlements/{settlement}', [AdminSettlementController::class, 'show'])->name('settlements.show');
     Route::patch('/settlements/{settlement}/complete', [AdminSettlementController::class, 'complete'])->name('settlements.complete');
     Route::patch('/settlements/{settlement}/reject', [AdminSettlementController::class, 'reject'])->name('settlements.reject');
-    
+
     // Contribution Management
     Route::get('/contributions', [AdminContributionController::class, 'index'])->name('contributions.index');
     Route::get('/contributions/pending', [AdminContributionController::class, 'pending'])->name('contributions.pending');
@@ -63,12 +63,12 @@ Route::middleware(['auth', 'role:member', 'onboarded'])->prefix('member')->name(
     Route::get('/access-token', [MemberAccessTokenController::class, 'create'])->name('access-token.create');
     Route::post('/access-token', [MemberAccessTokenController::class, 'store'])->name('access-token.store');
     Route::get('/participation', [MemberParticipationController::class, 'index'])->name('participation.index');
-    
+
     // Settlement Profile Management
     Route::get('/settlement-profile', [MemberSettlementProfileController::class, 'show'])->name('settlement-profile.show');
     Route::post('/settlement-profile', [MemberSettlementProfileController::class, 'store'])->name('settlement-profile.store');
     Route::patch('/settlement-profile/{settlementProfile}', [MemberSettlementProfileController::class, 'update'])->name('settlement-profile.update');
-    
+
     // Contribution Management
     Route::get('/contributions', [MemberContributionController::class, 'index'])->name('contributions.index');
     Route::get('/contributions/create', [MemberContributionController::class, 'create'])->name('contributions.create');

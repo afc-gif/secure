@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('rejection_reason')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
-            
+
             $table->unique('user_id');
         });
     }
