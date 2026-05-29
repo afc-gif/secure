@@ -43,22 +43,28 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $credentials = [
-            'email' => $this->string('email')->lower()->toString(),
-            'password' => $this->string('password')->toString(),
-            'reference_token' => $this->string('reference_token')->upper()->toString(),
-            'status' => 'active',
-        ];
+        $email = $this->string('email')->lower()->toString();
+        $password = $this->string('password')->toString();
+        $referenceToken = $this->string('reference_token')->upper()->toString();
 
-        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        // Find user by email and reference_token first
+        $user = \App\Models\User::where('email', $email)
+            ->where('reference_token', $referenceToken)
+            ->where('status', 'active')
+            ->first();
 
-            throw ValidationException::withMessages([
-                'email' => __('The submitted partner credentials could not be verified.'),
-            ]);
+        // Check password and authenticate
+        if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+            Auth::login($user, $this->boolean('remember'));
+            RateLimiter::clear($this->throttleKey());
+            return;
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => __('The submitted partner credentials could not be verified.'),
+        ]);
     }
 
     /**
