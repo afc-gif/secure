@@ -8,14 +8,17 @@
             ['label' => 'Partner Registry', 'href' => '#', 'active' => false],
             ['label' => 'Batch Cycles', 'href' => route('admin.batches.index'), 'active' => request()->routeIs('admin.batches.*')],
             ['label' => 'Access Tokens', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*')],
+            ['label' => 'Contributions', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*')],
         ]
         : [
             ['label' => 'Ownership Home', 'href' => route('member.dashboard'), 'active' => request()->routeIs('member.dashboard')],
             ['label' => 'Active Cycles', 'href' => route('member.batches.index'), 'active' => request()->routeIs('member.batches.*')],
             ['label' => 'Access Token', 'href' => route('member.access-token.create'), 'active' => request()->routeIs('member.access-token.*')],
             ['label' => 'Participation', 'href' => route('member.participation.index'), 'active' => request()->routeIs('member.participation.*')],
+            ['label' => 'Contributions', 'href' => route('member.contributions.index'), 'active' => request()->routeIs('member.contributions.*')],
             ['label' => 'Profile', 'href' => route('profile.edit'), 'active' => request()->routeIs('profile.*')],
         ];
+    $unreadNotifications = $user?->unreadNotifications()->latest()->take(5)->get() ?? collect();
 @endphp
 
 <x-app-layout>
@@ -56,6 +59,7 @@
                         <h1 class="mt-1 text-2xl font-black text-white sm:text-3xl">{{ $title }}</h1>
                     </div>
                     <div class="flex items-center gap-3">
+                        <x-dashboard.notification-bell :notifications="$unreadNotifications" />
                         <div class="text-right">
                             <p class="text-sm font-bold text-white">{{ $user->name }}</p>
                             <p class="text-xs text-slate-500">{{ $user->reference_token }}</p>

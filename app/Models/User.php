@@ -58,6 +58,26 @@ class User extends Authenticatable
         return $this->hasMany(BatchMember::class);
     }
 
+    public function settlementProfile(): HasOne
+    {
+        return $this->hasOne(SettlementProfile::class);
+    }
+
+    public function contributions(): HasMany
+    {
+        return $this->hasMany(Contribution::class);
+    }
+
+    public function settlements(): HasMany
+    {
+        return $this->hasMany(Settlement::class);
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
     public function hasCompletedOnboarding(): bool
     {
         return (bool) $this->memberProfile?->onboarding_completed;

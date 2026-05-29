@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\AccessToken;
 use App\Models\BatchMember;
 use App\Models\User;
+use App\Notifications\BatchParticipationConfirmedNotification;
 use Illuminate\Support\Facades\DB;
 
 class BatchParticipationService
@@ -34,6 +35,9 @@ class BatchParticipationService
             ])->save();
 
             $batch->increment('current_members');
+
+            ActivityLogService::logBatchJoined($user, $batch->id);
+            $user->notify(new BatchParticipationConfirmedNotification($batch));
 
             return $participation->load(['batch', 'accessToken']);
         });

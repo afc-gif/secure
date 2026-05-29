@@ -65,6 +65,16 @@ class Batch extends Model
             ->withTimestamps();
     }
 
+    public function contributions(): HasMany
+    {
+        return $this->hasMany(Contribution::class);
+    }
+
+    public function settlements(): HasMany
+    {
+        return $this->hasMany(Settlement::class);
+    }
+
     public function isOpenForParticipation(): bool
     {
         $today = Carbon::today();

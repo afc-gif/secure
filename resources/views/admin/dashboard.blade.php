@@ -1,5 +1,9 @@
 <x-dashboard.shell title="Administrative command center" eyebrow="Operations Ledger">
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <x-dashboard.stat-card label="Confirmed Assets" value="USD {{ number_format($analytics['confirmed_assets'], 2) }}" detail="Cooperative contribution pool" tone="gold" />
+        <x-dashboard.stat-card label="Pending Contributions" value="USD {{ number_format($analytics['pending_contributions'], 2) }}" detail="Awaiting admin review" />
+        <x-dashboard.stat-card label="Monthly Growth" value="{{ $analytics['monthly_growth'] }}%" detail="Current contribution trend" />
+        <x-dashboard.stat-card label="Settlement Exposure" value="USD {{ number_format($analytics['settlement_exposure'], 2) }}" detail="Pending settlement amount" tone="slate" />
         <x-dashboard.stat-card label="Active Members" :value="$activeMembers" detail="Registered cooperative accounts" />
         <x-dashboard.stat-card label="Completed Onboarding" :value="$completedOnboarding" detail="Synchronized ownership profiles" />
         <x-dashboard.stat-card label="Pending Onboarding" :value="$pendingOnboarding" detail="Incomplete member profiles" tone="gold" />
@@ -7,6 +11,24 @@
         <x-dashboard.stat-card label="Participants" :value="$totalParticipants" detail="Activated batch memberships" />
         <x-dashboard.stat-card label="Active Tokens" :value="$activeTokens" detail="Available cooperative tokens" tone="gold" />
         <x-dashboard.stat-card label="Used Tokens" :value="$usedTokens" detail="Token usage analytics" tone="slate" />
+    </div>
+
+    <div class="mt-6 grid gap-6 xl:grid-cols-2">
+        <section class="cca-card p-5">
+            <h2 class="text-lg font-black text-white">Cooperative asset growth</h2>
+            <p class="mt-1 text-sm text-slate-500">Confirmed monthly contributions across Harvest Cycles.</p>
+            <div class="mt-5">
+                <x-analytics.bar-list :items="$analytics['monthly_contributions']" />
+            </div>
+        </section>
+
+        <section class="cca-card p-5">
+            <h2 class="text-lg font-black text-white">Ownership distribution</h2>
+            <p class="mt-1 text-sm text-slate-500">Confirmed pool by contribution class.</p>
+            <div class="mt-5">
+                <x-analytics.bar-list :items="$analytics['ownership_distribution']" label-key="contribution_type" />
+            </div>
+        </section>
     </div>
 
     <div class="mt-6 grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">

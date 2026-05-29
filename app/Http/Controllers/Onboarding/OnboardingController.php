@@ -7,6 +7,7 @@ use App\Http\Requests\Onboarding\AddressRequest;
 use App\Http\Requests\Onboarding\CompleteOnboardingRequest;
 use App\Http\Requests\Onboarding\CooperativeProfileRequest;
 use App\Http\Requests\Onboarding\IdentityRequest;
+use App\Services\ActivityLogService;
 use App\Services\OnboardingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -99,6 +100,7 @@ class OnboardingController extends Controller
     public function complete(CompleteOnboardingRequest $request): RedirectResponse
     {
         $this->onboarding->complete($request->user());
+        ActivityLogService::logOnboardingCompleted($request->user());
 
         return redirect()->route('member.dashboard')->with('status', 'Finalizing Member Profile...');
     }

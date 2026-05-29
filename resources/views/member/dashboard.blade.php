@@ -41,6 +41,55 @@
         </section>
     </div>
 
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <x-dashboard.stat-card label="Total Contributions" value="USD {{ number_format($ownership['confirmed_total'], 2) }}" detail="Confirmed cooperative capital" />
+        <x-dashboard.stat-card label="Ownership Percentage" value="{{ number_format($ownership['ownership_percentage'], 2) }}%" detail="Share of confirmed pool" tone="gold" />
+        <x-dashboard.stat-card label="Active Batches" value="{{ $participations->where('participation_status', 'active')->count() }}" detail="Activated Harvest Cycles" />
+        <x-dashboard.stat-card label="Participation Score" value="{{ $ownership['participation_score'] }}/100" detail="Contribution and batch activity" tone="gold" />
+    </div>
+
+    <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_1fr]">
+        <section class="cca-card p-6">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Ownership Intelligence</p>
+                    <h3 class="mt-2 text-xl font-black text-white">Cooperative Yield Position</h3>
+                </div>
+                <span class="text-lg font-black text-[#d4af62]">{{ number_format($ownership['ownership_percentage'], 2) }}%</span>
+            </div>
+            <div class="mt-5 h-3 rounded-full bg-white/10">
+                <div class="h-3 rounded-full bg-gradient-to-r from-emerald-400 to-[#d4af62]" style="width: {{ min(100, max(4, $ownership['ownership_percentage'])) }}%"></div>
+            </div>
+            <p class="mt-3 text-sm leading-6 text-slate-400">Calculated from your confirmed contributions divided by the confirmed cooperative pool.</p>
+        </section>
+
+        <section class="cca-card p-6">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Contribution Timeline</p>
+                    <h3 class="mt-2 text-xl font-black text-white">Recent ownership activity</h3>
+                </div>
+                <a href="{{ route('member.contributions.index') }}" class="cca-muted-button">Open Ledger</a>
+            </div>
+            <div class="mt-5 space-y-3">
+                @forelse ($recentContributions as $contribution)
+                    <div class="flex items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-3">
+                        <div>
+                            <p class="text-sm font-bold text-white">{{ $contribution->getTypeLabel() }}</p>
+                            <p class="mt-1 text-xs text-slate-500">{{ $contribution->created_at->format('M d, Y') }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-[#d4af62]">{{ $contribution->currency }} {{ number_format((float) $contribution->amount, 2) }}</p>
+                            <x-ownership.status-badge :status="$contribution->status" class="mt-1" />
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-slate-500">No contribution activity yet.</p>
+                @endforelse
+            </div>
+        </section>
+    </div>
+
     <div class="mt-6 grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <section class="cca-card p-6">
             <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Cooperative Member Summary</p>

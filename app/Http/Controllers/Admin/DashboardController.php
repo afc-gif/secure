@@ -8,13 +8,15 @@ use App\Models\Batch;
 use App\Models\BatchMember;
 use App\Models\MemberProfile;
 use App\Models\User;
+use App\Services\OwnershipAnalyticsService;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(OwnershipAnalyticsService $analytics): View
     {
         return view('admin.dashboard', [
+            'analytics' => $analytics->getAdminAnalytics(),
             'activeMembers' => User::where('role', 'member')->where('status', 'active')->count(),
             'completedOnboarding' => MemberProfile::where('onboarding_completed', true)->count(),
             'pendingOnboarding' => User::where('role', 'member')
