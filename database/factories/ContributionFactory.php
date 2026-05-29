@@ -18,8 +18,8 @@ class ContributionFactory extends Factory
         return [
             'user_id' => User::factory(),
             'batch_id' => Batch::factory(),
-            'amount' => fake()->randomFloat(2, 50000, 2500000),
-            'currency' => 'NGN',
+            'amount' => fake()->randomFloat(2, 500, 25000),
+            'currency' => 'USD',
             'status' => fake()->randomElement(Contribution::STATUSES),
             'payment_reference' => 'CCA-DEMO-'.Str::upper(Str::random(10)),
             'contribution_type' => fake()->randomElement(Contribution::TYPES),

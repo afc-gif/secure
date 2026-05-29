@@ -20,7 +20,7 @@ class SettlementFactory extends Factory
         return [
             'user_id' => User::factory(),
             'batch_id' => Batch::factory(),
-            'amount' => fake()->randomFloat(2, 25000, 650000),
+            'amount' => fake()->randomFloat(2, 250, 6500),
             'status' => $status,
             'processed_by_admin_id' => null,
             'processed_at' => $status === 'completed' ? now()->subDays(fake()->numberBetween(1, 60)) : null,

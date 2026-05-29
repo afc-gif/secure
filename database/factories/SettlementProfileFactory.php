@@ -13,16 +13,16 @@ class SettlementProfileFactory extends Factory
 {
     public function definition(): array
     {
-        $banks = ['Access Bank', 'GTBank', 'Zenith Bank', 'First Bank', 'UBA', 'Sterling Bank', 'Providus Bank'];
+        $banks = ['Chase Bank', 'Bank of America', 'Wells Fargo', 'Citibank', 'Capital One', 'U.S. Bank', 'PNC Bank'];
 
         return [
             'user_id' => User::factory(),
             'bank_name' => fake()->randomElement($banks),
             'account_name' => fake()->name(),
             'account_number' => fake()->numerify('##########'),
-            'routing_number' => fake()->numerify('###'),
-            'country' => 'NG',
-            'currency' => 'NGN',
+            'routing_number' => fake()->numerify('#########'),
+            'country' => 'US',
+            'currency' => 'USD',
             'verification_status' => fake()->randomElement(['pending', 'verified', 'rejected']),
             'rejection_reason' => null,
             'verified_at' => null,

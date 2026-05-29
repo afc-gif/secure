@@ -20,27 +20,29 @@ class MemberUserSeeder extends Seeder
         $batches = $this->seedBatches();
 
         $members = [
-            ['name' => 'Adebayo Okafor', 'email' => 'member1@secureportal.test', 'phone' => '08011111111', 'status' => 'active'],
-            ['name' => 'Chioma Nwosu', 'email' => 'member2@secureportal.test', 'phone' => '08022222222', 'status' => 'active'],
-            ['name' => 'Tunde Balogun', 'email' => 'member3@secureportal.test', 'phone' => '08033333333', 'status' => 'active'],
-            ['name' => 'Amina Bello', 'email' => 'amina.bello@secureportal.test', 'phone' => '08044444444', 'status' => 'active'],
-            ['name' => 'Kelechi Eze', 'email' => 'kelechi.eze@secureportal.test', 'phone' => '08055555555', 'status' => 'active'],
-            ['name' => 'Musa Ibrahim', 'email' => 'musa.ibrahim@secureportal.test', 'phone' => '08066666666', 'status' => 'inactive'],
-            ['name' => 'Yetunde Adeyemi', 'email' => 'yetunde.adeyemi@secureportal.test', 'phone' => '08077777777', 'status' => 'active'],
-            ['name' => 'Ifeanyi Obi', 'email' => 'ifeanyi.obi@secureportal.test', 'phone' => '08088888888', 'status' => 'inactive'],
-            ['name' => 'Zainab Sani', 'email' => 'zainab.sani@secureportal.test', 'phone' => '08099999999', 'status' => 'active'],
-            ['name' => 'Folake Williams', 'email' => 'folake.williams@secureportal.test', 'phone' => '08100000000', 'status' => 'active'],
+            ['name' => 'Michael Anderson', 'email' => 'michael.anderson@secureportal.test', 'phone' => '2125550101', 'status' => 'active'],
+            ['name' => 'Emily Carter', 'email' => 'emily.carter@secureportal.test', 'phone' => '3125550102', 'status' => 'active'],
+            ['name' => 'James Wilson', 'email' => 'james.wilson@secureportal.test', 'phone' => '4155550103', 'status' => 'active'],
+            ['name' => 'Sarah Mitchell', 'email' => 'sarah.mitchell@secureportal.test', 'phone' => '6175550104', 'status' => 'active'],
+            ['name' => 'David Thompson', 'email' => 'david.thompson@secureportal.test', 'phone' => '2065550105', 'status' => 'active'],
+            ['name' => 'Jessica Brown', 'email' => 'jessica.brown@secureportal.test', 'phone' => '3055550106', 'status' => 'inactive'],
+            ['name' => 'Robert Davis', 'email' => 'robert.davis@secureportal.test', 'phone' => '7205550107', 'status' => 'active'],
+            ['name' => 'Ashley Miller', 'email' => 'ashley.miller@secureportal.test', 'phone' => '4045550108', 'status' => 'inactive'],
+            ['name' => 'Christopher Moore', 'email' => 'christopher.moore@secureportal.test', 'phone' => '6025550109', 'status' => 'active'],
+            ['name' => 'Amanda Taylor', 'email' => 'amanda.taylor@secureportal.test', 'phone' => '5035550110', 'status' => 'active'],
         ];
 
         foreach ($members as $index => $memberData) {
+            $referenceToken = 'CCA-MEMBER-DEMO-'.str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT);
+
             $member = User::updateOrCreate(
-                ['email' => $memberData['email']],
+                ['reference_token' => $referenceToken],
                 [
                     'name' => $memberData['name'],
+                    'email' => $memberData['email'],
                     'phone' => $memberData['phone'],
                     'password' => Hash::make('Member@123'),
                     'role' => 'member',
-                    'reference_token' => 'CCA-MEMBER-DEMO-'.str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT),
                     'status' => $memberData['status'],
                     'email_verified_at' => now(),
                 ]
@@ -84,9 +86,9 @@ class MemberUserSeeder extends Seeder
     private function seedBatches()
     {
         return collect([
-            ['title' => 'Lagos Greenhouse Harvest Cycle', 'level' => 'premium', 'fee' => 250000],
-            ['title' => 'Ogun Cassava Cooperative Yield', 'level' => 'standard', 'fee' => 150000],
-            ['title' => 'Kaduna Irrigation Ownership Acre', 'level' => 'growth', 'fee' => 200000],
+            ['title' => 'California Greenhouse Harvest Cycle', 'level' => 'premium', 'fee' => 2500],
+            ['title' => 'Iowa Corn Cooperative Yield', 'level' => 'standard', 'fee' => 1500],
+            ['title' => 'Nebraska Irrigation Ownership Acre', 'level' => 'growth', 'fee' => 2000],
         ])->map(fn (array $batch) => Batch::updateOrCreate(
             ['slug' => Str::slug($batch['title'])],
             [
@@ -106,8 +108,9 @@ class MemberUserSeeder extends Seeder
 
     private function seedMemberProfile(User $member, int $index): void
     {
-        $states = ['Lagos', 'Ogun', 'Abuja', 'Rivers', 'Kaduna'];
-        $cities = ['Lekki', 'Abeokuta', 'Garki', 'Port Harcourt', 'Kaduna'];
+        $states = ['NY', 'IL', 'CA', 'MA', 'WA', 'FL', 'CO', 'GA', 'AZ', 'OR'];
+        $cities = ['New York', 'Chicago', 'San Francisco', 'Boston', 'Seattle', 'Miami', 'Denver', 'Atlanta', 'Phoenix', 'Portland'];
+        $postalCodes = ['10001', '60601', '94105', '02110', '98101', '33101', '80202', '30303', '85004', '97205'];
 
         MemberProfile::updateOrCreate(
             ['user_id' => $member->id],
@@ -116,12 +119,12 @@ class MemberUserSeeder extends Seeder
                 'phone' => $member->phone,
                 'date_of_birth' => now()->subYears(28 + $index)->toDateString(),
                 'gender' => ['male', 'female', 'prefer_not_to_say'][$index % 3],
-                'country' => 'Nigeria',
+                'country' => 'United States',
                 'state' => $states[$index % count($states)],
                 'city' => $cities[$index % count($cities)],
-                'residential_address' => ($index + 12).' Cooperative Registry Avenue',
-                'postal_code' => '10000'.$index,
-                'occupation' => ['Product Manager', 'Agro Investor', 'Operations Lead', 'Civil Servant', 'Founder'][$index % 5],
+                'residential_address' => ($index + 120).' Maple Ridge Avenue',
+                'postal_code' => $postalCodes[$index % count($postalCodes)],
+                'occupation' => ['Product Manager', 'Agricultural Investor', 'Operations Lead', 'Consultant', 'Founder'][$index % 5],
                 'ownership_interest_reason' => 'Demo member interested in structured agricultural ownership and cooperative yield.',
                 'agricultural_interest_type' => ['crop_cycles', 'livestock', 'greenhouse', 'irrigation'][$index % 4],
                 'bio' => 'Development demo profile for Secure Portal ownership analytics.',
@@ -133,17 +136,17 @@ class MemberUserSeeder extends Seeder
 
     private function seedSettlementProfile(User $member, int $index): void
     {
-        $banks = ['Access Bank', 'GTBank', 'Zenith Bank', 'First Bank', 'UBA', 'Sterling Bank', 'Providus Bank'];
+        $banks = ['Chase Bank', 'Bank of America', 'Wells Fargo', 'Citibank', 'Capital One', 'U.S. Bank', 'PNC Bank'];
 
         SettlementProfile::updateOrCreate(
             ['user_id' => $member->id],
             [
                 'bank_name' => $banks[$index % count($banks)],
                 'account_name' => $member->name,
-                'account_number' => '10'.str_pad((string) ($index + 10000000), 8, '0', STR_PAD_LEFT),
-                'routing_number' => '0'.($index + 10),
-                'country' => 'NG',
-                'currency' => 'NGN',
+                'account_number' => str_pad((string) ($index + 1000000000), 10, '0', STR_PAD_LEFT),
+                'routing_number' => str_pad((string) ($index + 110000001), 9, '0', STR_PAD_LEFT),
+                'country' => 'US',
+                'currency' => 'USD',
                 'verification_status' => $index === 5 ? 'pending' : ($index === 7 ? 'rejected' : 'verified'),
                 'rejection_reason' => $index === 7 ? 'Demo incomplete banking verification.' : null,
                 'verified_at' => in_array($index, [5, 7], true) ? null : now()->subDays(30 - $index),

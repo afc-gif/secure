@@ -23,7 +23,7 @@ class StoreContributionRequest extends FormRequest
         return [
             'batch_id' => ['nullable', 'exists:batches,id'],
             'amount' => ['required', 'numeric', 'min:0.01', 'max:999999.99'],
-            'currency' => ['required', 'string', 'size:3'],
+            'currency' => ['required', 'string', 'size:3', Rule::in(['USD'])],
             'contribution_type' => ['required', Rule::in(\App\Models\Contribution::TYPES)],
             'notes' => ['nullable', 'string', 'max:500'],
         ];
@@ -40,6 +40,7 @@ class StoreContributionRequest extends FormRequest
             'amount.numeric' => 'Amount must be a valid number',
             'amount.min' => 'Amount must be at least 0.01',
             'currency.size' => 'Currency must be a 3-letter code',
+            'currency.in' => 'Contributions must be submitted in USD',
             'contribution_type.required' => 'Contribution type is required',
             'contribution_type.in' => 'Invalid contribution type',
         ];

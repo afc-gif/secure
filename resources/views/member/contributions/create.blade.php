@@ -37,7 +37,7 @@
 
             <label class="block">
                 <span class="text-sm font-bold text-slate-300">Currency</span>
-                <input name="currency" value="{{ old('currency', 'USD') }}" maxlength="3" class="mt-2 w-full rounded-lg border-white/10 bg-white/[0.06] uppercase text-white focus:border-emerald-300 focus:ring-emerald-300">
+                <input name="currency" value="USD" readonly class="mt-2 w-full rounded-lg border-white/10 bg-white/[0.06] uppercase text-white focus:border-emerald-300 focus:ring-emerald-300">
                 <x-input-error :messages="$errors->get('currency')" class="mt-2" />
             </label>
         </div>

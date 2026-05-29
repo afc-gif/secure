@@ -15,7 +15,7 @@ class ContributionSeeder extends Seeder
         $members = User::where('role', 'member')->orderBy('id')->get();
         $batches = Batch::orderBy('id')->get();
 
-        $levels = [3500000, 2700000, 1800000, 1250000, 950000, 700000, 520000, 300000, 210000, 150000];
+        $levels = [35000, 27000, 18000, 12500, 9500, 7000, 5200, 3000, 2100, 1500];
 
         foreach ($members as $index => $member) {
             $batch = $batches[$index % max(1, $batches->count())] ?? null;
@@ -66,7 +66,7 @@ class ContributionSeeder extends Seeder
                 'user_id' => $member->id,
                 'batch_id' => $batch?->id,
                 'amount' => $data['amount'],
-                'currency' => 'NGN',
+                'currency' => 'USD',
                 'status' => $data['status'],
                 'contribution_type' => $data['contribution_type'],
                 'notes' => $data['notes'],

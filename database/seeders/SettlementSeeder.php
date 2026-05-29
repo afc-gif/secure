@@ -24,7 +24,7 @@ class SettlementSeeder extends Seeder
                 [
                     'user_id' => $member->id,
                     'batch_id' => $batches[$index % max(1, $batches->count())]->id,
-                    'amount' => [450000, 220000, 175000, 390000, 120000, 95000, 260000, 80000][$index],
+                    'amount' => [4500, 2200, 1750, 3900, 1200, 950, 2600, 800][$index],
                     'status' => $status,
                     'processed_by_admin_id' => in_array($status, ['completed', 'failed', 'cancelled'], true) ? $admin->id : null,
                     'processed_at' => $status === 'completed' ? now()->subDays(18 - $index) : null,
