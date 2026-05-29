@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        color-scheme: dark;
+    }
+
+    body {
+        @apply bg-[#070b0a] text-slate-100 antialiased;
+        background:
+            radial-gradient(circle at 15% 10%, rgba(43, 120, 78, 0.22), transparent 30rem),
+            radial-gradient(circle at 85% 0%, rgba(204, 168, 89, 0.16), transparent 26rem),
+            linear-gradient(135deg, #060807 0%, #0d1411 48%, #11140e 100%);
+    }
+}
+
+@layer components {
+    .cca-panel {
+        @apply border border-white/10 bg-white/[0.055] shadow-2xl shadow-black/30 backdrop-blur-xl;
+    }
+
+    .cca-card {
+        @apply cca-panel rounded-lg transition duration-300 hover:border-emerald-300/30 hover:bg-white/[0.075];
+    }
+
+    .cca-input {
+        @apply w-full rounded-lg border-white/10 bg-black/25 text-slate-100 placeholder:text-slate-500 shadow-inner shadow-black/20 focus:border-emerald-300 focus:ring-emerald-300;
+    }
+
+    .cca-label {
+        @apply text-sm font-medium text-slate-300;
+    }
+
+    .cca-button {
+        @apply inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-400 to-[#d4af62] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#08100c] shadow-lg shadow-emerald-950/40 transition duration-300 hover:scale-[1.01] hover:shadow-emerald-700/20 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 focus:ring-offset-[#070b0a];
+    }
+
+    .cca-muted-button {
+        @apply inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-emerald-300/40 hover:bg-emerald-300/10;
+    }
+}
