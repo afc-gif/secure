@@ -1,140 +1,269 @@
-<x-dashboard.shell title="Member ownership workspace" eyebrow="Partner Dashboard">
-    <section class="cca-card overflow-hidden p-6 sm:p-8">
-        <div class="grid gap-6 lg:grid-cols-[1fr_18rem] lg:items-center">
-            <div>
-                <p class="text-sm font-bold uppercase tracking-[0.22em] text-emerald-300">Welcome back</p>
-                <h2 class="mt-3 text-3xl font-black text-white">{{ $profile->full_legal_name }}, your ownership profile is synchronized.</h2>
-                <p class="mt-4 max-w-2xl text-slate-400">Your CCA member identity, address registry, and cooperative profile are active for countryside ownership participation.</p>
-            </div>
-            <div class="rounded-lg border border-[#d4af62]/20 bg-[#d4af62]/10 p-5">
-                <p class="text-xs uppercase tracking-[0.22em] text-[#d4af62]">Reference Token</p>
-                <p class="mt-3 font-mono text-xl font-black text-white">{{ auth()->user()->reference_token }}</p>
-                <p class="mt-2 text-sm text-slate-400">Linked to your synchronized member profile.</p>
-            </div>
-        </div>
-    </section>
+<x-dashboard.shell title="Contractual Vault" eyebrow="Member Dashboard">
+    @php
+        $panel = $individualPanel;
+    @endphp
 
-    <div class="mt-6 grid gap-6 xl:grid-cols-3">
-        <x-profile.summary-card label="Ownership Status" value="Verified Member" tone="emerald" detail="Your identity and residential registry are synchronized for cooperative access." />
+    <style>
+        .member-vault {
+            background: #000;
+            color: #f5f5f5;
+            font-family: Figtree, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
 
-        @php($activeParticipation = $participations->firstWhere('participation_status', 'active'))
+        .member-vault .vault-section + .vault-section {
+            margin-top: clamp(4rem, 8vw, 6.5rem);
+        }
 
-        <section class="cca-card p-6">
-            <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Active Batch Preview</p>
-            <h3 class="mt-4 text-2xl font-black text-white">{{ $activeParticipation?->batch->title ?? 'Awaiting Access Token' }}</h3>
-            <div class="mt-5 h-2 rounded-full bg-white/10">
-                <div class="h-2 rounded-full bg-gradient-to-r from-emerald-400 to-[#d4af62]" style="width: {{ $activeParticipation ? $activeParticipation->batch->progressPercentage() : 12 }}%"></div>
-            </div>
-            <p class="mt-3 text-sm text-slate-400">{{ $activeParticipation ? 'Participation activated for this ownership cycle.' : 'Enter a cooperative access token to join an active cycle.' }}</p>
+        .member-vault .vault-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            font-size: clamp(2rem, 5vw, 3.75rem);
+            font-weight: 500;
+            line-height: 1.15;
+            letter-spacing: 0;
+        }
+
+        .member-vault .vault-icon {
+            width: 1.15em;
+            flex: 0 0 auto;
+            line-height: 1.05;
+        }
+
+        .member-vault ul {
+            list-style-type: circle;
+        }
+
+        .member-vault .vault-list {
+            margin-top: clamp(2.25rem, 5vw, 4rem);
+            padding-left: clamp(1.25rem, 4vw, 3.25rem);
+        }
+
+        .member-vault .vault-list > li {
+            padding-left: clamp(1.4rem, 3vw, 2.8rem);
+            margin-top: clamp(2rem, 4.5vw, 3.5rem);
+            font-size: clamp(1.6rem, 4vw, 3rem);
+            line-height: 1.45;
+        }
+
+        .member-vault .vault-nested {
+            margin-top: 1.25rem;
+            padding-left: clamp(2.25rem, 8vw, 6.5rem);
+        }
+
+        .member-vault .vault-nested > li {
+            padding-left: clamp(1rem, 3vw, 2.75rem);
+            margin-top: clamp(1.35rem, 3.5vw, 2.5rem);
+            font-size: clamp(1.45rem, 3.6vw, 2.75rem);
+            line-height: 1.45;
+        }
+
+        .member-vault strong {
+            font-weight: 800;
+        }
+
+        .member-vault .vault-code {
+            display: inline;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+            border-radius: 0.55em;
+            background: rgba(45, 45, 45, 0.72);
+            color: #9b9b9b;
+            padding: 0.05em 0.35em 0.12em;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .member-vault .vault-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.2em;
+            height: 1.2em;
+            margin-right: 0.25em;
+            border-radius: 0.22em;
+            background: linear-gradient(180deg, #dff3ff, #5d91ba 70%, #416f9b);
+            color: #fff;
+            font-size: 0.8em;
+            font-weight: 900;
+            vertical-align: 0.05em;
+        }
+
+        .member-vault .milestone-track {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .member-vault .milestone-track::before {
+            position: absolute;
+            top: 1.1rem;
+            left: 8%;
+            right: 8%;
+            height: 0.28rem;
+            content: "";
+            background: linear-gradient(90deg, #f5f5f5 0%, #9b9b9b 50%, #323232 100%);
+        }
+
+        .member-vault .milestone-node {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 0.65rem;
+            justify-items: center;
+            text-align: center;
+            font-size: clamp(0.95rem, 2.4vw, 1.35rem);
+            line-height: 1.3;
+            color: #bdbdbd;
+        }
+
+        .member-vault .milestone-node::before {
+            width: 2.35rem;
+            height: 2.35rem;
+            border: 0.32rem solid #f5f5f5;
+            border-radius: 999px;
+            content: "";
+            background: #000;
+        }
+
+        .member-vault .milestone-node.is-active::before {
+            background: #f5f5f5;
+            box-shadow: 0 0 0 0.4rem rgba(255, 255, 255, 0.14);
+        }
+
+        @media (max-width: 640px) {
+            .member-vault {
+                margin-left: -1.25rem;
+                margin-right: -1.25rem;
+                padding-left: 1.25rem;
+                padding-right: 1.25rem;
+            }
+
+            .member-vault .milestone-track {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .member-vault .milestone-track::before {
+                top: 1rem;
+                bottom: 1rem;
+                left: 1rem;
+                right: auto;
+                width: 0.2rem;
+                height: auto;
+                background: linear-gradient(180deg, #f5f5f5 0%, #9b9b9b 50%, #323232 100%);
+            }
+
+            .member-vault .milestone-node {
+                grid-template-columns: 2rem 1fr;
+                justify-items: start;
+                text-align: left;
+            }
+
+            .member-vault .milestone-node::before {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+    </style>
+
+    <article class="member-vault min-h-screen px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
+        <section class="vault-section">
+            <h2 class="vault-heading"><span class="vault-icon">🔒</span><span>Step 1: Secure Gate Check (The Landing Entry)</span></h2>
+
+            <ul class="vault-list">
+                <li><strong>System Access Variable:</strong> <span class="vault-code">{{ $panel['gate']['variable'] }}</span></li>
+                <li>
+                    <strong>Hardcoded Access Input:</strong>
+                    <span class="vault-code">{{ $panel['gate']['access_input'] }}</span>
+                    (The explicit membership credential from image_39.png required to unlock her dashboard privilege).
+                </li>
+            </ul>
         </section>
 
-        <section class="cca-card p-6">
-            <div class="flex items-start justify-between gap-4">
-                <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Profile Completion</p>
-                <x-profile.status-badge tone="emerald">Verified</x-profile.status-badge>
-            </div>
-            <h3 class="mt-4 text-2xl font-black text-[#d4af62]">{{ $completion }}%</h3>
-            <div class="mt-5 h-2 rounded-full bg-white/10">
-                <div class="h-2 rounded-full bg-gradient-to-r from-emerald-400 to-[#d4af62]" style="width: {{ $completion }}%"></div>
-            </div>
-            <p class="mt-3 text-sm leading-6 text-slate-400">Identity, address, and cooperative profile synchronized.</p>
-        </section>
-    </div>
+        <section class="vault-section">
+            <h2 class="vault-heading"><span class="vault-icon">💳</span><span>Step 2: The Core Asset Surface Post (The Headline Card)</span></h2>
 
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <x-dashboard.stat-card label="Total Contributions" value="USD {{ number_format($ownership['confirmed_total'], 2) }}" detail="Confirmed cooperative capital" />
-        <x-dashboard.stat-card label="Ownership Percentage" value="{{ number_format($ownership['ownership_percentage'], 2) }}%" detail="Share of confirmed pool" tone="gold" />
-        <x-dashboard.stat-card label="Active Batches" value="{{ $participations->where('participation_status', 'active')->count() }}" detail="Activated Harvest Cycles" />
-        <x-dashboard.stat-card label="Participation Score" value="{{ $ownership['participation_score'] }}/100" detail="Contribution and batch activity" tone="gold" />
-    </div>
-
-    <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_1fr]">
-        <section class="cca-card p-6">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Ownership Intelligence</p>
-                    <h3 class="mt-2 text-xl font-black text-white">Cooperative Yield Position</h3>
-                </div>
-                <span class="text-lg font-black text-[#d4af62]">{{ number_format($ownership['ownership_percentage'], 2) }}%</span>
-            </div>
-            <div class="mt-5 h-3 rounded-full bg-white/10">
-                <div class="h-3 rounded-full bg-gradient-to-r from-emerald-400 to-[#d4af62]" style="width: {{ min(100, max(4, $ownership['ownership_percentage'])) }}%"></div>
-            </div>
-            <p class="mt-3 text-sm leading-6 text-slate-400">Calculated from your confirmed contributions divided by the confirmed cooperative pool.</p>
+            <ul class="vault-list">
+                <li><strong>Primary Data Card Value:</strong> <span class="vault-code">{{ $panel['core']['value'] }}</span></li>
+                <li><strong>Verification Tag:</strong> <span class="vault-code">{{ $panel['core']['verification'] }}</span></li>
+            </ul>
         </section>
 
-        <section class="cca-card p-6">
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Contribution Timeline</p>
-                    <h3 class="mt-2 text-xl font-black text-white">Recent ownership activity</h3>
-                </div>
-                <a href="{{ route('member.contributions.index') }}" class="cca-muted-button">Open Ledger</a>
-            </div>
-            <div class="mt-5 space-y-3">
-                @forelse ($recentContributions as $contribution)
-                    <div class="flex items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-3">
-                        <div>
-                            <p class="text-sm font-bold text-white">{{ $contribution->getTypeLabel() }}</p>
-                            <p class="mt-1 text-xs text-slate-500">{{ $contribution->created_at->format('M d, Y') }}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-sm font-black text-[#d4af62]">{{ $contribution->currency }} {{ number_format((float) $contribution->amount, 2) }}</p>
-                            <x-ownership.status-badge :status="$contribution->status" class="mt-1" />
-                        </div>
+        <section class="vault-section">
+            <h2 class="vault-heading"><span class="vault-icon">📍</span><span>Step 3: Information Source Coordinates &amp; Verified Payout Destination</span></h2>
+
+            <ul class="vault-list">
+                @foreach ($panel['dataBlocks'] as $block)
+                    <li>
+                        <strong>{{ $block['label'] }}:</strong>
+                        <ul class="vault-nested">
+                            <li>Header: <span class="vault-code">{{ $block['header'] }}</span></li>
+                            <li>Assigned Ledger Allocation: <span class="vault-code">{{ $block['allocation'] }}</span></li>
+                        </ul>
+                    </li>
+                @endforeach
+
+                <li>
+                    <strong>Secure Disbursement Coordinates (Read-Only Profile Box):</strong>
+                    <ul class="vault-nested">
+                        <li>Registered Recipient: <span class="vault-code">{{ $panel['disbursement']['recipient'] }}</span></li>
+                        <li>Physical Footprint Address: <span class="vault-code">{{ $panel['disbursement']['address'] }}</span></li>
+                        <li>Settlement Destination: <span class="vault-code">{{ $panel['disbursement']['destination'] }}</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section class="vault-section">
+            <h2 class="vault-heading"><span class="vault-icon">🗓️</span><span>Step 4: Synchronized Operational Timeline (The Progress Roadmap)</span></h2>
+
+            <ul class="vault-list">
+                <li>
+                    <strong>Visual Element:</strong> Horizontal milestone tracking bar.
+                    <div class="milestone-track" aria-label="Horizontal milestone tracking bar">
+                        @foreach ($panel['milestones'] as $index => $milestone)
+                            <div @class(['milestone-node', 'is-active' => $index <= 1])>
+                                <span><strong>{{ $milestone['date'] }}:</strong> {{ $milestone['label'] }}</span>
+                            </div>
+                        @endforeach
                     </div>
-                @empty
-                    <p class="text-sm text-slate-500">No contribution activity yet.</p>
-                @endforelse
-            </div>
-        </section>
-    </div>
-
-    <div class="mt-6 grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
-        <section class="cca-card p-6">
-            <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Cooperative Member Summary</p>
-            <dl class="mt-5 space-y-4 text-sm">
-                <div class="flex justify-between gap-4"><dt class="text-slate-500">Interest</dt><dd class="font-semibold text-white">{{ Str::of($profile->agricultural_interest_type)->replace('_', ' ')->title() }}</dd></div>
-                <div class="flex justify-between gap-4"><dt class="text-slate-500">Occupation</dt><dd class="font-semibold text-white">{{ $profile->occupation }}</dd></div>
-                <div class="flex justify-between gap-4"><dt class="text-slate-500">Registry City</dt><dd class="font-semibold text-white">{{ $profile->city }}</dd></div>
-                <div class="flex justify-between gap-4"><dt class="text-slate-500">Ownership Tier</dt><dd class="font-semibold text-white">{{ $activeParticipation ? Str::of($activeParticipation->accessToken->ownership_tier)->replace('_', ' ')->title() : 'Not activated' }}</dd></div>
-            </dl>
+                </li>
+                <li><strong>Active Parameter:</strong> <span class="vault-code">Batch 3 Synchronization Cycle</span></li>
+                <li>
+                    <strong>Hardcoded Milestones Displayed:</strong>
+                    <ul class="vault-nested">
+                        @foreach ($panel['milestones'] as $milestone)
+                            <li><strong>{{ $milestone['date'] }}:</strong> <span class="vault-code">{{ $milestone['label'] }}</span></li>
+                        @endforeach
+                    </ul>
+                </li>
+            </ul>
         </section>
 
-        <section class="cca-card p-6">
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Ownership Verification</p>
-                    <h3 class="mt-2 text-xl font-black text-white">Secure member registry active</h3>
-                </div>
-                <x-profile.status-badge tone="gold">Synchronized</x-profile.status-badge>
-            </div>
-            <p class="mt-4 text-sm leading-6 text-slate-400">{{ $activeParticipation ? 'Your access token has been validated and linked to an active ownership cycle.' : 'Your verified profile is ready for token-based batch participation.' }}</p>
-            <div class="mt-5">
-                <a href="{{ route('member.access-token.create') }}" class="cca-muted-button">Manage Access Token</a>
-            </div>
+        <section class="vault-section">
+            <h2 class="vault-heading"><span class="vault-icon">📄</span><span>Step 5: The Contractual Vault (The Historical Footprint)</span></h2>
+
+            <ul class="vault-list">
+                <li><strong>Document Line 1:</strong> <span class="vault-code">{{ $panel['documents']['line_1'] }}</span></li>
+                <li><strong>Document Line 2:</strong> <span class="vault-code">{{ $panel['documents']['line_2'] }}</span></li>
+                <li>
+                    <strong>Historical Data Log:</strong>
+                    <ul class="vault-nested">
+                        @foreach ($panel['history'] as $history)
+                            <li>
+                                {{ $history['record'] }}: <span class="vault-code">{{ $history['date'] }}</span><br>
+                                <span class="vault-arrow">➜</span><span class="vault-code">{{ $history['description'] }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
+            </ul>
         </section>
-    </div>
-
-    <div class="mt-6">
-        <x-ownership.table :participations="$participations" />
-    </div>
-
-    <section class="cca-card mt-6 p-6">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-                <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Milestone Tracker</p>
-                <h3 class="mt-2 text-xl font-black text-white">Timeline preview</h3>
-            </div>
-            <span class="text-sm font-semibold text-emerald-300">Phase 2 preview</span>
-        </div>
-        <div class="mt-6 grid gap-4 sm:grid-cols-4">
-            @foreach (['Onboarded', 'Batch Assigned', 'Cultivation', 'Yield Report'] as $index => $step)
-                <div class="rounded-lg border {{ $index === 0 ? 'border-emerald-300/30 bg-emerald-300/10' : 'border-white/10 bg-white/[0.04]' }} p-4">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-lg {{ $index === 0 ? 'bg-emerald-300 text-[#08100c]' : 'bg-white/10 text-slate-400' }} text-sm font-black">{{ $index + 1 }}</div>
-                    <p class="mt-4 text-sm font-bold text-white">{{ $step }}</p>
-                </div>
-            @endforeach
-        </div>
-    </section>
+    </article>
 </x-dashboard.shell>

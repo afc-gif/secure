@@ -29,7 +29,8 @@ class RoleDashboardTest extends TestCase
         $this->actingAs($member)
             ->get('/member/dashboard')
             ->assertOk()
-            ->assertSee('Member ownership workspace');
+            ->assertSee('Contractual Vault')
+            ->assertSee('TOTAL SECURED BENEFIT BALANCE: USD 33,000.00');
     }
 
     public function test_incomplete_member_is_redirected_to_onboarding(): void
