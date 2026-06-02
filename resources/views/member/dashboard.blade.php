@@ -1,269 +1,158 @@
-<x-dashboard.shell title="Contractual Vault" eyebrow="Member Dashboard">
+<x-dashboard.shell title="Member Benefit Vault" eyebrow="Verified Member Dashboard">
     @php
         $panel = $individualPanel;
+        $milestones = $panel['milestones'];
     @endphp
 
-    <style>
-        .member-vault {
-            background: #000;
-            color: #f5f5f5;
-            font-family: Figtree, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
+    <div class="space-y-6">
+        <section class="overflow-hidden rounded-lg border border-white/10 bg-black shadow-2xl shadow-black/40">
+            <div class="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
+                <div class="p-6 sm:p-8 lg:p-10">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-4 py-2 text-sm font-bold text-emerald-100">
+                            <span class="h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_16px_rgba(110,231,183,0.9)]"></span>
+                            Access Verified
+                        </span>
+                        <span class="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 font-mono text-sm text-slate-300">{{ $panel['gate']['variable'] }}</span>
+                    </div>
 
-        .member-vault .vault-section + .vault-section {
-            margin-top: clamp(4rem, 8vw, 6.5rem);
-        }
+                    <h2 class="mt-7 max-w-3xl text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">Total secured benefit balance</h2>
+                    <p class="mt-5 font-mono text-3xl font-black tracking-tight text-[#d4af62] sm:text-5xl">USD 33,000.00</p>
+                    <p class="mt-5 max-w-2xl text-base leading-7 text-slate-400">Legally verified carried contract allocation synchronized to the active Batch 3 member cycle.</p>
 
-        .member-vault .vault-heading {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.9rem;
-            font-size: clamp(2rem, 5vw, 3.75rem);
-            font-weight: 500;
-            line-height: 1.15;
-            letter-spacing: 0;
-        }
+                    <div class="mt-8 grid gap-3 sm:grid-cols-2">
+                        <div class="rounded-lg border border-white/10 bg-white/[0.045] p-4">
+                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Member Credential</p>
+                            <p class="mt-3 font-mono text-xl font-black text-white">{{ $panel['gate']['access_input'] }}</p>
+                        </div>
+                        <div class="rounded-lg border border-white/10 bg-white/[0.045] p-4">
+                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Verification Status</p>
+                            <p class="mt-3 text-sm font-black uppercase leading-6 text-emerald-200">Legally Verified / Carried Contract Allocation</p>
+                        </div>
+                    </div>
+                </div>
 
-        .member-vault .vault-icon {
-            width: 1.15em;
-            flex: 0 0 auto;
-            line-height: 1.05;
-        }
-
-        .member-vault ul {
-            list-style-type: circle;
-        }
-
-        .member-vault .vault-list {
-            margin-top: clamp(2.25rem, 5vw, 4rem);
-            padding-left: clamp(1.25rem, 4vw, 3.25rem);
-        }
-
-        .member-vault .vault-list > li {
-            padding-left: clamp(1.4rem, 3vw, 2.8rem);
-            margin-top: clamp(2rem, 4.5vw, 3.5rem);
-            font-size: clamp(1.6rem, 4vw, 3rem);
-            line-height: 1.45;
-        }
-
-        .member-vault .vault-nested {
-            margin-top: 1.25rem;
-            padding-left: clamp(2.25rem, 8vw, 6.5rem);
-        }
-
-        .member-vault .vault-nested > li {
-            padding-left: clamp(1rem, 3vw, 2.75rem);
-            margin-top: clamp(1.35rem, 3.5vw, 2.5rem);
-            font-size: clamp(1.45rem, 3.6vw, 2.75rem);
-            line-height: 1.45;
-        }
-
-        .member-vault strong {
-            font-weight: 800;
-        }
-
-        .member-vault .vault-code {
-            display: inline;
-            box-decoration-break: clone;
-            -webkit-box-decoration-break: clone;
-            border-radius: 0.55em;
-            background: rgba(45, 45, 45, 0.72);
-            color: #9b9b9b;
-            padding: 0.05em 0.35em 0.12em;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-            font-size: 0.85em;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
-        .member-vault .vault-arrow {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 1.2em;
-            height: 1.2em;
-            margin-right: 0.25em;
-            border-radius: 0.22em;
-            background: linear-gradient(180deg, #dff3ff, #5d91ba 70%, #416f9b);
-            color: #fff;
-            font-size: 0.8em;
-            font-weight: 900;
-            vertical-align: 0.05em;
-        }
-
-        .member-vault .milestone-track {
-            position: relative;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .member-vault .milestone-track::before {
-            position: absolute;
-            top: 1.1rem;
-            left: 8%;
-            right: 8%;
-            height: 0.28rem;
-            content: "";
-            background: linear-gradient(90deg, #f5f5f5 0%, #9b9b9b 50%, #323232 100%);
-        }
-
-        .member-vault .milestone-node {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            gap: 0.65rem;
-            justify-items: center;
-            text-align: center;
-            font-size: clamp(0.95rem, 2.4vw, 1.35rem);
-            line-height: 1.3;
-            color: #bdbdbd;
-        }
-
-        .member-vault .milestone-node::before {
-            width: 2.35rem;
-            height: 2.35rem;
-            border: 0.32rem solid #f5f5f5;
-            border-radius: 999px;
-            content: "";
-            background: #000;
-        }
-
-        .member-vault .milestone-node.is-active::before {
-            background: #f5f5f5;
-            box-shadow: 0 0 0 0.4rem rgba(255, 255, 255, 0.14);
-        }
-
-        @media (max-width: 640px) {
-            .member-vault {
-                margin-left: -1.25rem;
-                margin-right: -1.25rem;
-                padding-left: 1.25rem;
-                padding-right: 1.25rem;
-            }
-
-            .member-vault .milestone-track {
-                grid-template-columns: 1fr;
-                gap: 1.25rem;
-            }
-
-            .member-vault .milestone-track::before {
-                top: 1rem;
-                bottom: 1rem;
-                left: 1rem;
-                right: auto;
-                width: 0.2rem;
-                height: auto;
-                background: linear-gradient(180deg, #f5f5f5 0%, #9b9b9b 50%, #323232 100%);
-            }
-
-            .member-vault .milestone-node {
-                grid-template-columns: 2rem 1fr;
-                justify-items: start;
-                text-align: left;
-            }
-
-            .member-vault .milestone-node::before {
-                width: 2rem;
-                height: 2rem;
-            }
-        }
-    </style>
-
-    <article class="member-vault min-h-screen px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
-        <section class="vault-section">
-            <h2 class="vault-heading"><span class="vault-icon">🔒</span><span>Step 1: Secure Gate Check (The Landing Entry)</span></h2>
-
-            <ul class="vault-list">
-                <li><strong>System Access Variable:</strong> <span class="vault-code">{{ $panel['gate']['variable'] }}</span></li>
-                <li>
-                    <strong>Hardcoded Access Input:</strong>
-                    <span class="vault-code">{{ $panel['gate']['access_input'] }}</span>
-                    (The explicit membership credential from image_39.png required to unlock her dashboard privilege).
-                </li>
-            </ul>
-        </section>
-
-        <section class="vault-section">
-            <h2 class="vault-heading"><span class="vault-icon">💳</span><span>Step 2: The Core Asset Surface Post (The Headline Card)</span></h2>
-
-            <ul class="vault-list">
-                <li><strong>Primary Data Card Value:</strong> <span class="vault-code">{{ $panel['core']['value'] }}</span></li>
-                <li><strong>Verification Tag:</strong> <span class="vault-code">{{ $panel['core']['verification'] }}</span></li>
-            </ul>
-        </section>
-
-        <section class="vault-section">
-            <h2 class="vault-heading"><span class="vault-icon">📍</span><span>Step 3: Information Source Coordinates &amp; Verified Payout Destination</span></h2>
-
-            <ul class="vault-list">
-                @foreach ($panel['dataBlocks'] as $block)
-                    <li>
-                        <strong>{{ $block['label'] }}:</strong>
-                        <ul class="vault-nested">
-                            <li>Header: <span class="vault-code">{{ $block['header'] }}</span></li>
-                            <li>Assigned Ledger Allocation: <span class="vault-code">{{ $block['allocation'] }}</span></li>
-                        </ul>
-                    </li>
-                @endforeach
-
-                <li>
-                    <strong>Secure Disbursement Coordinates (Read-Only Profile Box):</strong>
-                    <ul class="vault-nested">
-                        <li>Registered Recipient: <span class="vault-code">{{ $panel['disbursement']['recipient'] }}</span></li>
-                        <li>Physical Footprint Address: <span class="vault-code">{{ $panel['disbursement']['address'] }}</span></li>
-                        <li>Settlement Destination: <span class="vault-code">{{ $panel['disbursement']['destination'] }}</span></li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-
-        <section class="vault-section">
-            <h2 class="vault-heading"><span class="vault-icon">🗓️</span><span>Step 4: Synchronized Operational Timeline (The Progress Roadmap)</span></h2>
-
-            <ul class="vault-list">
-                <li>
-                    <strong>Visual Element:</strong> Horizontal milestone tracking bar.
-                    <div class="milestone-track" aria-label="Horizontal milestone tracking bar">
-                        @foreach ($panel['milestones'] as $index => $milestone)
-                            <div @class(['milestone-node', 'is-active' => $index <= 1])>
-                                <span><strong>{{ $milestone['date'] }}:</strong> {{ $milestone['label'] }}</span>
+                <div class="border-t border-white/10 bg-white/[0.035] p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
+                    <p class="text-xs font-bold uppercase tracking-[0.24em] text-[#d4af62]">Allocation Split</p>
+                    <div class="mt-6 space-y-4">
+                        @foreach ($panel['dataBlocks'] as $block)
+                            <div class="rounded-lg border border-white/10 bg-black/35 p-5">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div>
+                                        <p class="text-sm font-black text-white">{{ $block['label'] }}</p>
+                                        <p class="mt-2 font-mono text-sm leading-6 text-slate-400">{{ $block['header'] }}</p>
+                                    </div>
+                                    <p class="shrink-0 font-mono text-lg font-black text-[#d4af62]">{{ $block['allocation'] }}</p>
+                                </div>
                             </div>
                         @endforeach
                     </div>
-                </li>
-                <li><strong>Active Parameter:</strong> <span class="vault-code">Batch 3 Synchronization Cycle</span></li>
-                <li>
-                    <strong>Hardcoded Milestones Displayed:</strong>
-                    <ul class="vault-nested">
-                        @foreach ($panel['milestones'] as $milestone)
-                            <li><strong>{{ $milestone['date'] }}:</strong> <span class="vault-code">{{ $milestone['label'] }}</span></li>
-                        @endforeach
-                    </ul>
-                </li>
-            </ul>
+                </div>
+            </div>
         </section>
 
-        <section class="vault-section">
-            <h2 class="vault-heading"><span class="vault-icon">📄</span><span>Step 5: The Contractual Vault (The Historical Footprint)</span></h2>
+        <section class="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+            <div class="rounded-lg border border-white/10 bg-black p-6 shadow-2xl shadow-black/30 sm:p-8">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[0.24em] text-[#d4af62]">Read-Only Profile Box</p>
+                        <h3 class="mt-2 text-2xl font-black text-white">Secure Disbursement Coordinates</h3>
+                    </div>
+                    <span class="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-100">Synchronized</span>
+                </div>
 
-            <ul class="vault-list">
-                <li><strong>Document Line 1:</strong> <span class="vault-code">{{ $panel['documents']['line_1'] }}</span></li>
-                <li><strong>Document Line 2:</strong> <span class="vault-code">{{ $panel['documents']['line_2'] }}</span></li>
-                <li>
-                    <strong>Historical Data Log:</strong>
-                    <ul class="vault-nested">
-                        @foreach ($panel['history'] as $history)
-                            <li>
-                                {{ $history['record'] }}: <span class="vault-code">{{ $history['date'] }}</span><br>
-                                <span class="vault-arrow">➜</span><span class="vault-code">{{ $history['description'] }}</span>
-                            </li>
+                <dl class="mt-7 space-y-5">
+                    <div>
+                        <dt class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Registered Recipient</dt>
+                        <dd class="mt-2 rounded-lg bg-white/[0.055] px-4 py-3 font-mono text-lg text-slate-200">{{ $panel['disbursement']['recipient'] }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Physical Footprint Address</dt>
+                        <dd class="mt-2 rounded-lg bg-white/[0.055] px-4 py-3 font-mono text-lg leading-7 text-slate-200">{{ $panel['disbursement']['address'] }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Settlement Destination</dt>
+                        <dd class="mt-2 rounded-lg bg-white/[0.055] px-4 py-3 font-mono text-lg text-slate-200">{{ $panel['disbursement']['destination'] }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="rounded-lg border border-white/10 bg-black p-6 shadow-2xl shadow-black/30 sm:p-8">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[0.24em] text-[#d4af62]">Operational Timeline</p>
+                        <h3 class="mt-2 text-2xl font-black text-white">Batch 3 Synchronization Cycle</h3>
+                    </div>
+                    <span class="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 font-mono text-xs font-bold text-slate-300">Active</span>
+                </div>
+
+                <div class="mt-9">
+                    <div class="relative hidden grid-cols-3 gap-4 sm:grid">
+                        <div class="absolute left-[12%] right-[12%] top-5 h-1 rounded-full bg-white/10"></div>
+                        <div class="absolute left-[12%] top-5 h-1 w-[38%] rounded-full bg-gradient-to-r from-emerald-300 to-[#d4af62]"></div>
+                        @foreach ($milestones as $index => $milestone)
+                            <div class="relative z-[1] text-center">
+                                <div @class([
+                                    'mx-auto flex h-11 w-11 items-center justify-center rounded-full border text-sm font-black',
+                                    'border-emerald-200 bg-emerald-200 text-black shadow-[0_0_24px_rgba(110,231,183,0.35)]' => $index <= 1,
+                                    'border-white/20 bg-black text-slate-500' => $index > 1,
+                                ])>{{ $index + 1 }}</div>
+                                <p class="mt-4 text-sm font-black text-white">{{ $milestone['date'] }}</p>
+                                <p class="mt-2 text-sm leading-6 text-slate-400">{{ $milestone['label'] }}</p>
+                            </div>
                         @endforeach
-                    </ul>
-                </li>
-            </ul>
+                    </div>
+
+                    <div class="space-y-4 sm:hidden">
+                        @foreach ($milestones as $index => $milestone)
+                            <div class="flex gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-4">
+                                <div @class([
+                                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-black',
+                                    'border-emerald-200 bg-emerald-200 text-black' => $index <= 1,
+                                    'border-white/20 bg-black text-slate-500' => $index > 1,
+                                ])>{{ $index + 1 }}</div>
+                                <div>
+                                    <p class="text-sm font-black text-white">{{ $milestone['date'] }}</p>
+                                    <p class="mt-1 text-sm leading-6 text-slate-400">{{ $milestone['label'] }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
         </section>
-    </article>
+
+        <section class="rounded-lg border border-white/10 bg-black p-6 shadow-2xl shadow-black/30 sm:p-8">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.24em] text-[#d4af62]">Contractual Vault</p>
+                    <h3 class="mt-2 text-2xl font-black text-white">Historical Footprint</h3>
+                </div>
+                <span class="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-slate-300">Read Only</span>
+            </div>
+
+            <div class="mt-7 grid gap-4 lg:grid-cols-2">
+                <div class="rounded-lg border border-white/10 bg-white/[0.04] p-5">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Document Line 1</p>
+                    <p class="mt-3 font-mono text-base leading-7 text-slate-200">{{ $panel['documents']['line_1'] }}</p>
+                </div>
+                <div class="rounded-lg border border-white/10 bg-white/[0.04] p-5">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Document Line 2</p>
+                    <p class="mt-3 font-mono text-base leading-7 text-slate-200">{{ $panel['documents']['line_2'] }}</p>
+                </div>
+            </div>
+
+            <div class="mt-7 space-y-4">
+                @foreach ($panel['history'] as $history)
+                    <div class="grid gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-5 sm:grid-cols-[10rem_1fr] sm:items-start">
+                        <div>
+                            <p class="text-sm font-black text-white">{{ $history['record'] }}</p>
+                            <p class="mt-2 inline-flex rounded-full bg-white/[0.07] px-3 py-1 font-mono text-xs text-slate-300">{{ $history['date'] }}</p>
+                        </div>
+                        <p class="font-mono text-base leading-7 text-slate-300">{{ $history['description'] }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    </div>
 </x-dashboard.shell>
