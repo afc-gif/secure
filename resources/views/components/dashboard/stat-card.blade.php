@@ -2,8 +2,8 @@
 
 @php
     $tones = [
-        'emerald' => 'text-emerald-300',
-        'gold' => 'text-[#d4af62]',
+        'emerald' => 'text-[#d8bf7a]',
+        'gold' => 'text-[#ead391]',
         'slate' => 'text-slate-100',
     ];
 @endphp
