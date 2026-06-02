@@ -5,7 +5,7 @@
     $navigation = $user?->isAdmin()
         ? [
             ['label' => 'Command Overview', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard')],
-            ['label' => 'Partner Registry', 'href' => '#', 'active' => false],
+            ['label' => 'Partner Registry', 'href' => route('admin.partners.index'), 'active' => request()->routeIs('admin.partners.*')],
             ['label' => 'Batch Cycles', 'href' => route('admin.batches.index'), 'active' => request()->routeIs('admin.batches.*')],
             ['label' => 'Access Tokens', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*')],
             ['label' => 'Contributions', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*')],

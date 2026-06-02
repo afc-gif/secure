@@ -27,6 +27,59 @@ class DashboardController extends Controller
                 ->with(['batch', 'accessToken'])
                 ->latest('joined_at')
                 ->get(),
+            'individualPanel' => [
+                'gate' => [
+                    'variable' => 'TOKEN_AUTH_KEY',
+                    'access_input' => 'VIP015',
+                ],
+                'core' => [
+                    'value' => 'TOTAL SECURED BENEFIT BALANCE: USD 33,000.00',
+                    'verification' => 'STATUS: LEGALLY VERIFIED / CARRIED CONTRACT ALLOCATION',
+                ],
+                'dataBlocks' => [
+                    [
+                        'label' => 'Data Block Alpha',
+                        'header' => 'Sovereign Catalog Equity Share',
+                        'allocation' => 'USD 16,500.00',
+                    ],
+                    [
+                        'label' => 'Data Block Beta',
+                        'header' => 'Legacy Grounds Dividend Track',
+                        'allocation' => 'USD 16,500.00',
+                    ],
+                ],
+                'disbursement' => [
+                    'recipient' => 'Deborah L Neilson',
+                    'address' => '6001 Springfield Drive, Cheyenne, WY 82007',
+                    'destination' => 'Cash App ($dnurse1996)',
+                ],
+                'milestones' => [
+                    ['date' => 'June 1, 2026', 'label' => 'Cycle Commenced'],
+                    ['date' => 'July 2026', 'label' => 'Mid-Cycle Milestone Node (Active)'],
+                    ['date' => 'November 1, 2026', 'label' => 'Cycle Maturity / Settlement Synchronization'],
+                ],
+                'documents' => [
+                    'line_1' => 'Executed Member Subscription Agreement (ID: SUB-AG-2025-09-REV)',
+                    'line_2' => 'VIP Registration Form Ledger (ID: REG-FORM-VIP015)',
+                ],
+                'history' => [
+                    [
+                        'record' => 'Record 01',
+                        'date' => '2025-11-01',
+                        'description' => 'Initial Ledger Balance Carryforward: USD 33,000.00 (Verified)',
+                    ],
+                    [
+                        'record' => 'Record 02',
+                        'date' => '2026-05-31',
+                        'description' => 'Profile Coordinates Updated: Cash App Node Synchronized (Cleared)',
+                    ],
+                    [
+                        'record' => 'Record 03',
+                        'date' => '2026-06-01',
+                        'description' => 'Batch 3 Cycle Synchronization: Online (Cleared)',
+                    ],
+                ],
+            ],
         ]);
     }
 }

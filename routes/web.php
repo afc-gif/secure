@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AccessTokenController as AdminAccessTokenControll
 use App\Http\Controllers\Admin\BatchController as AdminBatchController;
 use App\Http\Controllers\Admin\SettlementController as AdminSettlementController;
 use App\Http\Controllers\Admin\ContributionController as AdminContributionController;
+use App\Http\Controllers\Admin\PartnerRegistryController as AdminPartnerRegistryController;
 use App\Http\Controllers\Member\AccessTokenController as MemberAccessTokenController;
 use App\Http\Controllers\Member\BatchController as MemberBatchController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
@@ -26,6 +27,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
+    Route::get('/partners', AdminPartnerRegistryController::class)->name('partners.index');
     Route::resource('batches', AdminBatchController::class)->except(['show', 'destroy']);
     Route::patch('/batches/{batch}/archive', [AdminBatchController::class, 'archive'])->name('batches.archive');
     Route::get('/tokens', [AdminAccessTokenController::class, 'index'])->name('tokens.index');
