@@ -10,11 +10,11 @@
                 <div class="mt-8 grid gap-3 sm:grid-cols-2">
                     <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
                         <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Member Support</p>
-                        <p class="mt-3 font-mono text-sm font-bold text-white">support@countrycultureacres.com</p>
+                        <p class="mt-3 font-mono text-sm font-bold text-white">creative.commission.agaency@gmail.com</p>
                     </div>
                     <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
                         <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Settlement Desk</p>
-                        <p class="mt-3 font-mono text-sm font-bold text-white">settlements@countrycultureacres.com</p>
+                        <p class="mt-3 font-mono text-sm font-bold text-white">compliance.ccaboard@protonmail.com</p>
                     </div>
                 </div>
             </div>
