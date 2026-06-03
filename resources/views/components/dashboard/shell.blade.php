@@ -82,9 +82,12 @@
 
                 <form method="POST" action="{{ route('logout') }}" class="mt-4">
                     @csrf
-                    <button class="flex h-12 w-full items-center gap-3 rounded-lg border border-rose-300/25 bg-rose-300/10 px-3 text-sm font-bold text-rose-100 transition hover:border-rose-300/40 hover:bg-rose-300/15 hover:text-white" title="Logout">
-                        <span class="flex h-7 w-7 shrink-0 items-center justify-center">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 20H5V4h4M14 16l4-4-4-4M18 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <button class="flex h-12 w-full items-center gap-3 rounded-lg border border-rose-400/35 bg-rose-500/15 px-3 text-sm font-black uppercase tracking-[0.12em] text-rose-100 shadow-lg shadow-black/20 transition hover:border-rose-300/60 hover:bg-rose-500/25 hover:text-white" title="Logout" aria-label="Logout">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-rose-500 text-white shadow-sm shadow-rose-950/40">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 3v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                <path d="M7.05 6.75a8 8 0 1 0 9.9 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            </svg>
                         </span>
                         <span x-show="navOpen" x-transition.opacity>Logout</span>
                     </button>
