@@ -10,17 +10,30 @@
     body {
         @apply bg-[#08090b] text-slate-100 antialiased;
         background:
-            linear-gradient(135deg, #06070a 0%, #101216 54%, #08090b 100%);
+            radial-gradient(circle at top left, rgba(216, 191, 122, 0.08), transparent 32rem),
+            linear-gradient(135deg, #06070a 0%, #101216 48%, #08090b 100%);
     }
 }
 
 @layer components {
     .cca-panel {
-        @apply border border-[#d8bf7a]/15 bg-white/[0.045] shadow-xl shadow-black/20 backdrop-blur-xl;
+        @apply border border-[#d8bf7a]/10 bg-[#101216]/90 shadow-xl shadow-black/20 backdrop-blur-xl;
     }
 
     .cca-card {
-        @apply cca-panel rounded-lg transition duration-300 hover:border-[#d8bf7a]/35 hover:bg-white/[0.065];
+        @apply cca-panel rounded-lg transition duration-300 hover:border-[#d8bf7a]/25 hover:bg-[#13161b];
+    }
+
+    .cca-private-panel {
+        @apply rounded-lg border border-[#d8bf7a]/10 bg-[#101216]/95 shadow-2xl shadow-black/25;
+    }
+
+    .cca-private-inset {
+        @apply rounded-lg border border-white/[0.07] bg-white/[0.025];
+    }
+
+    .cca-kicker {
+        @apply text-xs font-bold uppercase tracking-[0.18em] text-[#c8ad64];
     }
 
     .cca-input {
