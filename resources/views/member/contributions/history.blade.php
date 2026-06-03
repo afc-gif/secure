@@ -1,12 +1,12 @@
 <x-dashboard.shell title="Contribution history" eyebrow="Cooperative Archive">
     <section class="cca-card overflow-hidden">
-        <div class="border-b border-white/10 px-5 py-4">
+        <div class="border-b border-white/[0.07] bg-white/[0.015] px-5 py-4">
             <h2 class="text-lg font-black text-white">Historical contribution requests</h2>
             <p class="mt-1 text-sm text-slate-500">Full audit trail for your cooperative capital activity.</p>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-white/10 text-left text-sm">
-                <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.18em] text-slate-500">
+                <thead class="bg-[#0b0d10]/70 text-xs uppercase tracking-[0.18em] text-slate-500">
                     <tr>
                         <th class="px-5 py-4">Date</th>
                         <th class="px-5 py-4">Reference</th>

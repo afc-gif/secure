@@ -30,8 +30,8 @@ class RoleDashboardTest extends TestCase
         $this->actingAs($member)
             ->get('/member/dashboard')
             ->assertOk()
-            ->assertSee('Member Benefit Vault')
-            ->assertSee('Total secured benefit balance')
+            ->assertSee('Member Portfolio')
+            ->assertSee('Secured Benefit Balance')
             ->assertSee('USD 33,000.00');
     }
 

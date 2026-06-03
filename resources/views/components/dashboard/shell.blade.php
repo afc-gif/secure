@@ -4,74 +4,119 @@
     $user = auth()->user();
     $navigation = $user?->isAdmin()
         ? [
-            ['label' => 'Command Overview', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard')],
-            ['label' => 'Partner Registry', 'href' => route('admin.partners.index'), 'active' => request()->routeIs('admin.partners.*')],
-            ['label' => 'Batch Cycles', 'href' => route('admin.batches.index'), 'active' => request()->routeIs('admin.batches.*')],
-            ['label' => 'Access Tokens', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*')],
-            ['label' => 'Contributions', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*')],
+            ['label' => 'Command Overview', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard'), 'icon' => 'dashboard'],
+            ['label' => 'Partner Registry', 'href' => route('admin.partners.index'), 'active' => request()->routeIs('admin.partners.*'), 'icon' => 'users'],
+            ['label' => 'Batch Cycles', 'href' => route('admin.batches.index'), 'active' => request()->routeIs('admin.batches.*'), 'icon' => 'calendar'],
+            ['label' => 'Access Tokens', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*'), 'icon' => 'key'],
+            ['label' => 'Contributions', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*'), 'icon' => 'ledger'],
         ]
         : [
-            ['label' => 'Ownership Home', 'href' => route('member.dashboard'), 'active' => request()->routeIs('member.dashboard')],
-            ['label' => 'Active Cycles', 'href' => route('member.batches.index'), 'active' => request()->routeIs('member.batches.*')],
-            ['label' => 'Access Token', 'href' => route('member.access-token.create'), 'active' => request()->routeIs('member.access-token.*')],
-            ['label' => 'Participation', 'href' => route('member.participation.index'), 'active' => request()->routeIs('member.participation.*')],
-            ['label' => 'Contributions', 'href' => route('member.contributions.index'), 'active' => request()->routeIs('member.contributions.*')],
-            ['label' => 'Profile', 'href' => route('profile.edit'), 'active' => request()->routeIs('profile.*')],
+            ['label' => 'Ownership Home', 'href' => route('member.dashboard'), 'active' => request()->routeIs('member.dashboard'), 'icon' => 'dashboard'],
+            ['label' => 'Active Cycles', 'href' => route('member.batches.index'), 'active' => request()->routeIs('member.batches.*'), 'icon' => 'calendar'],
+            ['label' => 'Access Token', 'href' => route('member.access-token.create'), 'active' => request()->routeIs('member.access-token.*'), 'icon' => 'key'],
+            ['label' => 'Participation', 'href' => route('member.participation.index'), 'active' => request()->routeIs('member.participation.*'), 'icon' => 'chart'],
+            ['label' => 'Contributions', 'href' => route('member.contributions.index'), 'active' => request()->routeIs('member.contributions.*'), 'icon' => 'ledger'],
+            ['label' => 'Profile', 'href' => route('profile.edit'), 'active' => request()->routeIs('profile.*'), 'icon' => 'user'],
+            ['label' => 'Contact Us', 'href' => route('member.contact'), 'active' => request()->routeIs('member.contact'), 'icon' => 'mail'],
         ];
     $unreadNotifications = $user?->unreadNotifications()->latest()->take(5)->get() ?? collect();
 @endphp
 
 <x-app-layout>
-    <div class="min-h-screen lg:grid lg:grid-cols-[17rem_1fr]">
-        <aside class="border-b border-white/[0.07] bg-[#07080a]/90 px-4 py-4 backdrop-blur-xl sm:px-5 sm:py-5 lg:min-h-screen lg:border-b-0 lg:border-r lg:py-7">
-            <div class="flex items-center justify-between lg:block">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                    <x-application-logo class="h-10 w-10" />
-                    <div>
-                        <p class="text-sm font-black tracking-[0.24em] text-white">CCA</p>
-                        <p class="text-xs text-slate-500">Country Culture Acres</p>
-                    </div>
-                </a>
-                <span class="rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-semibold text-slate-300 lg:mt-8 lg:inline-flex">{{ ucfirst($user->role) }}</span>
+    <div class="min-h-screen" x-data="{ navOpen: false }">
+        <aside :class="navOpen ? 'w-72' : 'w-20'" class="fixed inset-y-0 left-0 z-30 border-r border-white/[0.07] bg-[#07080b]/95 shadow-2xl shadow-black/30 backdrop-blur-2xl transition-[width] duration-300">
+            <div class="flex h-full flex-col overflow-hidden px-3 py-4">
+                <div class="flex items-center gap-3">
+                    <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.035] text-slate-100 transition hover:border-white/15 hover:bg-white/[0.07]" x-on:click="navOpen = ! navOpen" :aria-expanded="navOpen.toString()" aria-label="Toggle navigation">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <a href="{{ route('dashboard') }}" class="flex min-w-0 items-center gap-3" x-show="navOpen" x-transition.opacity>
+                        <x-application-logo class="h-10 w-10 shrink-0" />
+                        <div class="min-w-0">
+                            <p class="text-sm font-black tracking-[0.22em] text-white">CCA</p>
+                            <p class="truncate text-xs text-slate-500">Country Culture Acres</p>
+                        </div>
+                    </a>
+                </div>
+
+                <nav class="mt-7 flex-1 space-y-2">
+                    @foreach ($navigation as $item)
+                        <a href="{{ $item['href'] }}" title="{{ $item['label'] }}" @class([
+                            'group flex h-12 items-center gap-3 rounded-lg border px-3 text-sm font-semibold transition',
+                            'border-[#f35aa5]/25 bg-[#f35aa5]/12 text-white shadow-lg shadow-black/20' => $item['active'],
+                            'border-transparent text-slate-400 hover:border-white/[0.08] hover:bg-white/[0.045] hover:text-slate-100' => ! $item['active'],
+                        ])>
+                            <span class="flex h-7 w-7 shrink-0 items-center justify-center">
+                                @switch($item['icon'])
+                                    @case('calendar')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v4M17 3v4M4 9h16M6 5h12a2 2 0 0 1 2 2v13H4V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        @break
+                                    @case('key')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 8a5 5 0 1 0-2.7 4.43L15 16h3v3h3v-3.9l-5.15-5.15A5 5 0 0 0 14 8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /><path d="M7 8h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+                                        @break
+                                    @case('chart')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19V5M5 19h16M9 16v-5M13 16V8M17 16v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        @break
+                                    @case('ledger')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        @break
+                                    @case('user')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 20a7.5 7.5 0 0 1 15 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        @break
+                                    @case('mail')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16v13H4zM5 7l7 6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        @break
+                                    @case('users')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM2.5 20a6.5 6.5 0 0 1 13 0M17 11a3 3 0 0 0 0-6M18.5 20a5.5 5.5 0 0 0-3-4.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        @break
+                                    @default
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 13h7V4H4zM13 20h7V4h-7zM4 20h7v-5H4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                @endswitch
+                            </span>
+                            <span class="min-w-0 truncate" x-show="navOpen" x-transition.opacity>{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
+                </nav>
+
+                <form method="POST" action="{{ route('logout') }}" class="mt-4">
+                    @csrf
+                    <button class="flex h-12 w-full items-center gap-3 rounded-lg border border-white/[0.06] px-3 text-sm font-semibold text-slate-400 transition hover:bg-white/[0.045] hover:text-slate-100" title="Sign Out">
+                        <span class="flex h-7 w-7 shrink-0 items-center justify-center">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 20H5V4h4M14 16l4-4-4-4M18 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </span>
+                        <span x-show="navOpen" x-transition.opacity>Sign Out</span>
+                    </button>
+                </form>
             </div>
-
-            <nav class="mt-4 flex gap-2 overflow-x-auto pb-1 sm:mt-6 lg:mt-10 lg:block lg:space-y-2 lg:pb-0">
-                @foreach ($navigation as $item)
-                    <a href="{{ $item['href'] }}" @class([
-                        'block min-w-max rounded-md px-3.5 py-2 text-sm font-semibold transition sm:px-4 sm:py-2.5',
-                        'border border-white/10 bg-white/[0.06] text-slate-100 shadow-sm shadow-black/20' => $item['active'],
-                        'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100' => ! $item['active'],
-                    ])>{{ $item['label'] }}</a>
-                @endforeach
-            </nav>
-
-            <form method="POST" action="{{ route('logout') }}" class="mt-8 hidden lg:block">
-                @csrf
-                <button class="cca-muted-button w-full">Sign Out</button>
-            </form>
         </aside>
 
-        <section class="min-w-0">
-            <header class="sticky top-0 z-10 border-b border-white/[0.07] bg-[#08090b]/88 px-4 py-4 backdrop-blur-xl sm:px-8">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{{ $eyebrow }}</p>
-                        <h1 class="mt-1 text-2xl font-extrabold text-white sm:text-3xl">{{ $title }}</h1>
+        <section :class="navOpen ? 'ml-20 lg:ml-72' : 'ml-20'" class="min-h-screen transition-[margin] duration-300">
+        <header class="sticky top-0 z-20 border-b border-white/[0.07] bg-[#07080b]/90 backdrop-blur-2xl">
+            <div class="mx-auto max-w-[76rem] px-4 py-3 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="min-w-0">
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ $eyebrow }}</p>
+                        <h1 class="mt-1 truncate text-xl font-black text-white sm:text-2xl">{{ $title }}</h1>
                     </div>
-                    <div class="flex items-center justify-between gap-3 sm:justify-end">
+                    <div class="flex min-w-0 shrink-0 items-center gap-3">
                         <x-dashboard.notification-bell :notifications="$unreadNotifications" />
-                        <div class="min-w-0 flex-1 text-right sm:flex-none">
-                            <p class="text-sm font-bold text-white">{{ $user->name }}</p>
+                        <div class="hidden min-w-0 text-right sm:block">
+                            <p class="truncate text-sm font-bold text-white">{{ $user->name }}</p>
                             <p class="truncate text-xs text-slate-500">{{ $user->reference_token }}</p>
                         </div>
-                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-white/[0.08] bg-white/[0.03] text-sm font-black text-slate-200">{{ Str::of($user->name)->substr(0, 1)->upper() }}</div>
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.035] text-sm font-black text-slate-100">{{ Str::of($user->name)->substr(0, 1)->upper() }}</div>
                     </div>
                 </div>
-            </header>
+            </div>
+        </header>
 
-            <main class="px-4 py-4 sm:px-8 sm:py-6 lg:py-8">
+        <main class="px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+            <div class="mx-auto max-w-[76rem]">
                 {{ $slot }}
-            </main>
+            </div>
+        </main>
         </section>
     </div>
 </x-app-layout>

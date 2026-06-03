@@ -2,8 +2,8 @@
 
 @php
     $tone = match ($status) {
-        'active', 'used', 'completed' => 'border-emerald-300/20 bg-emerald-300/10 text-emerald-200',
-        'upcoming', 'pending' => 'border-[#d4af62]/30 bg-[#d4af62]/10 text-[#d4af62]',
+        'active', 'used', 'completed' => 'border-[#f35aa5]/25 bg-[#f35aa5]/10 text-[#ffd4e9]',
+        'upcoming', 'pending' => 'border-[#f35f8d]/25 bg-[#f35f8d]/10 text-[#ffd0bf]',
         'revoked', 'locked', 'suspended' => 'border-rose-300/25 bg-rose-300/10 text-rose-200',
         default => 'border-white/10 bg-white/[0.06] text-slate-300',
     };

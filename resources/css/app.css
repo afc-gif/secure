@@ -10,6 +10,8 @@
     body {
         @apply bg-[#08090b] text-slate-100 antialiased;
         background:
+            radial-gradient(circle at 14% 0%, rgba(211, 54, 173, 0.12), transparent 24rem),
+            radial-gradient(circle at 88% 12%, rgba(124, 60, 255, 0.10), transparent 22rem),
             linear-gradient(135deg, #06070a 0%, #101216 52%, #08090b 100%);
     }
 }
@@ -36,7 +38,7 @@
     }
 
     .cca-input {
-        @apply w-full rounded-lg border-white/10 bg-black/25 text-slate-100 placeholder:text-slate-500 shadow-inner shadow-black/20 focus:border-[#d8bf7a] focus:ring-[#d8bf7a];
+        @apply w-full rounded-lg border-white/10 bg-black/25 text-slate-100 placeholder:text-slate-500 shadow-inner shadow-black/20 focus:border-[#f35aa5] focus:ring-[#f35aa5];
     }
 
     .cca-label {
@@ -44,10 +46,10 @@
     }
 
     .cca-button {
-        @apply inline-flex items-center justify-center rounded-lg bg-[#d8bf7a] px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.12em] text-[#08090b] shadow-lg shadow-black/30 transition duration-300 hover:scale-[1.01] hover:bg-[#ead391] focus:outline-none focus:ring-2 focus:ring-[#ead391] focus:ring-offset-2 focus:ring-offset-[#08090b] sm:px-5 sm:tracking-[0.16em];
+        @apply inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#7c3cff] via-[#d936ad] to-[#f35f8d] px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.12em] text-white shadow-lg shadow-black/30 transition duration-300 hover:scale-[1.01] hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#f35aa5] focus:ring-offset-2 focus:ring-offset-[#08090b] sm:px-5 sm:tracking-[0.16em];
     }
 
     .cca-muted-button {
-        @apply inline-flex items-center justify-center rounded-lg border border-[#d8bf7a]/15 bg-white/[0.04] px-4 py-2 text-center text-sm font-semibold text-slate-200 transition hover:border-[#d8bf7a]/40 hover:bg-[#d8bf7a]/10;
+        @apply inline-flex items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-center text-sm font-semibold text-slate-200 transition hover:border-[#f35aa5]/35 hover:bg-[#f35aa5]/10 hover:text-white;
     }
 }

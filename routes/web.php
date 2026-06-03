@@ -65,6 +65,7 @@ Route::middleware(['auth', 'role:member', 'onboarded'])->prefix('member')->name(
     Route::get('/access-token', [MemberAccessTokenController::class, 'create'])->name('access-token.create');
     Route::post('/access-token', [MemberAccessTokenController::class, 'store'])->name('access-token.store');
     Route::get('/participation', [MemberParticipationController::class, 'index'])->name('participation.index');
+    Route::view('/contact', 'member.contact')->name('contact');
 
     // Settlement Profile Management
     Route::get('/settlement-profile', [MemberSettlementProfileController::class, 'show'])->name('settlement-profile.show');
