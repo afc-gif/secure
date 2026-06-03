@@ -44,10 +44,10 @@
     }
 
     .cca-button {
-        @apply inline-flex items-center justify-center rounded-lg bg-[#d8bf7a] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#08090b] shadow-lg shadow-black/30 transition duration-300 hover:scale-[1.01] hover:bg-[#ead391] focus:outline-none focus:ring-2 focus:ring-[#ead391] focus:ring-offset-2 focus:ring-offset-[#08090b];
+        @apply inline-flex items-center justify-center rounded-lg bg-[#d8bf7a] px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.12em] text-[#08090b] shadow-lg shadow-black/30 transition duration-300 hover:scale-[1.01] hover:bg-[#ead391] focus:outline-none focus:ring-2 focus:ring-[#ead391] focus:ring-offset-2 focus:ring-offset-[#08090b] sm:px-5 sm:tracking-[0.16em];
     }
 
     .cca-muted-button {
-        @apply inline-flex items-center justify-center rounded-lg border border-[#d8bf7a]/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-[#d8bf7a]/40 hover:bg-[#d8bf7a]/10;
+        @apply inline-flex items-center justify-center rounded-lg border border-[#d8bf7a]/15 bg-white/[0.04] px-4 py-2 text-center text-sm font-semibold text-slate-200 transition hover:border-[#d8bf7a]/40 hover:bg-[#d8bf7a]/10;
     }
 }

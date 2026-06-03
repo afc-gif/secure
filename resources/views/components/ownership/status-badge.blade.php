@@ -9,6 +9,6 @@
     };
 @endphp
 
-<span {{ $attributes->merge(['class' => "inline-flex rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] {$tone}"]) }}>
+<span {{ $attributes->merge(['class' => "inline-flex max-w-full rounded-md border px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] {$tone}"]) }}>
     {{ str_replace('_', ' ', $status) }}
 </span>

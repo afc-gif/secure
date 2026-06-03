@@ -1,22 +1,22 @@
 <x-dashboard.shell title="Contribution review" eyebrow="Admin Ledger">
-    <section class="cca-card mx-auto max-w-4xl p-6 sm:p-8">
+    <section class="cca-card mx-auto max-w-4xl p-4 sm:p-8">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-                <p class="font-mono text-xs font-bold text-[#d4af62]">{{ $contribution->payment_reference }}</p>
-                <h2 class="mt-3 text-2xl font-black text-white">{{ $contribution->user->name }}</h2>
+            <div class="min-w-0">
+                <p class="break-all font-mono text-xs font-bold text-slate-400">{{ $contribution->payment_reference }}</p>
+                <h2 class="mt-3 break-words text-xl font-black text-white sm:text-2xl">{{ $contribution->user->name }}</h2>
                 <p class="mt-2 text-sm text-slate-400">{{ $contribution->getTypeLabel() }} · {{ $contribution->batch?->title ?? 'General cooperative pool' }}</p>
             </div>
             <x-ownership.status-badge :status="$contribution->status" />
         </div>
 
-        <dl class="mt-8 grid gap-4 sm:grid-cols-3">
-            <div class="rounded-lg border border-white/10 bg-white/[0.04] p-4"><dt class="text-xs uppercase tracking-[0.18em] text-slate-500">Amount</dt><dd class="mt-2 text-xl font-black text-white">{{ $contribution->currency }} {{ number_format((float) $contribution->amount, 2) }}</dd></div>
-            <div class="rounded-lg border border-white/10 bg-white/[0.04] p-4"><dt class="text-xs uppercase tracking-[0.18em] text-slate-500">Member</dt><dd class="mt-2 text-sm font-bold text-white">{{ $contribution->user->email }}</dd></div>
-            <div class="rounded-lg border border-white/10 bg-white/[0.04] p-4"><dt class="text-xs uppercase tracking-[0.18em] text-slate-500">Reviewed By</dt><dd class="mt-2 text-sm font-bold text-white">{{ $contribution->approvingAdmin?->name ?? 'Pending' }}</dd></div>
+        <dl class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
+            <div class="min-w-0 rounded-lg border border-white/10 bg-white/[0.04] p-4"><dt class="text-xs uppercase tracking-[0.14em] text-slate-500">Amount</dt><dd class="mt-2 break-words text-lg font-black text-white sm:text-xl">{{ $contribution->currency }} {{ number_format((float) $contribution->amount, 2) }}</dd></div>
+            <div class="min-w-0 rounded-lg border border-white/10 bg-white/[0.04] p-4"><dt class="text-xs uppercase tracking-[0.14em] text-slate-500">Member</dt><dd class="mt-2 break-all text-sm font-bold text-white">{{ $contribution->user->email }}</dd></div>
+            <div class="min-w-0 rounded-lg border border-white/10 bg-white/[0.04] p-4"><dt class="text-xs uppercase tracking-[0.14em] text-slate-500">Reviewed By</dt><dd class="mt-2 break-words text-sm font-bold text-white">{{ $contribution->approvingAdmin?->name ?? 'Pending' }}</dd></div>
         </dl>
 
         <div class="mt-5 rounded-lg border border-white/10 bg-white/[0.04] p-4">
-            <p class="text-xs uppercase tracking-[0.18em] text-slate-500">Member notes</p>
+            <p class="text-xs uppercase tracking-[0.14em] text-slate-500">Member notes</p>
             <p class="mt-2 text-sm leading-6 text-slate-300">{{ $contribution->notes ?? 'No member notes supplied.' }}</p>
         </div>
 
@@ -44,7 +44,7 @@
             </div>
         @else
             <div class="mt-5 rounded-lg border border-white/10 bg-white/[0.04] p-4">
-                <p class="text-xs uppercase tracking-[0.18em] text-slate-500">Admin notes</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-slate-500">Admin notes</p>
                 <p class="mt-2 text-sm leading-6 text-slate-300">{{ $contribution->admin_notes ?? 'No admin notes.' }}</p>
             </div>
         @endif

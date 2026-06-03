@@ -4,20 +4,20 @@
     @endif
     <x-input-error :messages="$errors->get('token')" class="mb-6 text-rose-300" />
 
-    <div class="grid gap-4 sm:grid-cols-3">
+    <div class="grid gap-3 sm:grid-cols-3 sm:gap-4">
         <x-dashboard.stat-card label="Active Tokens" :value="$activeTokens" detail="Available for validation" />
         <x-dashboard.stat-card label="Used Tokens" :value="$usedTokens" detail="Activated participation" tone="gold" />
         <x-dashboard.stat-card label="Revoked Tokens" :value="$revokedTokens" detail="Removed from circulation" tone="slate" />
     </div>
 
-    <div class="my-6 flex justify-end">
-        <a href="{{ route('admin.tokens.create') }}" class="cca-button">Generate Token</a>
+    <div class="my-4 flex sm:my-6 sm:justify-end">
+        <a href="{{ route('admin.tokens.create') }}" class="cca-button w-full sm:w-auto">Generate Token</a>
     </div>
 
     <section class="cca-card overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-white/10 text-left text-sm">
-                <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.18em] text-slate-500">
+            <table class="min-w-[58rem] divide-y divide-white/10 text-left text-sm">
+                <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.12em] text-slate-500">
                     <tr>
                         <th class="px-5 py-4">Token</th>
                         <th class="px-5 py-4">Batch</th>
@@ -30,11 +30,11 @@
                 <tbody class="divide-y divide-white/10 text-slate-300">
                     @forelse ($tokens as $token)
                         <tr class="transition hover:bg-white/[0.04]">
-                            <td class="px-5 py-4 font-mono text-xs text-[#d4af62]">{{ $token->token }}</td>
-                            <td class="px-5 py-4 font-semibold text-white">{{ $token->batch->title }}</td>
+                            <td class="px-5 py-4 font-mono text-xs text-slate-300">{{ $token->token }}</td>
+                            <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">{{ $token->batch->title }}</td>
                             <td class="px-5 py-4">{{ Str::of($token->ownership_tier)->title() }}</td>
                             <td class="px-5 py-4"><x-ownership.status-badge :status="$token->status" /></td>
-                            <td class="px-5 py-4">{{ $token->assignedUser?->name ?? 'Unassigned' }}</td>
+                            <td class="max-w-[14rem] px-5 py-4">{{ $token->assignedUser?->name ?? 'Unassigned' }}</td>
                             <td class="px-5 py-4">
                                 @if ($token->status === 'active')
                                     <form method="POST" action="{{ route('admin.tokens.revoke', $token) }}">

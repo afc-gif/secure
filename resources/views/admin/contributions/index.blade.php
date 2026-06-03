@@ -1,5 +1,5 @@
 <x-dashboard.shell title="Contribution management" eyebrow="Ownership Intelligence">
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+    <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-5">
         <x-dashboard.stat-card label="Total Contributions" value="USD {{ number_format($stats['total_contributions'], 2) }}" detail="Confirmed cooperative pool" />
         <x-dashboard.stat-card label="Pending" value="USD {{ number_format($stats['pending_contributions'], 2) }}" detail="Awaiting admin review" tone="gold" />
         <x-dashboard.stat-card label="Confirmed Assets" value="USD {{ number_format($stats['confirmed_assets'], 2) }}" detail="Cooperative asset base" />
@@ -7,7 +7,7 @@
         <x-dashboard.stat-card label="Active Rate" value="{{ $stats['active_participation_rate'] }}%" detail="Members in active cycles" />
     </div>
 
-    <section class="cca-card mt-6 p-5">
+    <section class="cca-card mt-4 p-4 sm:mt-6 sm:p-5">
         <form method="GET" action="{{ route('admin.contributions.index') }}" class="grid gap-3 md:grid-cols-7">
             <input name="search" value="{{ $filters['search'] ?? '' }}" class="rounded-lg border-white/10 bg-white/[0.06] text-white md:col-span-2" placeholder="Search member or reference">
             <select name="status" class="rounded-lg border-white/10 bg-white/[0.06] text-white">
@@ -38,18 +38,18 @@
         </form>
     </section>
 
-    <div class="mt-6 grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
+    <div class="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-[1.35fr_0.65fr]">
         <section class="cca-card overflow-hidden">
-            <div class="flex flex-col gap-2 border-b border-white/10 px-5 py-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
+            <div class="flex flex-col gap-3 border-b border-white/10 px-4 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-5">
+                <div class="min-w-0">
                     <h2 class="text-lg font-black text-white">Contribution review queue</h2>
                     <p class="mt-1 text-sm text-slate-500">Approve or reject member ownership requests.</p>
                 </div>
-                <a href="{{ route('admin.contributions.pending') }}" class="cca-muted-button">Pending Queue</a>
+                <a href="{{ route('admin.contributions.pending') }}" class="cca-muted-button w-full sm:w-auto">Pending Queue</a>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-white/10 text-left text-sm">
-                    <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.18em] text-slate-500">
+                <table class="min-w-[52rem] divide-y divide-white/10 text-left text-sm">
+                    <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.12em] text-slate-500">
                         <tr>
                             <th class="px-5 py-4">Member</th>
                             <th class="px-5 py-4">Reference</th>
@@ -61,9 +61,9 @@
                     <tbody class="divide-y divide-white/10 text-slate-300">
                         @forelse ($contributions as $contribution)
                             <tr class="transition hover:bg-white/[0.04]">
-                                <td class="px-5 py-4 font-semibold text-white">{{ $contribution->user->name }}</td>
-                                <td class="px-5 py-4"><a class="font-mono text-xs text-[#d4af62]" href="{{ route('admin.contributions.show', $contribution) }}">{{ $contribution->payment_reference }}</a></td>
-                                <td class="px-5 py-4">{{ $contribution->currency }} {{ number_format((float) $contribution->amount, 2) }}</td>
+                                <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">{{ $contribution->user->name }}</td>
+                                <td class="px-5 py-4"><a class="font-mono text-xs text-slate-300" href="{{ route('admin.contributions.show', $contribution) }}">{{ $contribution->payment_reference }}</a></td>
+                                <td class="whitespace-nowrap px-5 py-4">{{ $contribution->currency }} {{ number_format((float) $contribution->amount, 2) }}</td>
                                 <td class="px-5 py-4"><x-ownership.status-badge :status="$contribution->status" /></td>
                                 <td class="px-5 py-4">{{ $contribution->created_at->diffForHumans() }}</td>
                             </tr>
@@ -73,17 +73,17 @@
                     </tbody>
                 </table>
             </div>
-            <div class="border-t border-white/10 px-5 py-4">{{ $contributions->withQueryString()->links() }}</div>
+            <div class="border-t border-white/10 px-4 py-4 sm:px-5">{{ $contributions->withQueryString()->links() }}</div>
         </section>
 
         <section class="space-y-4">
-            <div class="cca-card p-5">
+            <div class="cca-card p-4 sm:p-5">
                 <h3 class="font-black text-white">Top contributors</h3>
                 <div class="mt-4 space-y-3">
                     @forelse ($stats['top_contributors'] as $member)
-                        <div class="flex items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-3">
-                            <span class="font-semibold text-white">{{ $member->name }}</span>
-                            <span class="text-sm font-black text-[#d4af62]">USD {{ number_format((float) $member->confirmed_contributions_total, 2) }}</span>
+                        <div class="grid gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-3 sm:flex sm:items-center sm:justify-between sm:gap-4">
+                            <span class="min-w-0 font-semibold text-white">{{ $member->name }}</span>
+                            <span class="whitespace-nowrap text-sm font-black text-slate-100">USD {{ number_format((float) $member->confirmed_contributions_total, 2) }}</span>
                         </div>
                     @empty
                         <p class="text-sm text-slate-500">No confirmed contributors yet.</p>
@@ -91,7 +91,7 @@
                 </div>
             </div>
 
-            <div class="cca-card p-5">
+            <div class="cca-card p-4 sm:p-5">
                 <h3 class="font-black text-white">Monthly cooperative growth</h3>
                 <div class="mt-5">
                     <x-analytics.bar-list :items="$stats['monthly_contributions']" />
