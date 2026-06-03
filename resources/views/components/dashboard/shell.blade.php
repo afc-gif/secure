@@ -82,11 +82,11 @@
 
                 <form method="POST" action="{{ route('logout') }}" class="mt-4">
                     @csrf
-                    <button class="flex h-12 w-full items-center gap-3 rounded-lg border border-white/[0.06] px-3 text-sm font-semibold text-slate-400 transition hover:bg-white/[0.045] hover:text-slate-100" title="Sign Out">
+                    <button class="flex h-12 w-full items-center gap-3 rounded-lg border border-rose-300/25 bg-rose-300/10 px-3 text-sm font-bold text-rose-100 transition hover:border-rose-300/40 hover:bg-rose-300/15 hover:text-white" title="Logout">
                         <span class="flex h-7 w-7 shrink-0 items-center justify-center">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 20H5V4h4M14 16l4-4-4-4M18 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </span>
-                        <span x-show="navOpen" x-transition.opacity>Sign Out</span>
+                        <span x-show="navOpen" x-transition.opacity>Logout</span>
                     </button>
                 </form>
             </div>
