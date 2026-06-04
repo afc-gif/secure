@@ -3,8 +3,8 @@
         @csrf
         <div>
             <p class="cca-kicker">Cooperative capital request</p>
-            <h2 class="mt-3 text-2xl font-black text-white">Record a new contribution</h2>
-            <p class="mt-2 text-sm leading-6 text-slate-400">Submitted requests enter admin review before they affect ownership percentage and settlement readiness.</p>
+            <h2 class="mt-3 text-2xl font-black text-white">Record a crypto payment</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-400">Crypto payment requests enter admin review. Once approved, a VIP token can be issued for full dashboard access. Member payouts remain Cash App-only.</p>
         </div>
 
         <div class="mt-8 grid gap-5 sm:grid-cols-2">
@@ -43,8 +43,8 @@
         </div>
 
         <label class="mt-5 block">
-            <span class="text-sm font-bold text-slate-300">Notes</span>
-            <textarea name="notes" rows="4" class="cca-input mt-2" placeholder="Optional cooperative context">{{ old('notes') }}</textarea>
+            <span class="text-sm font-bold text-slate-300">Crypto payment notes</span>
+            <textarea name="notes" rows="4" class="cca-input mt-2" placeholder="Paste wallet network, transaction hash, or admin reference if available">{{ old('notes') }}</textarea>
             <x-input-error :messages="$errors->get('notes')" class="mt-2" />
         </label>
 

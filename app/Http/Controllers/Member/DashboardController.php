@@ -30,6 +30,7 @@ class DashboardController extends Controller
             'recentContributions' => $user->contributions()->with('batch')->latest()->take(6)->get(),
             'recentActivity' => $user->activityLogs()->latest()->take(6)->get(),
             'notifications' => $user->unreadNotifications()->latest()->take(5)->get(),
+            'dashboardUnlocked' => $user->hasUnlockedDashboard(),
             'participations' => $user
                 ->batchMembers()
                 ->with(['batch', 'accessToken'])

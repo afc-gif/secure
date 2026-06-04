@@ -61,23 +61,26 @@ Route::middleware(['auth', 'role:member'])->prefix('onboarding')->name('onboardi
 
 Route::middleware(['auth', 'role:member', 'onboarded'])->prefix('member')->name('member.')->group(function () {
     Route::get('/dashboard', MemberDashboardController::class)->name('dashboard');
-    Route::get('/batches', [MemberBatchController::class, 'index'])->name('batches.index');
     Route::get('/access-token', [MemberAccessTokenController::class, 'create'])->name('access-token.create');
     Route::post('/access-token', [MemberAccessTokenController::class, 'store'])->name('access-token.store');
-    Route::get('/participation', [MemberParticipationController::class, 'index'])->name('participation.index');
-    Route::view('/contact', 'member.contact')->name('contact');
 
-    // Settlement Profile Management
-    Route::get('/settlement-profile', [MemberSettlementProfileController::class, 'show'])->name('settlement-profile.show');
-    Route::post('/settlement-profile', [MemberSettlementProfileController::class, 'store'])->name('settlement-profile.store');
-    Route::patch('/settlement-profile/{settlementProfile}', [MemberSettlementProfileController::class, 'update'])->name('settlement-profile.update');
+    Route::middleware('member.unlocked')->group(function () {
+        Route::get('/batches', [MemberBatchController::class, 'index'])->name('batches.index');
+        Route::get('/participation', [MemberParticipationController::class, 'index'])->name('participation.index');
+        Route::view('/contact', 'member.contact')->name('contact');
 
-    // Contribution Management
-    Route::get('/contributions', [MemberContributionController::class, 'index'])->name('contributions.index');
-    Route::get('/contributions/create', [MemberContributionController::class, 'create'])->name('contributions.create');
-    Route::get('/contributions/history', [MemberContributionController::class, 'history'])->name('contributions.history');
-    Route::post('/contributions', [MemberContributionController::class, 'store'])->name('contributions.store');
-    Route::get('/contributions/{contribution}', [MemberContributionController::class, 'show'])->name('contributions.show');
+        // Settlement Profile Management
+        Route::get('/settlement-profile', [MemberSettlementProfileController::class, 'show'])->name('settlement-profile.show');
+        Route::post('/settlement-profile', [MemberSettlementProfileController::class, 'store'])->name('settlement-profile.store');
+        Route::patch('/settlement-profile/{settlementProfile}', [MemberSettlementProfileController::class, 'update'])->name('settlement-profile.update');
+
+        // Contribution Management
+        Route::get('/contributions', [MemberContributionController::class, 'index'])->name('contributions.index');
+        Route::get('/contributions/create', [MemberContributionController::class, 'create'])->name('contributions.create');
+        Route::get('/contributions/history', [MemberContributionController::class, 'history'])->name('contributions.history');
+        Route::post('/contributions', [MemberContributionController::class, 'store'])->name('contributions.store');
+        Route::get('/contributions/{contribution}', [MemberContributionController::class, 'show'])->name('contributions.show');
+    });
 });
 
 Route::middleware('auth')->group(function () {

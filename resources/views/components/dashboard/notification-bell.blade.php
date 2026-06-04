@@ -16,6 +16,9 @@
                     <a href="{{ $notification->data['url'] ?? route('dashboard') }}" class="block rounded-lg border border-white/10 bg-white/[0.04] p-3 hover:bg-white/[0.07]">
                         <p class="text-sm font-bold text-white">{{ $notification->data['title'] ?? 'Portal update' }}</p>
                         <p class="mt-1 text-xs leading-5 text-slate-400">{{ $notification->data['body'] ?? 'New account activity.' }}</p>
+                        @if (! empty($notification->data['access_token']))
+                            <p class="mt-2 break-all rounded-md border border-[#d8bf7a]/20 bg-[#d8bf7a]/10 px-2 py-1 font-mono text-xs font-black text-[#fff0bf]">{{ $notification->data['access_token'] }}</p>
+                        @endif
                     </a>
                 @empty
                     <div class="rounded-lg border border-white/10 bg-white/[0.04] p-3 text-sm text-slate-500">No unread alerts.</div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureOnboardingCompleted;
+use App\Http\Middleware\EnsureMemberDashboardUnlocked;
 use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
             'onboarded' => EnsureOnboardingCompleted::class,
+            'member.unlocked' => EnsureMemberDashboardUnlocked::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

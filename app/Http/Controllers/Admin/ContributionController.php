@@ -53,10 +53,12 @@ class ContributionController extends Controller
     {
         $this->authorize('approve', $contribution);
 
-        $this->service->confirm($contribution, $request->user(), $request->input('admin_notes'));
+        $accessToken = $this->service->confirm($contribution, $request->user(), $request->input('admin_notes'));
 
         return redirect()->route('admin.contributions.show', $contribution)
-            ->with('success', 'Contribution approved.');
+            ->with('success', $accessToken
+                ? "Contribution approved. VIP token {$accessToken->token} was issued to {$contribution->user->name}."
+                : 'Contribution approved.');
     }
 
     public function reject(Request $request, Contribution $contribution)

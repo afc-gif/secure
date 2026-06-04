@@ -89,6 +89,18 @@ class User extends Authenticatable
         return (bool) $this->memberProfile?->onboarding_completed;
     }
 
+    public function hasUnlockedDashboard(): bool
+    {
+        if (! $this->isMember()) {
+            return true;
+        }
+
+        return $this->batchMembers()
+            ->where('participation_status', 'active')
+            ->whereHas('accessToken', fn ($query) => $query->where('status', 'used'))
+            ->exists();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

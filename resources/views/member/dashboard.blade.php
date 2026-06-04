@@ -2,10 +2,17 @@
     @php
         $panel = $individualPanel;
         $milestones = $panel['milestones'];
+        $isLocked = ! $dashboardUnlocked;
+        $lockedPanelClasses = $isLocked ? 'pointer-events-none select-none blur-sm' : '';
     @endphp
+
+    @if (session('locked'))
+        <div class="mb-5 rounded-lg border border-[#d8bf7a]/25 bg-[#d8bf7a]/10 px-5 py-4 text-sm font-semibold text-[#fff0bf]">{{ session('locked') }}</div>
+    @endif
 
     <div class="grid gap-4 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_19rem]">
         <section class="relative overflow-hidden rounded-lg border border-white/[0.08] bg-[#151018] p-5 shadow-2xl shadow-black/25 sm:p-7">
+            <div class="{{ $lockedPanelClasses }}">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_12%_15%,rgba(255,255,255,0.16),transparent_18rem),linear-gradient(135deg,#7c3cff_0%,#d936ad_48%,#f35f8d_100%)]"></div>
             <div class="absolute -right-12 bottom-0 h-40 w-40 rounded-full border border-white/15 bg-white/[0.05]"></div>
             <div class="relative">
@@ -13,13 +20,19 @@
                 <div>
                     <p class="text-xs font-bold uppercase tracking-[0.13em] text-white/70">Secured Benefit Balance</p>
                     <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">USD 33,000.00</h2>
-                    <p class="mt-4 max-w-xl text-sm leading-6 text-white/75">Legally verified carried contract allocation synchronized to the active Batch 3 member cycle.</p>
+                    <p class="mt-4 max-w-xl text-sm leading-6 text-white/75">
+                        @if ($isLocked)
+                            Crypto payment is pending admin-approved VIP activation. Enter the issued token to open the full dashboard.
+                        @else
+                            Legally verified carried contract allocation synchronized to the active Batch 3 member cycle.
+                        @endif
+                    </p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
                     <a href="{{ route('profile.edit') }}" class="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/15">Edit Profile</a>
                     <span class="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
-                        <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                        Verified
+                        <span class="h-1.5 w-1.5 rounded-full {{ $isLocked ? 'bg-[#d8bf7a]' : 'bg-white' }}"></span>
+                        {{ $isLocked ? 'VIP Locked' : 'Verified' }}
                     </span>
                 </div>
             </div>
@@ -37,23 +50,46 @@
                 </div>
             </div>
             </div>
+            </div>
+            @if ($isLocked)
+                <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-[#07080b]/45 p-4 backdrop-blur-[1px]">
+                    <a href="{{ route('member.access-token.create') }}" class="rounded-md border border-[#d8bf7a]/25 bg-[#d8bf7a]/15 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#fff0bf]">VIP token required</a>
+                </div>
+            @endif
         </section>
 
-        <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+        <section class="relative">
+            <div class="{{ $lockedPanelClasses }} grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
             <div class="rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20">
                 <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Member Credential</p>
-                <p class="mt-3 break-all font-mono text-sm font-black leading-6 text-white">{{ $panel['gate']['access_input'] }}</p>
-                <p class="mt-3 max-w-full break-all rounded-md border border-white/[0.06] bg-white/[0.02] px-3 py-2 font-mono text-xs text-slate-500">{{ $panel['gate']['variable'] }}</p>
+                @if ($isLocked)
+                    <p class="mt-3 text-sm font-black uppercase leading-6 text-white">VIP Token Required</p>
+                    <a href="{{ route('member.access-token.create') }}" class="cca-button mt-4 w-full py-2 text-xs">Enter Token</a>
+                @else
+                    <p class="mt-3 break-all font-mono text-sm font-black leading-6 text-white">{{ $panel['gate']['access_input'] }}</p>
+                    <p class="mt-3 max-w-full break-all rounded-md border border-white/[0.06] bg-white/[0.02] px-3 py-2 font-mono text-xs text-slate-500">{{ $panel['gate']['variable'] }}</p>
+                @endif
             </div>
 
             <div class="rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20">
                 <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Status</p>
-                <p class="mt-3 text-sm font-black uppercase leading-6 text-white">Legally Verified / Carried Contract Allocation</p>
-                <div class="mt-4 rounded-md border border-[#f35aa5]/20 bg-[#f35aa5]/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#ffd4e9]">Active</div>
+                <p class="mt-3 text-sm font-black uppercase leading-6 text-white">{{ $isLocked ? 'Crypto approval and VIP token required' : 'Legally Verified / Carried Contract Allocation' }}</p>
+                <div @class([
+                    'mt-4 rounded-md border px-3 py-2 text-xs font-bold uppercase tracking-[0.12em]',
+                    'border-[#d8bf7a]/25 bg-[#d8bf7a]/10 text-[#fff0bf]' => $isLocked,
+                    'border-[#f35aa5]/20 bg-[#f35aa5]/10 text-[#ffd4e9]' => ! $isLocked,
+                ])>{{ $isLocked ? 'Locked' : 'Active' }}</div>
             </div>
+            </div>
+            @if ($isLocked)
+                <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-[#07080b]/45 p-4 backdrop-blur-[1px]">
+                    <a href="{{ route('member.access-token.create') }}" class="rounded-md border border-[#d8bf7a]/25 bg-[#d8bf7a]/15 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#fff0bf]">VIP token required</a>
+                </div>
+            @endif
         </section>
 
-        <section class="rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6 xl:col-span-1">
+        <section class="relative rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6 xl:col-span-1">
+            <div class="{{ $lockedPanelClasses }}">
             <div class="flex items-center justify-between gap-3">
                 <p class="text-sm font-black text-white">Allocation Split</p>
                 <span class="text-xs font-semibold text-slate-500">Batch 3 Cycle</span>
@@ -68,9 +104,16 @@
                     </div>
                 @endforeach
             </div>
+            </div>
+            @if ($isLocked)
+                <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-[#07080b]/45 p-4 backdrop-blur-[1px]">
+                    <a href="{{ route('member.access-token.create') }}" class="rounded-md border border-[#d8bf7a]/25 bg-[#d8bf7a]/15 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#fff0bf]">VIP token required</a>
+                </div>
+            @endif
         </section>
 
-        <section class="rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6 xl:row-span-2">
+        <section class="relative rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6 xl:row-span-2">
+            <div class="{{ $lockedPanelClasses }}">
             <div class="flex items-start justify-between gap-3">
                 <div>
                     <p class="text-sm font-black text-white">Timeline</p>
@@ -99,6 +142,12 @@
                     </div>
                 @endforeach
             </div>
+            </div>
+            @if ($isLocked)
+                <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-[#07080b]/45 p-4 backdrop-blur-[1px]">
+                    <a href="{{ route('member.access-token.create') }}" class="rounded-md border border-[#d8bf7a]/25 bg-[#d8bf7a]/15 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#fff0bf]">VIP token required</a>
+                </div>
+            @endif
         </section>
 
         <section class="grid gap-4 lg:grid-cols-[1fr_1fr]">
@@ -127,7 +176,8 @@
                 </dl>
             </div>
 
-            <div class="rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6">
+            <div class="relative rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6">
+                <div class="{{ $lockedPanelClasses }}">
                 <div class="flex items-start justify-between gap-3">
                     <div>
                         <p class="text-sm font-black text-white">Contract Footprint</p>
@@ -158,6 +208,12 @@
                         </div>
                     @endforeach
                 </div>
+                </div>
+                @if ($isLocked)
+                    <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-[#07080b]/45 p-4 backdrop-blur-[1px]">
+                        <a href="{{ route('member.access-token.create') }}" class="rounded-md border border-[#d8bf7a]/25 bg-[#d8bf7a]/15 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#fff0bf]">VIP token required</a>
+                    </div>
+                @endif
             </div>
         </section>
     </div>

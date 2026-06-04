@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AccessToken;
 use App\Models\Contribution;
 use App\Models\Batch;
 use App\Models\User;
@@ -45,16 +46,21 @@ class ContributionService
         return $contribution;
     }
 
-    public function confirm(Contribution $contribution, ?User $admin = null, ?string $adminNotes = null): void
+    public function confirm(Contribution $contribution, ?User $admin = null, ?string $adminNotes = null): ?AccessToken
     {
         $contribution->confirm($admin, $adminNotes);
-        $contribution->user->notify(new ContributionApprovedNotification($contribution));
+        $accessToken = $admin ? $this->issueDashboardTokenIfNeeded($contribution, $admin) : null;
+
+        $contribution->user->notify(new ContributionApprovedNotification($contribution, $accessToken));
 
         ActivityLogService::log($contribution->user, 'contribution_approved', "Contribution {$contribution->payment_reference} approved", [
             'contribution_id' => $contribution->id,
             'amount' => $contribution->amount,
             'admin_id' => $admin?->id,
+            'access_token_id' => $accessToken?->id,
         ]);
+
+        return $accessToken;
     }
 
     public function reject(Contribution $contribution, ?User $admin = null, string $reason = 'Admin review'): void
@@ -89,5 +95,45 @@ class ContributionService
         } while (Contribution::where('payment_reference', $reference)->exists());
 
         return $reference;
+    }
+
+    private function issueDashboardTokenIfNeeded(Contribution $contribution, User $admin): ?AccessToken
+    {
+        $user = $contribution->user;
+
+        if ($user->hasUnlockedDashboard()) {
+            return null;
+        }
+
+        $existingToken = AccessToken::query()
+            ->where('assigned_to_user_id', $user->id)
+            ->where('status', 'active')
+            ->where(function ($query): void {
+                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            })
+            ->latest()
+            ->first();
+
+        if ($existingToken) {
+            return $existingToken;
+        }
+
+        $batch = $contribution->batch?->isOpenForParticipation()
+            ? $contribution->batch
+            : Batch::query()
+                ->where('is_active', true)
+                ->where('status', 'active')
+                ->latest()
+                ->get()
+                ->first(fn (Batch $batch): bool => $batch->isOpenForParticipation());
+
+        if (! $batch) {
+            return null;
+        }
+
+        return app(TokenGenerationService::class)->create($batch, $admin, [
+            'ownership_tier' => 'vip',
+            'assigned_to_user_id' => $user->id,
+        ]);
     }
 }

@@ -2,6 +2,7 @@
 
 @php
     $user = auth()->user();
+    $memberDashboardUnlocked = $user?->hasUnlockedDashboard() ?? true;
     $navigation = $user?->isAdmin()
         ? [
             ['label' => 'Command Overview', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard'), 'icon' => 'dashboard'],
@@ -11,13 +12,13 @@
             ['label' => 'Contributions', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*'), 'icon' => 'ledger'],
         ]
         : [
-            ['label' => 'Ownership Home', 'href' => route('member.dashboard'), 'active' => request()->routeIs('member.dashboard'), 'icon' => 'dashboard'],
-            ['label' => 'Active Cycles', 'href' => route('member.batches.index'), 'active' => request()->routeIs('member.batches.*'), 'icon' => 'calendar'],
-            ['label' => 'Access Token', 'href' => route('member.access-token.create'), 'active' => request()->routeIs('member.access-token.*'), 'icon' => 'key'],
-            ['label' => 'Participation', 'href' => route('member.participation.index'), 'active' => request()->routeIs('member.participation.*'), 'icon' => 'chart'],
-            ['label' => 'Contributions', 'href' => route('member.contributions.index'), 'active' => request()->routeIs('member.contributions.*'), 'icon' => 'ledger'],
-            ['label' => 'Profile', 'href' => route('profile.edit'), 'active' => request()->routeIs('profile.*'), 'icon' => 'user'],
-            ['label' => 'Contact Us', 'href' => route('member.contact'), 'active' => request()->routeIs('member.contact'), 'icon' => 'mail'],
+            ['label' => 'Overview', 'href' => route('member.dashboard'), 'active' => request()->routeIs('member.dashboard'), 'icon' => 'dashboard', 'locked' => false],
+            ['label' => 'Active Cycles', 'href' => route('member.batches.index'), 'active' => request()->routeIs('member.batches.*'), 'icon' => 'calendar', 'locked' => ! $memberDashboardUnlocked],
+            ['label' => 'VIP Token', 'href' => route('member.access-token.create'), 'active' => request()->routeIs('member.access-token.*'), 'icon' => 'key', 'locked' => false],
+            ['label' => 'Participation', 'href' => route('member.participation.index'), 'active' => request()->routeIs('member.participation.*'), 'icon' => 'chart', 'locked' => ! $memberDashboardUnlocked],
+            ['label' => 'Contributions', 'href' => route('member.contributions.index'), 'active' => request()->routeIs('member.contributions.*'), 'icon' => 'ledger', 'locked' => ! $memberDashboardUnlocked],
+            ['label' => 'Profile', 'href' => route('profile.edit'), 'active' => request()->routeIs('profile.*'), 'icon' => 'user', 'locked' => false],
+            ['label' => 'Contact Us', 'href' => route('member.contact'), 'active' => request()->routeIs('member.contact'), 'icon' => 'mail', 'locked' => ! $memberDashboardUnlocked],
         ];
     $unreadNotifications = $user?->unreadNotifications()->latest()->take(5)->get() ?? collect();
 @endphp
@@ -43,10 +44,12 @@
 
                 <nav class="mt-7 flex-1 space-y-2">
                     @foreach ($navigation as $item)
-                        <a href="{{ $item['href'] }}" title="{{ $item['label'] }}" @class([
+                        @php($isLocked = $item['locked'] ?? false)
+                        <a href="{{ $isLocked ? route('member.dashboard') : $item['href'] }}" title="{{ $isLocked ? $item['label'].' locked until VIP token activation' : $item['label'] }}" @class([
                             'group flex h-12 items-center gap-3 rounded-lg border px-3 text-sm font-semibold transition',
-                            'border-[#f35aa5]/25 bg-[#f35aa5]/12 text-white shadow-lg shadow-black/20' => $item['active'],
-                            'border-transparent text-slate-400 hover:border-white/[0.08] hover:bg-white/[0.045] hover:text-slate-100' => ! $item['active'],
+                            'border-[#f35aa5]/25 bg-[#f35aa5]/12 text-white shadow-lg shadow-black/20' => $item['active'] && ! $isLocked,
+                            'border-transparent text-slate-400 hover:border-white/[0.08] hover:bg-white/[0.045] hover:text-slate-100' => ! $item['active'] && ! $isLocked,
+                            'cursor-not-allowed border-transparent text-slate-600 opacity-70' => $isLocked,
                         ])>
                             <span class="flex h-7 w-7 shrink-0 items-center justify-center">
                                 @switch($item['icon'])
@@ -76,6 +79,9 @@
                                 @endswitch
                             </span>
                             <span class="min-w-0 truncate" x-show="navOpen" x-transition.opacity>{{ $item['label'] }}</span>
+                            @if ($isLocked)
+                                <span class="ml-auto h-1.5 w-1.5 rounded-full bg-[#d8bf7a]" x-show="navOpen" x-transition.opacity></span>
+                            @endif
                         </a>
                     @endforeach
                 </nav>

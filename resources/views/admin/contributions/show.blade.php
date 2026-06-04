@@ -1,4 +1,8 @@
 <x-dashboard.shell title="Contribution review" eyebrow="Admin Ledger">
+    @if (session('success'))
+        <div class="mx-auto mb-6 max-w-4xl rounded-lg border border-emerald-300/20 bg-emerald-300/10 px-5 py-4 text-sm font-semibold text-emerald-100">{{ session('success') }}</div>
+    @endif
+
     <section class="cca-card mx-auto max-w-4xl p-4 sm:p-8">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div class="min-w-0">

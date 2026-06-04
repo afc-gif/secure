@@ -9,7 +9,7 @@
                 @csrf
                 <x-onboarding.secure-section
                     title="Token Validation Engine /"
-                    description="System verifies credential validity, batch synchronization constraints, and unique contract matching before secure access is granted."
+                    description="Enter the VIP token issued after admin approval of your crypto payment. The system verifies credential validity, batch synchronization constraints, and unique contract matching before secure access is granted."
                 />
                 <div>
                     <label for="token" class="cca-label">Secure Access Token</label>
