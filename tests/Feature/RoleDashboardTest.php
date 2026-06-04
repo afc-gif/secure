@@ -35,13 +35,15 @@ class RoleDashboardTest extends TestCase
             ->assertSee('USD 33,000.00');
     }
 
-    public function test_incomplete_member_is_redirected_to_onboarding(): void
+    public function test_incomplete_member_can_access_locked_dashboard(): void
     {
         $member = User::factory()->create();
 
         $this->actingAs($member)
             ->get('/member/dashboard')
-            ->assertRedirect(route('onboarding.index', absolute: false));
+            ->assertOk()
+            ->assertSee('Member Portfolio')
+            ->assertSee('VIP Locked');
     }
 
     public function test_member_cannot_access_admin_dashboard(): void

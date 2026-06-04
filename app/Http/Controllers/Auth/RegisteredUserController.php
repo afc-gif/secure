@@ -57,7 +57,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('onboarding.index', absolute: false));
+        return redirect(route('member.dashboard', absolute: false));
     }
 
     private function generateReferenceToken(): string

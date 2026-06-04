@@ -12,8 +12,6 @@ class AuthRedirector
             return route('admin.dashboard', absolute: false);
         }
 
-        return $user->hasCompletedOnboarding()
-            ? route('member.dashboard', absolute: false)
-            : route('onboarding.index', absolute: false);
+        return route('member.dashboard', absolute: false);
     }
 }
