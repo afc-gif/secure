@@ -66,7 +66,7 @@ class DashboardController extends Controller
                     'destination' => filled($cashAppHandle) ? "Cash App ({$cashAppHandle})" : 'Cash App not provided',
                 ],
                 'milestones' => [
-                    ['date' => 'June 1, 2026', 'label' => 'Cycle Commenced'],
+                    ['date' => 'June 7th, 2025', 'label' => 'Cycle Commenced'],
                     ['date' => 'July 2026', 'label' => 'Mid-Cycle Milestone Node (Active)'],
                     ['date' => 'November 1, 2026', 'label' => 'Cycle Maturity / Settlement Synchronization'],
                 ],
