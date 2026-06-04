@@ -17,9 +17,16 @@ class PhaseThreeRouteTest extends TestCase
     public function test_admin_can_render_phase_three_management_pages(): void
     {
         $admin = User::factory()->admin()->create();
+        $member = User::factory()->create(['name' => 'Signed Up Member']);
 
         $this->actingAs($admin)->get(route('admin.batches.index'))->assertOk()->assertSee('Batch cycle management');
         $this->actingAs($admin)->get(route('admin.tokens.index'))->assertOk()->assertSee('Secure Access Token Management');
+        $this->actingAs($admin)
+            ->get(route('admin.partners.index'))
+            ->assertOk()
+            ->assertSee('Signed up members and participants')
+            ->assertSee('Signed Up Member')
+            ->assertSee($member->reference_token);
     }
 
     public function test_onboarded_member_needs_vip_token_to_render_locked_phase_three_pages(): void

@@ -13,7 +13,8 @@ class PartnerRegistryController extends Controller
     public function __invoke(): View
     {
         $partners = User::query()
-            ->with(['memberProfile', 'settlementProfile'])
+            ->with(['memberProfile', 'settlementProfile', 'batchMembers.batch', 'batchMembers.accessToken'])
+            ->withCount(['batchMembers as active_participations_count' => fn ($query) => $query->where('participation_status', 'active')])
             ->withSum(['contributions as confirmed_contributions_total' => fn ($query) => $query->where('status', 'confirmed')], 'amount')
             ->where('role', 'member')
             ->latest()
@@ -23,6 +24,9 @@ class PartnerRegistryController extends Controller
             'partners' => $partners,
             'totalPartners' => User::where('role', 'member')->count(),
             'activePartners' => User::where('role', 'member')->where('status', 'active')->count(),
+            'activeParticipants' => User::where('role', 'member')
+                ->whereHas('batchMembers', fn ($query) => $query->where('participation_status', 'active'))
+                ->count(),
             'completedProfiles' => MemberProfile::where('onboarding_completed', true)->count(),
             'pendingProfiles' => User::where('role', 'member')
                 ->whereDoesntHave('memberProfile', fn ($query) => $query->where('onboarding_completed', true))

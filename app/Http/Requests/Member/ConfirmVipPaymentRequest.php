@@ -8,7 +8,7 @@ class ConfirmVipPaymentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isMember() ?? false;
+        return $this->user()?->isMember() && $this->user()->hasCompletedOnboarding();
     }
 
     public function rules(): array

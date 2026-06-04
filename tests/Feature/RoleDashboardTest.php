@@ -35,15 +35,25 @@ class RoleDashboardTest extends TestCase
             ->assertSee('USD 33,000.00');
     }
 
-    public function test_incomplete_member_can_access_locked_dashboard(): void
+    public function test_onboarded_member_without_vip_token_sees_locked_dashboard(): void
+    {
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+
+        $this->actingAs($member)
+            ->get('/member/dashboard')
+            ->assertOk()
+            ->assertSee('VIP Locked')
+            ->assertSee('VIP token required');
+    }
+
+    public function test_incomplete_member_is_redirected_to_onboarding(): void
     {
         $member = User::factory()->create();
 
         $this->actingAs($member)
             ->get('/member/dashboard')
-            ->assertOk()
-            ->assertSee('Member Portfolio')
-            ->assertSee('VIP Locked');
+            ->assertRedirect(route('onboarding.index', absolute: false));
     }
 
     public function test_member_cannot_access_admin_dashboard(): void

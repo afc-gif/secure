@@ -60,13 +60,13 @@ Route::middleware(['auth', 'role:member'])->prefix('onboarding')->name('onboardi
     Route::post('/review', [OnboardingController::class, 'complete'])->name('complete');
 });
 
-Route::middleware(['auth', 'role:member'])->prefix('member')->name('member.')->group(function () {
+Route::middleware(['auth', 'role:member', 'onboarded'])->prefix('member')->name('member.')->group(function () {
     Route::get('/dashboard', MemberDashboardController::class)->name('dashboard');
     Route::get('/access-token', [MemberAccessTokenController::class, 'create'])->name('access-token.create');
     Route::post('/access-token', [MemberAccessTokenController::class, 'store'])->name('access-token.store');
     Route::post('/access-token/confirm-payment', [MemberAccessTokenController::class, 'confirmPayment'])->name('access-token.payment.confirm');
 
-    Route::middleware(['onboarded', 'member.unlocked'])->group(function () {
+    Route::middleware('member.unlocked')->group(function () {
         Route::get('/batches', [MemberBatchController::class, 'index'])->name('batches.index');
         Route::get('/participation', [MemberParticipationController::class, 'index'])->name('participation.index');
         Route::view('/contact', 'member.contact')->name('contact');

@@ -28,7 +28,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('member.dashboard', absolute: false));
+        $response->assertRedirect(route('onboarding.index', absolute: false));
     }
 
     public function test_admin_login_ignores_stale_intended_member_url(): void

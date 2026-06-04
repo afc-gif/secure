@@ -4,25 +4,27 @@
     @endif
 
     <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
-        <x-dashboard.stat-card label="Total Partners" :value="$totalPartners" detail="Registered member accounts" />
-        <x-dashboard.stat-card label="Active Partners" :value="$activePartners" detail="Accounts in good standing" tone="gold" />
+        <x-dashboard.stat-card label="Signed Up Members" :value="$totalPartners" detail="Every completed signup account" />
+        <x-dashboard.stat-card label="Active Accounts" :value="$activePartners" detail="Accounts in good standing" tone="gold" />
+        <x-dashboard.stat-card label="VIP Participants" :value="$activeParticipants" detail="Members with active cycle access" />
         <x-dashboard.stat-card label="Completed Profiles" :value="$completedProfiles" detail="Synchronized member records" />
-        <x-dashboard.stat-card label="Pending Profiles" :value="$pendingProfiles" detail="Incomplete registry records" tone="slate" />
     </div>
 
     <section class="cca-card mt-4 overflow-hidden sm:mt-6">
         <div class="border-b border-white/10 px-4 py-4 sm:px-5">
-            <h2 class="text-lg font-black text-white">Partner records</h2>
-            <p class="mt-1 text-sm text-slate-500">Member identity, US address registry, settlement status, and confirmed USD contribution totals.</p>
+            <h2 class="text-lg font-black text-white">Signed up members and participants</h2>
+            <p class="mt-1 text-sm text-slate-500">Every member account created through signup, including VIP participation status, profile status, and confirmed USD contribution totals.</p>
         </div>
         <div class="overflow-x-auto">
-            <table class="min-w-[64rem] divide-y divide-white/10 text-left text-sm">
+            <table class="min-w-[82rem] divide-y divide-white/10 text-left text-sm">
                 <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.12em] text-slate-500">
                     <tr>
-                        <th class="px-5 py-4">Partner</th>
+                        <th class="px-5 py-4">Member</th>
                         <th class="px-5 py-4">Reference</th>
+                        <th class="px-5 py-4">Signup</th>
                         <th class="px-5 py-4">Registry Address</th>
                         <th class="px-5 py-4">Profile</th>
+                        <th class="px-5 py-4">Participation</th>
                         <th class="px-5 py-4">Settlement</th>
                         <th class="px-5 py-4">Confirmed</th>
                         <th class="px-5 py-4">Action</th>
@@ -32,12 +34,17 @@
                     @forelse ($partners as $partner)
                         @php($profile = $partner->memberProfile)
                         @php($settlement = $partner->settlementProfile)
+                        @php($latestParticipation = $partner->batchMembers->sortByDesc('joined_at')->first())
                         <tr class="transition hover:bg-white/[0.04]">
                             <td class="max-w-[16rem] px-5 py-4">
                                 <p class="font-semibold text-white">{{ $profile?->full_legal_name ?? $partner->name }}</p>
                                 <p class="mt-1 break-all text-xs text-slate-500">{{ $partner->email }}</p>
                             </td>
                             <td class="px-5 py-4 font-mono text-xs text-slate-300">{{ $partner->reference_token }}</td>
+                            <td class="whitespace-nowrap px-5 py-4">
+                                <p class="font-semibold text-white">{{ $partner->created_at->format('M j, Y') }}</p>
+                                <p class="mt-1 text-xs text-slate-500">{{ $partner->created_at->diffForHumans() }}</p>
+                            </td>
                             <td class="max-w-[14rem] px-5 py-4">
                                 @if ($profile)
                                     <p class="font-semibold text-white">{{ $profile->city ?: 'City pending' }}{{ $profile->state ? ', '.$profile->state : '' }}</p>
@@ -51,6 +58,16 @@
                                     <x-profile.status-badge tone="emerald">Complete</x-profile.status-badge>
                                 @else
                                     <x-profile.status-badge tone="gold">{{ $profile?->completionPercentage() ?? 0 }}%</x-profile.status-badge>
+                                @endif
+                            </td>
+                            <td class="max-w-[16rem] px-5 py-4">
+                                @if ($latestParticipation)
+                                    <x-profile.status-badge tone="emerald">Participant</x-profile.status-badge>
+                                    <p class="mt-2 text-xs font-semibold text-white">{{ $latestParticipation->batch?->title ?? 'VIP cycle' }}</p>
+                                    <p class="mt-1 font-mono text-xs text-slate-500">{{ $latestParticipation->accessToken?->token ?? 'Token unavailable' }}</p>
+                                @else
+                                    <x-profile.status-badge tone="gold">Signed Up</x-profile.status-badge>
+                                    <p class="mt-2 text-xs text-slate-500">Awaiting VIP payment/token activation</p>
                                 @endif
                             </td>
                             <td class="px-5 py-4">
@@ -67,7 +84,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td class="px-5 py-6 text-slate-500" colspan="7">No partner records have been created yet.</td>
+                            <td class="px-5 py-6 text-slate-500" colspan="9">No member signups have been created yet.</td>
                         </tr>
                     @endforelse
                 </tbody>
