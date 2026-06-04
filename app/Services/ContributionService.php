@@ -131,8 +131,18 @@ class ContributionService
             return null;
         }
 
+        $paymentTemplate = AccessToken::query()
+            ->where('batch_id', $batch->id)
+            ->whereNotNull('price')
+            ->whereNotNull('btc_wallet_address')
+            ->latest()
+            ->first();
+
         return app(TokenGenerationService::class)->create($batch, $admin, [
             'ownership_tier' => 'vip',
+            'price' => $paymentTemplate?->price,
+            'price_currency' => $paymentTemplate?->price_currency ?? 'USD',
+            'btc_wallet_address' => $paymentTemplate?->btc_wallet_address,
             'assigned_to_user_id' => $user->id,
         ]);
     }

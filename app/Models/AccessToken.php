@@ -16,6 +16,9 @@ class AccessToken extends Model
         'token',
         'batch_id',
         'ownership_tier',
+        'price',
+        'price_currency',
+        'btc_wallet_address',
         'assigned_to_user_id',
         'status',
         'expires_at',
@@ -30,6 +33,7 @@ class AccessToken extends Model
             'expires_at' => 'datetime',
             'used_at' => 'datetime',
             'revoked_at' => 'datetime',
+            'price' => 'decimal:2',
         ];
     }
 

@@ -22,6 +22,22 @@
                     <input id="ownership_tier" name="ownership_tier" value="{{ old('ownership_tier', 'Batch 3 Synchronized Class') }}" class="cca-input mt-2" required>
                 </div>
                 <div class="min-w-0">
+                    <label for="price" class="cca-label">VIP Token Price</label>
+                    <input id="price" name="price" value="{{ old('price') }}" inputmode="decimal" class="cca-input mt-2" placeholder="250.00" required>
+                    <x-input-error :messages="$errors->get('price')" class="mt-2 text-rose-300" />
+                </div>
+                <div class="min-w-0">
+                    <label for="price_currency" class="cca-label">Price Currency</label>
+                    <input id="price_currency" name="price_currency" value="{{ old('price_currency', 'USD') }}" class="cca-input mt-2 uppercase" readonly required>
+                    <x-input-error :messages="$errors->get('price_currency')" class="mt-2 text-rose-300" />
+                </div>
+                <div class="min-w-0 sm:col-span-2">
+                    <label for="btc_wallet_address" class="cca-label">BTC Wallet Address</label>
+                    <input id="btc_wallet_address" name="btc_wallet_address" value="{{ old('btc_wallet_address') }}" class="cca-input mt-2 font-mono" placeholder="bc1..." required>
+                    <p class="mt-2 text-xs text-slate-500">Members will see this wallet on the VIP Token tab as the Bitcoin payment destination.</p>
+                    <x-input-error :messages="$errors->get('btc_wallet_address')" class="mt-2 text-rose-300" />
+                </div>
+                <div class="min-w-0">
                     <label for="assigned_to_user_id" class="cca-label">Assign to Member <span class="text-slate-500">(optional)</span></label>
                     <select id="assigned_to_user_id" name="assigned_to_user_id" class="cca-input mt-2">
                         <option value="">Unassigned VIP token pool</option>

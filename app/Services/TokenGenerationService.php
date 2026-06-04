@@ -16,6 +16,9 @@ class TokenGenerationService
             'token' => $data['token'] ?? $this->generateUniqueToken(),
             'batch_id' => $batch->id,
             'ownership_tier' => $data['ownership_tier'],
+            'price' => $data['price'] ?? null,
+            'price_currency' => strtoupper($data['price_currency'] ?? 'USD'),
+            'btc_wallet_address' => $data['btc_wallet_address'] ?? null,
             'assigned_to_user_id' => $data['assigned_to_user_id'] ?? null,
             'status' => 'active',
             'expires_at' => $data['expires_at'] ?? null,
@@ -28,6 +31,9 @@ class TokenGenerationService
         return collect(range(1, (int) $data['quantity']))
             ->map(fn (): AccessToken => $this->create($batch, $admin, [
                 'ownership_tier' => $data['ownership_tier'],
+                'price' => $data['price'],
+                'price_currency' => $data['price_currency'],
+                'btc_wallet_address' => $data['btc_wallet_address'],
                 'expires_at' => $data['expires_at'] ?? null,
             ]));
     }

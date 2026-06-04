@@ -16,12 +16,14 @@
 
     <section class="cca-card overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-[58rem] divide-y divide-white/10 text-left text-sm">
+            <table class="min-w-[76rem] divide-y divide-white/10 text-left text-sm">
                 <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.12em] text-slate-500">
                     <tr>
                         <th class="px-5 py-4">Token</th>
                         <th class="px-5 py-4">Batch</th>
                         <th class="px-5 py-4">Tier</th>
+                        <th class="px-5 py-4">Price</th>
+                        <th class="px-5 py-4">BTC Wallet</th>
                         <th class="px-5 py-4">Status</th>
                         <th class="px-5 py-4">Assigned</th>
                         <th class="px-5 py-4">Action</th>
@@ -31,8 +33,10 @@
                     @forelse ($tokens as $token)
                         <tr class="transition hover:bg-white/[0.04]">
                             <td class="px-5 py-4 font-mono text-xs text-slate-300">{{ $token->token }}</td>
-                            <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">Batch 3 Entertainment Cycle</td>
-                            <td class="px-5 py-4">Batch 3 Synchronized Class</td>
+                            <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">{{ $token->batch?->title ?? 'No batch' }}</td>
+                            <td class="px-5 py-4">{{ $token->ownership_tier }}</td>
+                            <td class="px-5 py-4 font-mono text-xs font-bold text-[#d8bf7a]">{{ $token->price ? $token->price_currency.' '.number_format((float) $token->price, 2) : 'Unset' }}</td>
+                            <td class="max-w-[16rem] break-all px-5 py-4 font-mono text-xs">{{ $token->btc_wallet_address ?? 'Unset' }}</td>
                             <td class="px-5 py-4"><x-ownership.status-badge :status="$token->status" /></td>
                             <td class="max-w-[14rem] px-5 py-4">{{ $token->assignedUser?->name ?? 'Unassigned' }}</td>
                             <td class="px-5 py-4">
@@ -48,7 +52,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td class="px-5 py-6 text-slate-500" colspan="6">No secure access tokens generated yet.</td></tr>
+                        <tr><td class="px-5 py-6 text-slate-500" colspan="8">No secure access tokens generated yet.</td></tr>
                     @endforelse
                 </tbody>
             </table>
