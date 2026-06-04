@@ -8,12 +8,12 @@
             <span class="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-200">Secure Portal</span>
         </div>
 
-        <h2 class="text-2xl font-black text-white">Partner access</h2>
+        <h2 class="text-2xl font-black text-white">Login</h2>
         <p class="mt-2 text-sm leading-6 text-slate-400">Enter vetted credentials to synchronize with the cooperative ledger.</p>
 
         <x-auth-session-status class="mt-5 text-sm text-emerald-300" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login') }}" class="mt-8 space-y-5" x-data="{ loading: false, message: 'Secure Access', states: ['Synchronizing Ownership Records...', 'Verifying Partner Credentials...', 'Loading Cooperative Ledger...'] }" x-on:submit="loading = true; let i = 0; message = states[i]; setInterval(() => { i = (i + 1) % states.length; message = states[i]; }, 900)">
+        <form method="POST" action="{{ route('login') }}" class="mt-8 space-y-5" x-data="{ loading: false, message: 'Login', states: ['Synchronizing Ownership Records...', 'Verifying Partner Credentials...', 'Loading Cooperative Ledger...'] }" x-on:submit="loading = true; let i = 0; message = states[i]; setInterval(() => { i = (i + 1) % states.length; message = states[i]; }, 900)">
             @csrf
 
             <div>
@@ -47,13 +47,13 @@
 
             <button type="submit" class="cca-button w-full" x-bind:disabled="loading">
                 <span x-show="loading" class="mr-3 h-4 w-4 animate-spin rounded-full border-2 border-[#08100c]/30 border-t-[#08100c]"></span>
-                <span x-text="message">Secure Access</span>
+                <span x-text="message">Login</span>
             </button>
         </form>
 
         <p class="mt-6 text-center text-sm text-slate-400">
             New cooperative partner?
-            <a href="{{ route('register') }}" class="font-semibold text-emerald-300 hover:text-[#d4af62]">Request member access</a>
+            <a href="{{ route('register') }}" class="font-semibold text-emerald-300 hover:text-[#d4af62]">Signup</a>
         </p>
     </div>
 </x-guest-layout>

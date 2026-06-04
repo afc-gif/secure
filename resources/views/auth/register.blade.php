@@ -4,7 +4,7 @@
             <x-application-logo class="h-10 w-10" />
             <div>
                 <p class="text-xs uppercase tracking-[0.28em] text-emerald-300">Country Culture Acres</p>
-                <h2 class="text-2xl font-black text-white">Member onboarding</h2>
+                <h2 class="text-2xl font-black text-white">Signup</h2>
             </div>
         </div>
 
@@ -41,12 +41,12 @@
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2 text-sm text-red-300" />
             </div>
 
-            <button type="submit" class="cca-button w-full">Create Member Profile</button>
+            <button type="submit" class="cca-button w-full">Signup</button>
         </form>
 
         <p class="mt-6 text-center text-sm text-slate-400">
-            Already onboarded?
-            <a href="{{ route('login') }}" class="font-semibold text-emerald-300 hover:text-[#d4af62]">Secure access</a>
+            Already have an account?
+            <a href="{{ route('login') }}" class="font-semibold text-emerald-300 hover:text-[#d4af62]">Login</a>
         </p>
     </div>
 </x-guest-layout>

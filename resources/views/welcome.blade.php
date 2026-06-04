@@ -26,8 +26,8 @@
                 <h1 class="mt-10 max-w-3xl text-5xl font-black leading-tight text-white sm:text-6xl">Country Culture Acres private ownership portal.</h1>
                 <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-300">A secure agritech co-ownership ecosystem for vetted partners participating in countryside agricultural growth cycles.</p>
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <a href="{{ route('login') }}" class="cca-button">Secure Access</a>
-                    <a href="{{ route('register') }}" class="cca-muted-button">Request Member Access</a>
+                    <a href="{{ route('login') }}" class="cca-button">Login</a>
+                    <a href="{{ route('register') }}" class="cca-muted-button">Signup</a>
                 </div>
             </div>
 
