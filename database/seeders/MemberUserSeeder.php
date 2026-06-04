@@ -135,6 +135,7 @@ class MemberUserSeeder extends Seeder
                 'city' => $cities[$index % count($cities)],
                 'residential_address' => ($index + 120).' Maple Ridge Avenue',
                 'postal_code' => $postalCodes[$index % count($postalCodes)],
+                'cash_app_handle' => '$securemember'.str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT),
                 'occupation' => ['Product Manager', 'Agricultural Investor', 'Operations Lead', 'Consultant', 'Founder'][$index % 5],
                 'ownership_interest_reason' => 'Demo member interested in structured agricultural ownership and cooperative yield.',
                 'agricultural_interest_type' => ['crop_cycles', 'livestock', 'greenhouse', 'irrigation'][$index % 4],
@@ -147,15 +148,17 @@ class MemberUserSeeder extends Seeder
 
     private function seedSettlementProfile(User $member, int $index): void
     {
-        $banks = ['Chase Bank', 'Bank of America', 'Wells Fargo', 'Citibank', 'Capital One', 'U.S. Bank', 'PNC Bank'];
+        $cashAppHandle = '$securemember'.str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT);
 
         SettlementProfile::updateOrCreate(
             ['user_id' => $member->id],
             [
-                'bank_name' => $banks[$index % count($banks)],
+                'payout_platform' => 'cash_app',
+                'cash_app_handle' => $cashAppHandle,
+                'bank_name' => 'Cash App',
                 'account_name' => $member->name,
-                'account_number' => str_pad((string) ($index + 1000000000), 10, '0', STR_PAD_LEFT),
-                'routing_number' => str_pad((string) ($index + 110000001), 9, '0', STR_PAD_LEFT),
+                'account_number' => $cashAppHandle,
+                'routing_number' => null,
                 'country' => 'US',
                 'currency' => 'USD',
                 'verification_status' => $index === 5 ? 'pending' : ($index === 7 ? 'rejected' : 'verified'),

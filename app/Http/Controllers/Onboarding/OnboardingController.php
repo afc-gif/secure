@@ -66,7 +66,7 @@ class OnboardingController extends Controller
     {
         $this->onboarding->updateStep($request->user(), $request->validated());
 
-        return redirect()->route('onboarding.step', 3)->with('status', 'Disbursement address secured.');
+        return redirect()->route('onboarding.step', 3)->with('status', 'Payout profile secured.');
     }
 
     public function storeCooperativeProfile(CooperativeProfileRequest $request): RedirectResponse

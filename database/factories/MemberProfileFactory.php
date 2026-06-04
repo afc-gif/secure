@@ -24,6 +24,7 @@ class MemberProfileFactory extends Factory
             'city' => 'New York',
             'residential_address' => '120 Maple Ridge Avenue',
             'postal_code' => '10001',
+            'cash_app_handle' => '$memberdemo',
             'occupation' => 'Product Operator',
             'ownership_interest_reason' => 'I want structured exposure to agricultural ownership cycles through a trusted cooperative.',
             'agricultural_interest_type' => 'crop_cycles',

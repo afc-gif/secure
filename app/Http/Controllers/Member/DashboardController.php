@@ -14,6 +14,14 @@ class DashboardController extends Controller
         /** @var \App\Models\User $user */
         $user = request()->user();
         $profile = $onboarding->profileFor($user);
+        $settlementProfile = $user->settlementProfile;
+        $cashAppHandle = $settlementProfile?->cash_app_handle ?: $profile->cash_app_handle;
+        $recipient = $settlementProfile?->account_name ?: ($profile->full_legal_name ?: $user->name);
+        $address = collect([
+            $profile->residential_address,
+            trim(collect([$profile->city, $profile->state, $profile->postal_code])->filter()->implode(', ')),
+            $profile->country,
+        ])->filter()->implode(', ');
 
         return view('member.dashboard', [
             'profile' => $profile,
@@ -49,9 +57,10 @@ class DashboardController extends Controller
                     ],
                 ],
                 'disbursement' => [
-                    'recipient' => 'Deborah L Neilson',
-                    'address' => '6001 Springfield Drive, Cheyenne, WY 82007',
-                    'destination' => 'Cash App ($dnurse1996)',
+                    'status' => filled($cashAppHandle) ? 'Ready' : 'Pending',
+                    'recipient' => $recipient,
+                    'address' => $address ?: 'Address not provided',
+                    'destination' => filled($cashAppHandle) ? "Cash App ({$cashAppHandle})" : 'Cash App not provided',
                 ],
                 'milestones' => [
                     ['date' => 'June 1, 2026', 'label' => 'Cycle Commenced'],

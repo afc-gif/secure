@@ -12,6 +12,8 @@ class SettlementProfile extends Model
 
     protected $fillable = [
         'user_id',
+        'payout_platform',
+        'cash_app_handle',
         'bank_name',
         'account_name',
         'account_number',

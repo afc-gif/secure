@@ -15,10 +15,13 @@
                     <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">USD 33,000.00</h2>
                     <p class="mt-4 max-w-xl text-sm leading-6 text-white/75">Legally verified carried contract allocation synchronized to the active Batch 3 member cycle.</p>
                 </div>
-                <span class="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                    Verified
-                </span>
+                <div class="flex flex-wrap items-center gap-2">
+                    <a href="{{ route('profile.edit') }}" class="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/15">Edit Profile</a>
+                    <span class="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
+                        <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                        Verified
+                    </span>
+                </div>
             </div>
 
             <div class="mt-8 h-16 rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3">
@@ -102,23 +105,23 @@
             <div class="rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6">
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <p class="text-sm font-black text-white">Settlement Coordinates</p>
-                        <p class="mt-1 text-xs text-slate-500">Disbursement</p>
+                        <p class="text-sm font-black text-white">Payout Profile</p>
+                        <p class="mt-1 text-xs text-slate-500">Cash App</p>
                     </div>
-                    <span class="rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-bold text-slate-300">Synced</span>
+                    <span class="rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-bold text-slate-300">{{ $panel['disbursement']['status'] }}</span>
                 </div>
 
                 <dl class="mt-5 divide-y divide-white/[0.07]">
                     <div class="grid gap-1 py-3 first:pt-0">
-                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Recipient</dt>
+                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Name</dt>
                         <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['recipient'] }}</dd>
                     </div>
                     <div class="grid gap-1 py-3">
-                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Address</dt>
+                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Registered Address</dt>
                         <dd class="break-words font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['address'] }}</dd>
                     </div>
                     <div class="grid gap-1 py-3 last:pb-0">
-                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Destination</dt>
+                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Cash App</dt>
                         <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['destination'] }}</dd>
                     </div>
                 </dl>

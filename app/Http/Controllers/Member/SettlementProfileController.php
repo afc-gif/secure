@@ -35,7 +35,9 @@ class SettlementProfileController extends Controller
         $user = $request->user();
         
         $profile = $user->settlementProfile ?? new SettlementProfile();
-        $profile->fill($request->validated());
+        $data = $this->cashAppPayload($request);
+
+        $profile->fill($data);
         $profile->user_id = $user->id;
         $profile->verification_status = 'pending';
         $profile->save();
@@ -51,9 +53,28 @@ class SettlementProfileController extends Controller
     {
         $this->authorize('update', $profile);
 
-        $profile->update($request->validated());
+        $profile->update($this->cashAppPayload($request));
 
         return redirect()->route('member.settlement-profile.show')
             ->with('success', 'Settlement profile updated successfully.');
+    }
+
+    private function cashAppPayload(StoreSettlementProfileRequest $request): array
+    {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $handle = $request->validated('cash_app_handle');
+        $accountName = $user->memberProfile?->full_legal_name ?: $user->name;
+
+        return [
+            'payout_platform' => 'cash_app',
+            'cash_app_handle' => $handle,
+            'bank_name' => 'Cash App',
+            'account_name' => $accountName,
+            'account_number' => $handle,
+            'routing_number' => null,
+            'country' => 'US',
+            'currency' => 'USD',
+        ];
     }
 }

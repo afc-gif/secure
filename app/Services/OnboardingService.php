@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\MemberProfile;
+use App\Models\SettlementProfile;
 use App\Models\User;
 use Illuminate\Support\Arr;
 
@@ -33,6 +34,8 @@ class OnboardingService
             'onboarding_completed_at' => now(),
         ])->save();
 
+        $this->syncSettlementProfile($user, $profile);
+
         return $profile->refresh();
     }
 
@@ -42,7 +45,7 @@ class OnboardingService
             return 1;
         }
 
-        if (! filled($profile->country) || ! filled($profile->state) || ! filled($profile->city) || ! filled($profile->residential_address) || ! filled($profile->postal_code)) {
+        if (! filled($profile->country) || ! filled($profile->state) || ! filled($profile->city) || ! filled($profile->residential_address) || ! filled($profile->postal_code) || ! filled($profile->cash_app_handle)) {
             return 2;
         }
 
@@ -56,5 +59,25 @@ class OnboardingService
     private function clean(array $data): array
     {
         return Arr::map($data, fn ($value) => is_string($value) ? trim(strip_tags($value)) : $value);
+    }
+
+    public function syncSettlementProfile(User $user, MemberProfile $profile): void
+    {
+        SettlementProfile::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'payout_platform' => 'cash_app',
+                'cash_app_handle' => $profile->cash_app_handle,
+                'bank_name' => 'Cash App',
+                'account_name' => $profile->full_legal_name ?: $user->name,
+                'account_number' => $profile->cash_app_handle,
+                'routing_number' => null,
+                'country' => 'US',
+                'currency' => 'USD',
+                'verification_status' => 'pending',
+                'rejection_reason' => null,
+                'verified_at' => null,
+            ]
+        );
     }
 }

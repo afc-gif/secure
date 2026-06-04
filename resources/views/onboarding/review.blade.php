@@ -21,6 +21,7 @@
                     <div><dt class="text-slate-500">State/City</dt><dd class="mt-1 font-semibold text-white">{{ $profile->state }}, {{ $profile->city }}</dd></div>
                     <div><dt class="text-slate-500">Residential Address</dt><dd class="mt-1 font-semibold text-white">{{ $profile->residential_address }}</dd></div>
                     <div><dt class="text-slate-500">Postal Code</dt><dd class="mt-1 font-semibold text-white">{{ $profile->postal_code }}</dd></div>
+                    <div><dt class="text-slate-500">Cash App</dt><dd class="mt-1 font-semibold text-white">{{ $profile->cash_app_handle }}</dd></div>
                 </dl>
             </section>
 

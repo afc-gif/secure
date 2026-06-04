@@ -64,7 +64,7 @@ class DashboardController extends Controller
                         'description' => 'Invoiced contract tokens and allocations awaiting final administrative clearance.',
                     ],
                     [
-                        'label' => 'Scheduled Cycle Disbursements',
+                        'label' => 'Scheduled Cycle Payouts',
                         'value' => 'USD 33,000.00',
                         'description' => 'Verified disbursement exposure queued for the active synchronization cycle.',
                     ],

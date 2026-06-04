@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Member;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-
 class StoreSettlementProfileRequest extends FormRequest
 {
     public function authorize(): bool
@@ -15,25 +13,28 @@ class StoreSettlementProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'bank_name' => ['required', 'string', 'max:255'],
-            'account_name' => ['required', 'string', 'max:255'],
-            'account_number' => ['required', 'string', 'min:8', 'max:34'],
-            'routing_number' => ['nullable', 'string', 'max:50'],
-            'country' => ['required', 'string', 'size:2', Rule::in(['US'])],
-            'currency' => ['required', 'string', 'size:3', Rule::in(['USD'])],
+            'cash_app_handle' => ['required', 'string', 'regex:/^\$?[A-Za-z0-9_]{1,20}$/'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $handle = trim((string) $this->input('cash_app_handle'));
+
+        if ($handle !== '' && ! str_starts_with($handle, '$')) {
+            $handle = '$'.$handle;
+        }
+
+        $this->merge([
+            'cash_app_handle' => $handle,
+        ]);
     }
 
     public function messages(): array
     {
         return [
-            'bank_name.required' => 'Bank name is required',
-            'account_name.required' => 'Account holder name is required',
-            'account_number.required' => 'Account number is required',
-            'country.required' => 'Country is required',
-            'country.in' => 'Settlement country must be US',
-            'currency.required' => 'Currency is required',
-            'currency.in' => 'Settlement currency must be USD',
+            'cash_app_handle.required' => 'Cash App handle is required.',
+            'cash_app_handle.regex' => 'Enter a valid Cash App handle, for example $YourHandle.',
         ];
     }
 }

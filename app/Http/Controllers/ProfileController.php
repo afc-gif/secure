@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\OnboardingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,21 +19,63 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'memberProfile' => $request->user()->memberProfile,
         ]);
     }
 
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request, OnboardingService $onboarding): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? $user->phone,
+        ]);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+        if ($user->isMember()) {
+            $profileFields = [
+                'full_legal_name',
+                'phone',
+                'date_of_birth',
+                'gender',
+                'country',
+                'state',
+                'city',
+                'residential_address',
+                'postal_code',
+                'cash_app_handle',
+                'occupation',
+                'agricultural_interest_type',
+                'ownership_interest_reason',
+                'bio',
+            ];
+
+            $profileData = collect($validated)
+                ->only($profileFields)
+                ->filter(fn (mixed $value, string $key): bool => $request->exists($key))
+                ->all();
+
+            if ($profileData !== []) {
+                $profile = $onboarding->profileFor($user);
+                $profile->fill($profileData)->save();
+                $profile->refresh();
+
+                if (filled($profile->cash_app_handle)) {
+                    $onboarding->syncSettlementProfile($user, $profile);
+                }
+            }
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
