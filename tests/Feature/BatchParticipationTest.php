@@ -86,6 +86,34 @@ class BatchParticipationTest extends TestCase
         ]);
     }
 
+    public function test_unlocked_member_keeps_vip_token_tab_without_payment_controls(): void
+    {
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+        $batch = Batch::factory()->create();
+        $usedToken = AccessToken::factory()->for($batch)->used()->create(['assigned_to_user_id' => $member->id]);
+        BatchMember::create([
+            'batch_id' => $batch->id,
+            'user_id' => $member->id,
+            'access_token_id' => $usedToken->id,
+            'participation_status' => 'active',
+            'joined_at' => now(),
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('member.dashboard'))
+            ->assertOk()
+            ->assertSee('VIP Token');
+
+        $this->actingAs($member)
+            ->get(route('member.access-token.create'))
+            ->assertOk()
+            ->assertSee('Dashboard access active')
+            ->assertDontSee('VIP Bitcoin Payment')
+            ->assertDontSee('Confirm Payment')
+            ->assertDontSee('BTC Wallet');
+    }
+
     public function test_member_can_confirm_vip_btc_payment_for_admin_review(): void
     {
         Notification::fake();

@@ -19,7 +19,7 @@
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
                     <p class="text-xs font-bold uppercase tracking-[0.13em] text-white/70">Secured Benefit Balance</p>
-                    <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">USD 33,000.00</h2>
+                    <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">USD 34,000.00</h2>
                     <p class="mt-4 max-w-xl text-sm leading-6 text-white/75">
                         @if ($isLocked)
                             Crypto payment is pending admin-approved VIP activation. Enter the issued token to open the full dashboard.
@@ -98,7 +98,14 @@
             <div class="mt-5 grid gap-3 md:grid-cols-3">
                 @foreach ($panel['dataBlocks'] as $block)
                     <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10]/80 p-4">
-                        <p class="text-sm font-bold text-white">{{ $block['header'] }}</p>
+                        <div class="flex flex-wrap items-start justify-between gap-2">
+                            <p class="text-sm font-bold text-white">{{ $block['header'] }}</p>
+                            <span @class([
+                                'rounded-md border px-2 py-1 text-[0.65rem] font-black uppercase tracking-[0.12em]',
+                                'border-emerald-300/20 bg-emerald-400/10 text-emerald-100' => strtolower($block['status'] ?? '') === 'cleared',
+                                'border-[#d8bf7a]/25 bg-[#d8bf7a]/10 text-[#fff0bf]' => strtolower($block['status'] ?? '') === 'pending',
+                            ])>{{ $block['status'] ?? 'Active' }}</span>
+                        </div>
                         <p class="mt-2 text-xs uppercase leading-5 tracking-[0.12em] text-slate-500">{{ $block['label'] }}</p>
                         <p class="mt-5 text-xl font-black leading-tight text-white">{{ $block['allocation'] }}</p>
                     </div>

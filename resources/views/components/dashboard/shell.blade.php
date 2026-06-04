@@ -5,22 +5,13 @@
     $memberDashboardUnlocked = $user?->hasUnlockedDashboard() ?? true;
     $memberNavigation = [
         ['label' => 'Overview', 'href' => route('member.dashboard'), 'active' => request()->routeIs('member.dashboard'), 'icon' => 'dashboard', 'locked' => false],
+        ['label' => 'VIP Token', 'href' => route('member.access-token.create'), 'active' => request()->routeIs('member.access-token.*'), 'icon' => 'key', 'locked' => false],
         ['label' => 'Active Cycles', 'href' => route('member.batches.index'), 'active' => request()->routeIs('member.batches.*'), 'icon' => 'calendar', 'locked' => ! $memberDashboardUnlocked],
         ['label' => 'Participation', 'href' => route('member.participation.index'), 'active' => request()->routeIs('member.participation.*'), 'icon' => 'chart', 'locked' => ! $memberDashboardUnlocked],
         ['label' => 'Contributions', 'href' => route('member.contributions.index'), 'active' => request()->routeIs('member.contributions.*'), 'icon' => 'ledger', 'locked' => ! $memberDashboardUnlocked],
         ['label' => 'Profile', 'href' => route('profile.edit'), 'active' => request()->routeIs('profile.*'), 'icon' => 'user', 'locked' => false],
         ['label' => 'Contact Us', 'href' => route('member.contact'), 'active' => request()->routeIs('member.contact'), 'icon' => 'mail', 'locked' => ! $memberDashboardUnlocked],
     ];
-
-    if (! $memberDashboardUnlocked) {
-        array_splice($memberNavigation, 1, 0, [[
-            'label' => 'VIP Token',
-            'href' => route('member.access-token.create'),
-            'active' => request()->routeIs('member.access-token.*'),
-            'icon' => 'key',
-            'locked' => false,
-        ]]);
-    }
 
     $navigation = $user?->isAdmin()
         ? [

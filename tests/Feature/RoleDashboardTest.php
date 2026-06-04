@@ -32,7 +32,13 @@ class RoleDashboardTest extends TestCase
             ->assertOk()
             ->assertSee('Member Portfolio')
             ->assertSee('Secured Benefit Balance')
-            ->assertSee('USD 33,000.00');
+            ->assertSee('USD 34,000.00')
+            ->assertSee('Sovereign Equity')
+            ->assertSee('USD 24,911.34')
+            ->assertSee('Cleared')
+            ->assertSee('Legacy Grounds Dividend Track')
+            ->assertSee('USD 9,088.66')
+            ->assertSee('Pending');
     }
 
     public function test_onboarded_member_without_vip_token_sees_locked_dashboard(): void

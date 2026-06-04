@@ -16,32 +16,13 @@ use Illuminate\View\View;
 
 class AccessTokenController extends Controller
 {
-    public function create(): View|RedirectResponse
+    public function create(): View
     {
         /** @var \App\Models\User $user */
         $user = request()->user();
 
-        if ($user->hasUnlockedDashboard()) {
-            return redirect()->route('member.dashboard');
-        }
-
-        $paymentToken = AccessToken::query()
-            ->where('status', 'active')
-            ->whereNotNull('price')
-            ->whereNotNull('btc_wallet_address')
-            ->where(function ($query) use ($user): void {
-                $query->where('assigned_to_user_id', $user->id)
-                    ->orWhereNull('assigned_to_user_id');
-            })
-            ->where(function ($query): void {
-                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
-            })
-            ->orderByRaw('case when assigned_to_user_id = ? then 0 else 1 end', [$user->id])
-            ->latest()
-            ->first();
-
         return view('member.batches.access-token', [
-            'paymentToken' => $paymentToken,
+            'dashboardUnlocked' => $user->hasUnlockedDashboard(),
             'participations' => $user
                 ->batchMembers()
                 ->with(['batch', 'accessToken'])

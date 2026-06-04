@@ -42,19 +42,21 @@ class DashboardController extends Controller
                     'access_input' => 'VIP015',
                 ],
                 'core' => [
-                    'value' => 'TOTAL SECURED BENEFIT BALANCE: USD 33,000.00',
+                    'value' => 'TOTAL SECURED BENEFIT BALANCE: USD 34,000.00',
                     'verification' => 'STATUS: LEGALLY VERIFIED / CARRIED CONTRACT ALLOCATION',
                 ],
                 'dataBlocks' => [
                     [
                         'label' => 'Data Block Alpha',
-                        'header' => 'Sovereign Catalog Equity Share',
-                        'allocation' => 'USD 16,500.00',
+                        'header' => 'Sovereign Equity',
+                        'allocation' => 'USD 24,911.34',
+                        'status' => 'Cleared',
                     ],
                     [
                         'label' => 'Data Block Beta',
                         'header' => 'Legacy Grounds Dividend Track',
-                        'allocation' => 'USD 16,500.00',
+                        'allocation' => 'USD 9,088.66',
+                        'status' => 'Pending',
                     ],
                 ],
                 'disbursement' => [
@@ -76,7 +78,7 @@ class DashboardController extends Controller
                     [
                         'record' => 'Record 01',
                         'date' => '2025-11-01',
-                        'description' => 'Initial Ledger Balance Carryforward: USD 33,000.00 (Verified)',
+                        'description' => 'Initial Ledger Balance Carryforward: USD 34,000.00 (Verified)',
                     ],
                     [
                         'record' => 'Record 02',
