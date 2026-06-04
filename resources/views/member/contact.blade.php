@@ -10,11 +10,13 @@
                 <div class="mt-8 grid gap-3 sm:grid-cols-2">
                     <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
                         <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Support</p>
-                        <p class="mt-3 font-mono text-sm font-bold text-white">creative.commission.agaency@gmail.com</p>
+                        <p class="mt-3 break-all font-mono text-sm font-bold text-white">creative.commission.agaency@gmail.com</p>
+                        <a href="mailto:creative.commission.agaency@gmail.com?subject=Member%20Support%20Request" class="cca-button mt-4 w-full">Email Support</a>
                     </div>
                     <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
-                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Compliant Desk</p>
-                        <p class="mt-3 font-mono text-sm font-bold text-white">compliance.ccaboard@protonmail.com</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Compliance Desk</p>
+                        <p class="mt-3 break-all font-mono text-sm font-bold text-white">compliance.ccaboard@protonmail.com</p>
+                        <a href="mailto:compliance.ccaboard@protonmail.com?subject=Compliance%20Desk%20Request" class="cca-button mt-4 w-full">Email Compliance</a>
                     </div>
                 </div>
             </div>
