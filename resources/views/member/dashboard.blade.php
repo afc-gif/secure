@@ -181,6 +181,15 @@
                         <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['destination'] }}</dd>
                     </div>
                 </dl>
+
+                @if (! $isLocked)
+                    <div class="mt-5 border-t border-white/[0.07] pt-5">
+                        <a href="{{ route('member.settlement-profile.show') }}" class="cca-button inline-flex w-full justify-center py-2 text-xs">
+                            {{ $panel['disbursement']['status'] === 'Ready' ? 'Withdraw to Cash App' : 'Add Cash App Details' }}
+                        </a>
+                        <p class="mt-3 text-xs leading-5 text-slate-500">Withdrawals are Cash App-only. Add a valid Cash App handle before requesting payout.</p>
+                    </div>
+                @endif
             </div>
 
             <div class="relative rounded-lg border border-white/[0.07] bg-[#101116]/95 p-4 shadow-xl shadow-black/20 sm:p-6">

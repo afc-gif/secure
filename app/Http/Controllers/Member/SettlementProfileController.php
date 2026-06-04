@@ -49,11 +49,11 @@ class SettlementProfileController extends Controller
     /**
      * Update the settlement profile.
      */
-    public function update(StoreSettlementProfileRequest $request, SettlementProfile $profile)
+    public function update(StoreSettlementProfileRequest $request, SettlementProfile $settlementProfile)
     {
-        $this->authorize('update', $profile);
+        $this->authorize('update', $settlementProfile);
 
-        $profile->update($this->cashAppPayload($request));
+        $settlementProfile->update($this->cashAppPayload($request));
 
         return redirect()->route('member.settlement-profile.show')
             ->with('success', 'Settlement profile updated successfully.');
