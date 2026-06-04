@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MemberProfile;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class PartnerRegistryController extends Controller
@@ -27,5 +28,17 @@ class PartnerRegistryController extends Controller
                 ->whereDoesntHave('memberProfile', fn ($query) => $query->where('onboarding_completed', true))
                 ->count(),
         ]);
+    }
+
+    public function destroy(User $partner): RedirectResponse
+    {
+        abort_unless($partner->isMember(), 404);
+
+        $partnerName = $partner->name;
+        $partner->delete();
+
+        return redirect()
+            ->route('admin.partners.index')
+            ->with('status', "Member {$partnerName} deleted.");
     }
 }

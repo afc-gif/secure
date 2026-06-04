@@ -28,6 +28,7 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
     Route::get('/partners', AdminPartnerRegistryController::class)->name('partners.index');
+    Route::delete('/partners/{partner}', [AdminPartnerRegistryController::class, 'destroy'])->name('partners.destroy');
     Route::resource('batches', AdminBatchController::class)->except(['show', 'destroy']);
     Route::patch('/batches/{batch}/archive', [AdminBatchController::class, 'archive'])->name('batches.archive');
     Route::get('/tokens', [AdminAccessTokenController::class, 'index'])->name('tokens.index');

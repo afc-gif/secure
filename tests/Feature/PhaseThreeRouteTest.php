@@ -47,4 +47,30 @@ class PhaseThreeRouteTest extends TestCase
         $this->actingAs($member)->get(route('member.batches.index'))->assertOk()->assertSee('Active ownership cycles');
         $this->actingAs($member)->get(route('member.participation.index'))->assertOk()->assertSee('Participation status');
     }
+
+    public function test_admin_can_delete_member_from_partner_registry(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+
+        $this->actingAs($admin)
+            ->delete(route('admin.partners.destroy', $member))
+            ->assertRedirect(route('admin.partners.index'));
+
+        $this->assertDatabaseMissing('users', ['id' => $member->id]);
+        $this->assertDatabaseMissing('member_profiles', ['user_id' => $member->id]);
+    }
+
+    public function test_admin_cannot_delete_admin_from_partner_registry(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $otherAdmin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)
+            ->delete(route('admin.partners.destroy', $otherAdmin))
+            ->assertNotFound();
+
+        $this->assertDatabaseHas('users', ['id' => $otherAdmin->id]);
+    }
 }

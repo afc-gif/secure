@@ -1,4 +1,8 @@
 <x-dashboard.shell title="Partner registry" eyebrow="Member Records">
+    @if (session('status'))
+        <div class="mb-6 rounded-lg border border-emerald-300/20 bg-emerald-300/10 px-5 py-4 text-sm font-semibold text-emerald-100">{{ session('status') }}</div>
+    @endif
+
     <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         <x-dashboard.stat-card label="Total Partners" :value="$totalPartners" detail="Registered member accounts" />
         <x-dashboard.stat-card label="Active Partners" :value="$activePartners" detail="Accounts in good standing" tone="gold" />
@@ -21,6 +25,7 @@
                         <th class="px-5 py-4">Profile</th>
                         <th class="px-5 py-4">Settlement</th>
                         <th class="px-5 py-4">Confirmed</th>
+                        <th class="px-5 py-4">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/10 text-slate-300">
@@ -52,10 +57,17 @@
                                 <x-ownership.status-badge :status="$settlement?->verification_status ?? 'pending'" />
                             </td>
                             <td class="whitespace-nowrap px-5 py-4 font-black text-slate-100">USD {{ number_format((float) ($partner->confirmed_contributions_total ?? 0), 2) }}</td>
+                            <td class="px-5 py-4">
+                                <form method="POST" action="{{ route('admin.partners.destroy', $partner) }}" onsubmit="return confirm('Delete this member and their related member records? This cannot be undone.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="rounded-lg border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-rose-100 transition hover:border-rose-300/60 hover:bg-rose-500/20">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td class="px-5 py-6 text-slate-500" colspan="6">No partner records have been created yet.</td>
+                            <td class="px-5 py-6 text-slate-500" colspan="7">No partner records have been created yet.</td>
                         </tr>
                     @endforelse
                 </tbody>
