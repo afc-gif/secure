@@ -5,7 +5,7 @@
                 <p class="cca-kicker">Cycle Registry</p>
                 <h2 class="mt-2 text-xl font-black text-white">Open cooperative participation windows</h2>
             </div>
-            <a href="{{ route('member.access-token.create') }}" class="cca-muted-button">Validate Token</a>
+            <span class="rounded-md border border-[#f35aa5]/20 bg-[#f35aa5]/10 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#ffd4e9]">Access Active</span>
         </div>
     </div>
 
@@ -14,7 +14,7 @@
             @forelse ($activeBatches as $batch)
                 <x-ownership.card :batch="$batch">
                     <x-slot:action>
-                        <a href="{{ route('member.access-token.create') }}" class="cca-button">Unlock Dashboard Privilege</a>
+                        <span class="cca-button">Dashboard Privilege Active</span>
                     </x-slot:action>
                 </x-ownership.card>
             @empty

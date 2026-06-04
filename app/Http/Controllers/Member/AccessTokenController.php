@@ -16,10 +16,15 @@ use Illuminate\View\View;
 
 class AccessTokenController extends Controller
 {
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
         /** @var \App\Models\User $user */
         $user = request()->user();
+
+        if ($user->hasUnlockedDashboard()) {
+            return redirect()->route('member.dashboard');
+        }
+
         $paymentToken = AccessToken::query()
             ->where('status', 'active')
             ->whereNotNull('price')
@@ -47,6 +52,10 @@ class AccessTokenController extends Controller
 
     public function store(ActivateAccessTokenRequest $request, TokenValidationService $tokens): RedirectResponse
     {
+        if ($request->user()->hasUnlockedDashboard()) {
+            return redirect()->route('member.dashboard');
+        }
+
         $tokens->validateAndActivate($request->user(), $request->validated('token'));
 
         return redirect()->route('member.participation.index')->with('status', 'Activating Batch Participation...');
@@ -56,6 +65,11 @@ class AccessTokenController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
+
+        if ($user->hasUnlockedDashboard()) {
+            return redirect()->route('member.dashboard');
+        }
+
         $paymentToken = AccessToken::query()
             ->with('batch')
             ->whereKey($request->validated('payment_token_id'))

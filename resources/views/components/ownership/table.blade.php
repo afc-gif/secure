@@ -21,7 +21,7 @@
                         <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">Batch 3 Entertainment Cycle</td>
                         <td class="px-5 py-4">Batch 3 Synchronized Class</td>
                         <td class="px-5 py-4"><x-ownership.status-badge :status="$participation->participation_status" /></td>
-                        <td class="px-5 py-4">June 7th, 2026</td>
+                        <td class="px-5 py-4">June 7th, 2025</td>
                     </tr>
                 @empty
                     <tr>

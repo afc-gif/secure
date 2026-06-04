@@ -58,7 +58,7 @@ class BatchParticipationTest extends TestCase
         $this->assertDatabaseCount('batch_members', 0);
     }
 
-    public function test_member_cannot_join_same_batch_twice(): void
+    public function test_unlocked_member_is_redirected_away_from_token_activation(): void
     {
         $member = User::factory()->create();
         MemberProfile::factory()->for($member)->completed()->create();
@@ -76,8 +76,14 @@ class BatchParticipationTest extends TestCase
         $this->actingAs($member)
             ->from(route('member.access-token.create'))
             ->post(route('member.access-token.store'), ['token' => $freshToken->token])
-            ->assertRedirect(route('member.access-token.create'))
-            ->assertSessionHasErrors('token');
+            ->assertRedirect(route('member.dashboard'));
+
+        $this->assertDatabaseCount('batch_members', 1);
+        $this->assertDatabaseHas('access_tokens', [
+            'id' => $freshToken->id,
+            'status' => 'active',
+            'assigned_to_user_id' => null,
+        ]);
     }
 
     public function test_member_can_confirm_vip_btc_payment_for_admin_review(): void
