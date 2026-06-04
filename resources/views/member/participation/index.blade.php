@@ -7,7 +7,7 @@
         <section class="cca-card relative overflow-hidden p-6">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(217,54,173,0.16),transparent_18rem)]"></div>
             <div class="relative">
-            <p class="cca-kicker">Cooperative Access Status</p>
+            <p class="cca-kicker">Secure Access Status</p>
             <h2 class="mt-3 text-3xl font-black text-[#ffd4e9]">{{ $participations->where('participation_status', 'active')->count() }}</h2>
             <p class="mt-3 text-sm leading-6 text-slate-400">Active ownership cycle participation records connected to your synchronized member identity.</p>
             <div class="mt-6 grid gap-3">

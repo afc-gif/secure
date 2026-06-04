@@ -2,8 +2,8 @@
 
 <section class="cca-card overflow-hidden">
     <div class="border-b border-white/[0.07] bg-white/[0.015] px-4 py-4 sm:px-5">
-        <h2 class="text-lg font-black text-white">Participation History</h2>
-        <p class="mt-1 text-sm text-slate-500">Batch access records linked to your cooperative profile.</p>
+        <h2 class="text-lg font-black text-white">Privilege Sync History</h2>
+        <p class="mt-1 text-sm text-slate-500">Secure access records linked to your member profile.</p>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-[42rem] divide-y divide-white/[0.07] text-left text-sm">
@@ -18,10 +18,10 @@
             <tbody class="divide-y divide-white/[0.07] text-slate-300">
                 @forelse ($participations as $participation)
                     <tr class="transition hover:bg-white/[0.035]">
-                        <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">{{ $participation->batch->title }}</td>
-                        <td class="px-5 py-4">{{ Str::of($participation->accessToken->ownership_tier)->replace('_', ' ')->title() }}</td>
+                        <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">Batch 3 Entertainment Cycle</td>
+                        <td class="px-5 py-4">Batch 3 Synchronized Class</td>
                         <td class="px-5 py-4"><x-ownership.status-badge :status="$participation->participation_status" /></td>
-                        <td class="px-5 py-4">{{ $participation->joined_at?->format('M j, Y') }}</td>
+                        <td class="px-5 py-4">June 7th, 2026</td>
                     </tr>
                 @empty
                     <tr>

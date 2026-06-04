@@ -14,7 +14,7 @@
             @forelse ($activeBatches as $batch)
                 <x-ownership.card :batch="$batch">
                     <x-slot:action>
-                        <a href="{{ route('member.access-token.create') }}" class="cca-button">Unlock Ownership Access</a>
+                        <a href="{{ route('member.access-token.create') }}" class="cca-button">Unlock Dashboard Privilege</a>
                     </x-slot:action>
                 </x-ownership.card>
             @empty

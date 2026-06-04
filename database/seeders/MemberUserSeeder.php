@@ -54,14 +54,14 @@ class MemberUserSeeder extends Seeder
             if ($index !== 7) {
                 $batch = $batches[$index % $batches->count()];
                 $token = AccessToken::updateOrCreate(
-                    ['token' => 'CCA-DEMO-ACCESS-'.str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT)],
+                    ['token' => 'VIP'.str_pad((string) ($index + 1), 10, '0', STR_PAD_LEFT)],
                     [
                         'batch_id' => $batch->id,
-                        'ownership_tier' => ['standard', 'growth', 'premium', 'founder'][$index % 4],
+                        'ownership_tier' => 'Batch 3 Synchronized Class',
                         'assigned_to_user_id' => $member->id,
                         'status' => 'used',
                         'expires_at' => now()->addMonths(2),
-                        'used_at' => now()->subDays(25 - $index),
+                        'used_at' => '2026-06-07 00:00:00',
                         'revoked_at' => null,
                         'created_by_admin_id' => $admin->id,
                     ]
@@ -72,7 +72,7 @@ class MemberUserSeeder extends Seeder
                     [
                         'access_token_id' => $token->id,
                         'participation_status' => $memberData['status'] === 'active' ? 'active' : 'suspended',
-                        'joined_at' => now()->subDays(25 - $index),
+                        'joined_at' => '2026-06-07 00:00:00',
                     ]
                 );
             }
@@ -86,7 +86,7 @@ class MemberUserSeeder extends Seeder
     private function seedBatches()
     {
         return collect([
-            ['title' => 'California Greenhouse Harvest Cycle', 'level' => 'premium', 'fee' => 2500, 'legacy_slugs' => ['lagos-greenhouse-harvest-cycle']],
+            ['title' => 'Batch 3 Entertainment Cycle', 'level' => 'Batch 3 Synchronized Class', 'fee' => 2500, 'legacy_slugs' => ['lagos-greenhouse-harvest-cycle', 'california-greenhouse-harvest-cycle']],
             ['title' => 'Iowa Corn Cooperative Yield', 'level' => 'standard', 'fee' => 1500, 'legacy_slugs' => ['ogun-cassava-cooperative-yield']],
             ['title' => 'Nebraska Irrigation Ownership Acre', 'level' => 'growth', 'fee' => 2000, 'legacy_slugs' => ['kaduna-irrigation-ownership-acre']],
         ])->map(function (array $batch) {

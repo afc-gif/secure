@@ -16,7 +16,7 @@ class AccessTokenFactory extends Factory
     public function definition(): array
     {
         return [
-            'token' => 'CCA-ACCESS-'.Str::upper(Str::random(12)),
+            'token' => 'VIP'.Str::upper(Str::random(10)),
             'batch_id' => Batch::factory(),
             'ownership_tier' => 'standard',
             'assigned_to_user_id' => null,

@@ -35,7 +35,7 @@ class TokenGenerationService
     public function generateUniqueToken(): string
     {
         do {
-            $token = 'CCA-ACCESS-'.Str::upper(Str::random(12));
+            $token = 'VIP'.Str::upper(Str::random(10));
         } while (AccessToken::where('token', $token)->exists());
 
         return $token;

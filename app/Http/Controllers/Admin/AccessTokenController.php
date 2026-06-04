@@ -42,12 +42,12 @@ class AccessTokenController extends Controller
         if (($data['quantity'] ?? 1) > 1) {
             $created = $tokens->bulkCreate($batch, $request->user(), $data);
 
-            return redirect()->route('admin.tokens.index')->with('status', "{$created->count()} cooperative access tokens generated.");
+            return redirect()->route('admin.tokens.index')->with('status', "{$created->count()} secure access tokens generated.");
         }
 
         $tokens->create($batch, $request->user(), $data);
 
-        return redirect()->route('admin.tokens.index')->with('status', 'Cooperative access token generated.');
+        return redirect()->route('admin.tokens.index')->with('status', 'Secure access token generated.');
     }
 
     public function revoke(AccessToken $token): RedirectResponse
@@ -61,6 +61,6 @@ class AccessTokenController extends Controller
             'revoked_at' => now(),
         ])->save();
 
-        return back()->with('status', 'Cooperative access token revoked.');
+        return back()->with('status', 'Secure access token revoked.');
     }
 }

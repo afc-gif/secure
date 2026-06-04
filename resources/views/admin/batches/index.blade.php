@@ -14,7 +14,7 @@
                 <x-slot:action>
                     <div class="grid gap-3 sm:flex sm:flex-wrap">
                         <a href="{{ route('admin.batches.edit', $batch) }}" class="cca-muted-button w-full sm:w-auto">Edit Batch</a>
-                        <a href="{{ route('admin.tokens.create', ['batch_id' => $batch->id]) }}" class="cca-muted-button w-full sm:w-auto">Generate Tokens</a>
+                        <a href="{{ route('admin.tokens.create', ['batch_id' => $batch->id]) }}" class="cca-muted-button w-full sm:w-auto">Generate Secure Tokens</a>
                         @if ($batch->status !== 'archived')
                             <form method="POST" action="{{ route('admin.batches.archive', $batch) }}">
                                 @csrf

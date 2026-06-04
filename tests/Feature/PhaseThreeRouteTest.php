@@ -16,7 +16,7 @@ class PhaseThreeRouteTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)->get(route('admin.batches.index'))->assertOk()->assertSee('Batch cycle management');
-        $this->actingAs($admin)->get(route('admin.tokens.index'))->assertOk()->assertSee('Access token management');
+        $this->actingAs($admin)->get(route('admin.tokens.index'))->assertOk()->assertSee('Secure Access Token Management');
     }
 
     public function test_onboarded_member_can_render_phase_three_pages(): void
@@ -25,7 +25,7 @@ class PhaseThreeRouteTest extends TestCase
         MemberProfile::factory()->for($member)->completed()->create();
 
         $this->actingAs($member)->get(route('member.batches.index'))->assertOk()->assertSee('Active ownership cycles');
-        $this->actingAs($member)->get(route('member.access-token.create'))->assertOk()->assertSee('Cooperative access token');
+        $this->actingAs($member)->get(route('member.access-token.create'))->assertOk()->assertSee('Secure Access Token');
         $this->actingAs($member)->get(route('member.participation.index'))->assertOk()->assertSee('Participation status');
     }
 }

@@ -20,19 +20,19 @@ class TokenValidationService
 
         if (! $token) {
             throw ValidationException::withMessages([
-                'token' => 'This cooperative access token was not found.',
+                'token' => 'This secure access token was not found.',
             ]);
         }
 
         if ($token->status === 'revoked' || $token->revoked_at) {
             throw ValidationException::withMessages([
-                'token' => 'This cooperative access token has been revoked.',
+                'token' => 'This secure access token has been revoked.',
             ]);
         }
 
         if ($token->status === 'used' || $token->used_at) {
             throw ValidationException::withMessages([
-                'token' => 'This cooperative access token has already been used.',
+                'token' => 'This secure access token has already been used.',
             ]);
         }
 
@@ -40,7 +40,7 @@ class TokenValidationService
             $token->forceFill(['status' => 'expired'])->save();
 
             throw ValidationException::withMessages([
-                'token' => 'This cooperative access token has expired.',
+                'token' => 'This secure access token has expired.',
             ]);
         }
 
@@ -52,7 +52,7 @@ class TokenValidationService
 
         if ($token->assigned_to_user_id && $token->assigned_to_user_id !== $user->id) {
             throw ValidationException::withMessages([
-                'token' => 'This cooperative access token is assigned to another member.',
+                'token' => 'This secure access token is assigned to another member.',
             ]);
         }
 

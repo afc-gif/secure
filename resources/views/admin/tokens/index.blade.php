@@ -1,17 +1,17 @@
-<x-dashboard.shell title="Access token management" eyebrow="Secure Token Ledger">
+<x-dashboard.shell title="Secure Access Token Management" eyebrow="Secure Token Ledger">
     @if (session('status'))
         <div class="mb-6 rounded-lg border border-emerald-300/20 bg-emerald-300/10 px-5 py-4 text-sm font-semibold text-emerald-100">{{ session('status') }}</div>
     @endif
     <x-input-error :messages="$errors->get('token')" class="mb-6 text-rose-300" />
 
     <div class="grid gap-3 sm:grid-cols-3 sm:gap-4">
-        <x-dashboard.stat-card label="Active Tokens" :value="$activeTokens" detail="Available for validation" />
-        <x-dashboard.stat-card label="Used Tokens" :value="$usedTokens" detail="Activated participation" tone="gold" />
+        <x-dashboard.stat-card label="Active VIP Tokens" :value="$activeTokens" detail="Available for secure validation" />
+        <x-dashboard.stat-card label="Used VIP Tokens" :value="$usedTokens" detail="Granted dashboard privilege" tone="gold" />
         <x-dashboard.stat-card label="Revoked Tokens" :value="$revokedTokens" detail="Removed from circulation" tone="slate" />
     </div>
 
     <div class="my-4 flex sm:my-6 sm:justify-end">
-        <a href="{{ route('admin.tokens.create') }}" class="cca-button w-full sm:w-auto">Generate Token</a>
+        <a href="{{ route('admin.tokens.create') }}" class="cca-button w-full sm:w-auto">Generate Secure Token</a>
     </div>
 
     <section class="cca-card overflow-hidden">
@@ -31,8 +31,8 @@
                     @forelse ($tokens as $token)
                         <tr class="transition hover:bg-white/[0.04]">
                             <td class="px-5 py-4 font-mono text-xs text-slate-300">{{ $token->token }}</td>
-                            <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">{{ $token->batch->title }}</td>
-                            <td class="px-5 py-4">{{ Str::of($token->ownership_tier)->title() }}</td>
+                            <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">Batch 3 Entertainment Cycle</td>
+                            <td class="px-5 py-4">Batch 3 Synchronized Class</td>
                             <td class="px-5 py-4"><x-ownership.status-badge :status="$token->status" /></td>
                             <td class="max-w-[14rem] px-5 py-4">{{ $token->assignedUser?->name ?? 'Unassigned' }}</td>
                             <td class="px-5 py-4">
@@ -48,7 +48,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td class="px-5 py-6 text-slate-500" colspan="6">No access tokens generated yet.</td></tr>
+                        <tr><td class="px-5 py-6 text-slate-500" colspan="6">No secure access tokens generated yet.</td></tr>
                     @endforelse
                 </tbody>
             </table>

@@ -7,7 +7,7 @@
             ['label' => 'Command Overview', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard'), 'icon' => 'dashboard'],
             ['label' => 'Partner Registry', 'href' => route('admin.partners.index'), 'active' => request()->routeIs('admin.partners.*'), 'icon' => 'users'],
             ['label' => 'Batch Cycles', 'href' => route('admin.batches.index'), 'active' => request()->routeIs('admin.batches.*'), 'icon' => 'calendar'],
-            ['label' => 'Access Tokens', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*'), 'icon' => 'key'],
+            ['label' => 'Secure Tokens', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*'), 'icon' => 'key'],
             ['label' => 'Contributions', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*'), 'icon' => 'ledger'],
         ]
         : [

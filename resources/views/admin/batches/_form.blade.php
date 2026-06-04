@@ -35,7 +35,7 @@
     </div>
 
     <div class="min-w-0">
-        <label for="ownership_level" class="cca-label">Ownership Level</label>
+        <label for="ownership_level" class="cca-label">Privilege Class</label>
         <input id="ownership_level" name="ownership_level" value="{{ old('ownership_level', $batch->ownership_level) }}" class="cca-input mt-2" required>
     </div>
 
@@ -53,10 +53,10 @@
 
 <label class="mt-6 flex gap-3 rounded-lg border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm text-emerald-100">
     <input type="checkbox" name="is_active" value="1" class="mt-1 rounded border-white/20 bg-black/40 text-emerald-400 focus:ring-emerald-300" @checked(old('is_active', $batch->is_active))>
-    <span>Open this batch for cooperative access token activation.</span>
+    <span>Open this batch for secure access token activation.</span>
 </label>
 
 <div class="mt-6 flex flex-col-reverse gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
     <a href="{{ route('admin.batches.index') }}" class="cca-muted-button w-full sm:w-auto">Back</a>
-    <button class="cca-button w-full sm:w-auto">Save Ownership Batch</button>
+    <button class="cca-button w-full sm:w-auto">Save Privilege Batch</button>
 </div>
