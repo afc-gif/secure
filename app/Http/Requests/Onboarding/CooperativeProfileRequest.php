@@ -17,7 +17,7 @@ class CooperativeProfileRequest extends FormRequest
         return [
             'occupation' => ['required', 'string', 'max:160'],
             'ownership_interest_reason' => ['required', 'string', 'min:20', 'max:900'],
-            'agricultural_interest_type' => ['required', 'string', Rule::in(['crop_cycles', 'livestock', 'orchards', 'mixed_farming', 'agri_finance'])],
+            'agricultural_interest_type' => ['required', 'string', Rule::in(['crop_cycles', 'livestock', 'orchards', 'mixed_farming', 'agri_finance', 'prefer_not_to_say'])],
             'bio' => ['required', 'string', 'min:20', 'max:900'],
         ];
     }

@@ -18,7 +18,7 @@
                     <label for="agricultural_interest_type" class="cca-label">Agricultural Interest Type</label>
                     <select id="agricultural_interest_type" name="agricultural_interest_type" class="cca-input mt-2" required>
                         <option value="">Select interest</option>
-                        @foreach (['crop_cycles' => 'Crop cycles', 'livestock' => 'Livestock', 'orchards' => 'Orchards', 'mixed_farming' => 'Mixed farming', 'agri_finance' => 'Agri-finance'] as $value => $label)
+                        @foreach (['crop_cycles' => 'Crop cycles', 'livestock' => 'Livestock', 'orchards' => 'Orchards', 'mixed_farming' => 'Mixed farming', 'agri_finance' => 'Agri-finance', 'prefer_not_to_say' => 'I prefer not to say'] as $value => $label)
                             <option value="{{ $value }}" @selected(old('agricultural_interest_type', $profile->agricultural_interest_type) === $value)>{{ $label }}</option>
                         @endforeach
                     </select>

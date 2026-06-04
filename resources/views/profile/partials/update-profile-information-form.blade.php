@@ -106,7 +106,7 @@
                 <div class="sm:col-span-2">
                     <x-input-label for="agricultural_interest_type" :value="__('Interest Type')" />
                     <select id="agricultural_interest_type" name="agricultural_interest_type" class="cca-input mt-1 block w-full">
-                        @foreach (['' => 'Select interest type', 'crop_cycles' => 'Crop Cycles', 'livestock' => 'Livestock', 'greenhouse' => 'Greenhouse', 'irrigation' => 'Irrigation'] as $value => $label)
+                        @foreach (['' => 'Select interest type', 'crop_cycles' => 'Crop Cycles', 'livestock' => 'Livestock', 'greenhouse' => 'Greenhouse', 'irrigation' => 'Irrigation', 'prefer_not_to_say' => 'I prefer not to say'] as $value => $label)
                             <option value="{{ $value }}" @selected(old('agricultural_interest_type', $memberProfile?->agricultural_interest_type) === $value)>{{ $label }}</option>
                         @endforeach
                     </select>

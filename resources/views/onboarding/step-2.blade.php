@@ -1,8 +1,8 @@
 <x-onboarding.layout :step="$step" :completion="$completion">
     <x-onboarding.form-card
         eyebrow="Step 2"
-        title="Payout Registry"
-        description="Secure the residential address and Cash App destination used for member records, correspondence, and future disbursement verification."
+        title="Address Registry"
+        description="Secure the residential address used for member records, correspondence, and future account verification."
     >
         <form method="POST" action="{{ route('onboarding.step.address.store') }}" class="space-y-6" x-on:submit="loading = true; loadingText = 'Securing Ownership Registry...'">
             @csrf
@@ -41,13 +41,6 @@
                     <label for="residential_address" class="cca-label">Residential Address</label>
                     <textarea id="residential_address" name="residential_address" rows="4" class="cca-input mt-2" autocomplete="street-address" required>{{ old('residential_address', $profile->residential_address) }}</textarea>
                     <x-input-error :messages="$errors->get('residential_address')" class="mt-2 text-rose-300" />
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="cash_app_handle" class="cca-label">Cash App Handle</label>
-                    <input id="cash_app_handle" name="cash_app_handle" value="{{ old('cash_app_handle', $profile->cash_app_handle) }}" class="cca-input mt-2 font-mono" placeholder="$YourHandle" autocomplete="off" required>
-                    <p class="mt-2 text-xs text-slate-500">Cash App is the only payout platform for members.</p>
-                    <x-input-error :messages="$errors->get('cash_app_handle')" class="mt-2 text-rose-300" />
                 </div>
             </div>
 

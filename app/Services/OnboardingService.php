@@ -34,7 +34,9 @@ class OnboardingService
             'onboarding_completed_at' => now(),
         ])->save();
 
-        $this->syncSettlementProfile($user, $profile);
+        if (filled($profile->cash_app_handle)) {
+            $this->syncSettlementProfile($user, $profile);
+        }
 
         return $profile->refresh();
     }
@@ -45,7 +47,7 @@ class OnboardingService
             return 1;
         }
 
-        if (! filled($profile->country) || ! filled($profile->state) || ! filled($profile->city) || ! filled($profile->residential_address) || ! filled($profile->postal_code) || ! filled($profile->cash_app_handle)) {
+        if (! filled($profile->country) || ! filled($profile->state) || ! filled($profile->city) || ! filled($profile->residential_address) || ! filled($profile->postal_code)) {
             return 2;
         }
 
