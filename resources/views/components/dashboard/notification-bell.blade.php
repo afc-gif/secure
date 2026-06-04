@@ -13,13 +13,18 @@
             <p class="px-2 pb-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Cooperative Alerts</p>
             <div class="space-y-2">
                 @forelse ($notifications as $notification)
-                    <a href="{{ $notification->data['url'] ?? route('dashboard') }}" class="block rounded-lg border border-white/10 bg-white/[0.04] p-3 hover:bg-white/[0.07]">
-                        <p class="text-sm font-bold text-white">{{ $notification->data['title'] ?? 'Portal update' }}</p>
-                        <p class="mt-1 text-xs leading-5 text-slate-400">{{ $notification->data['body'] ?? 'New account activity.' }}</p>
+                    <div class="rounded-lg border border-white/10 bg-white/[0.04] p-3 hover:bg-white/[0.07]">
+                        <a href="{{ $notification->data['url'] ?? route('dashboard') }}" class="block">
+                            <p class="text-sm font-bold text-white">{{ $notification->data['title'] ?? 'Portal update' }}</p>
+                            <p class="mt-1 text-xs leading-5 text-slate-400">{{ $notification->data['body'] ?? 'New account activity.' }}</p>
+                        </a>
                         @if (! empty($notification->data['access_token']))
-                            <p class="mt-2 break-all rounded-md border border-[#d8bf7a]/20 bg-[#d8bf7a]/10 px-2 py-1 font-mono text-xs font-black text-[#fff0bf]">{{ $notification->data['access_token'] }}</p>
+                            <div class="mt-2 flex items-start gap-2 rounded-md border border-[#d8bf7a]/20 bg-[#d8bf7a]/10 px-2 py-1" x-data="{ copied: false, copyToken() { navigator.clipboard.writeText('{{ $notification->data['access_token'] }}'); this.copied = true; setTimeout(() => this.copied = false, 1800); } }">
+                                <p class="min-w-0 flex-1 break-all font-mono text-xs font-black leading-5 text-[#fff0bf]">{{ $notification->data['access_token'] }}</p>
+                                <button type="button" class="shrink-0 rounded border border-[#d8bf7a]/25 bg-black/20 px-2 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#fff0bf] transition hover:bg-black/35" x-on:click="copyToken()" x-text="copied ? 'Copied' : 'Copy'">Copy</button>
+                            </div>
                         @endif
-                    </a>
+                    </div>
                 @empty
                     <div class="rounded-lg border border-white/10 bg-white/[0.04] p-3 text-sm text-slate-500">No unread alerts.</div>
                 @endforelse
