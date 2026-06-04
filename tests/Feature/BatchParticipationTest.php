@@ -7,7 +7,9 @@ use App\Models\Batch;
 use App\Models\BatchMember;
 use App\Models\MemberProfile;
 use App\Models\User;
+use App\Notifications\VipPaymentSubmittedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class BatchParticipationTest extends TestCase
@@ -76,5 +78,39 @@ class BatchParticipationTest extends TestCase
             ->post(route('member.access-token.store'), ['token' => $freshToken->token])
             ->assertRedirect(route('member.access-token.create'))
             ->assertSessionHasErrors('token');
+    }
+
+    public function test_member_can_confirm_vip_btc_payment_for_admin_review(): void
+    {
+        Notification::fake();
+
+        $admin = User::factory()->admin()->create();
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+        $batch = Batch::factory()->create();
+        $paymentToken = AccessToken::factory()->for($batch)->create([
+            'price' => 250.00,
+            'price_currency' => 'USD',
+            'btc_wallet_address' => 'bc1qsecureportalvipwallet000000000000000',
+        ]);
+
+        $this->actingAs($member)
+            ->post(route('member.access-token.payment.confirm'), [
+                'payment_token_id' => $paymentToken->id,
+                'btc_transaction_reference' => 'btc-tx-123',
+                'payment_notes' => 'Paid from Cash App BTC wallet.',
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('contributions', [
+            'user_id' => $member->id,
+            'batch_id' => $batch->id,
+            'amount' => 250.00,
+            'currency' => 'USD',
+            'contribution_type' => 'batch_participation',
+            'status' => 'pending',
+        ]);
+
+        Notification::assertSentTo($admin, VipPaymentSubmittedNotification::class);
     }
 }

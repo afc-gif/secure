@@ -63,6 +63,7 @@ Route::middleware(['auth', 'role:member', 'onboarded'])->prefix('member')->name(
     Route::get('/dashboard', MemberDashboardController::class)->name('dashboard');
     Route::get('/access-token', [MemberAccessTokenController::class, 'create'])->name('access-token.create');
     Route::post('/access-token', [MemberAccessTokenController::class, 'store'])->name('access-token.store');
+    Route::post('/access-token/confirm-payment', [MemberAccessTokenController::class, 'confirmPayment'])->name('access-token.payment.confirm');
 
     Route::middleware('member.unlocked')->group(function () {
         Route::get('/batches', [MemberBatchController::class, 'index'])->name('batches.index');
