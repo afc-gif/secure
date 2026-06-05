@@ -42,7 +42,7 @@ class DashboardController extends Controller
                     'access_input' => 'VIP015',
                 ],
                 'core' => [
-                    'value' => 'TOTAL SECURED BENEFIT BALANCE: USD 34,000.00',
+                    'value' => 'TOTAL BALANCE: USD 34,000.00',
                     'verification' => 'STATUS: LEGALLY VERIFIED / CARRIED CONTRACT ALLOCATION',
                 ],
                 'dataBlocks' => [

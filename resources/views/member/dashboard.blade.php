@@ -22,7 +22,7 @@
             <div class="relative">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.13em] text-white/70">Secured Benefit Balance</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.13em] text-white/70">Balance</p>
                     <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">USD 34,000.00</h2>
                     <p class="mt-4 max-w-xl text-sm leading-6 text-white/75">
                         @if ($isLocked)
