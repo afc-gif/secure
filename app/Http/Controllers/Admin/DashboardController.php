@@ -81,7 +81,7 @@ class DashboardController extends Controller
                         'active' => false,
                     ],
                     [
-                        'label' => 'Legacy Grounds Dividend Track',
+                        'label' => 'Legacy Grounds',
                         'description' => 'Filters database for physical venue footprint distributions.',
                         'active' => false,
                     ],

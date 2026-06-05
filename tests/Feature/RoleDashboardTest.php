@@ -36,7 +36,7 @@ class RoleDashboardTest extends TestCase
             ->assertSee('Sovereign Equity')
             ->assertSee('USD 24,911.34')
             ->assertSee('Cleared')
-            ->assertSee('Legacy Grounds Dividend Track')
+            ->assertSee('Legacy Grounds')
             ->assertSee('USD 9,088.66')
             ->assertSee('Pending');
     }

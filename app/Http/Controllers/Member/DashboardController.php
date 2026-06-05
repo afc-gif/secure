@@ -54,7 +54,7 @@ class DashboardController extends Controller
                     ],
                     [
                         'label' => 'Data Block Beta',
-                        'header' => 'Legacy Grounds Dividend Track',
+                        'header' => 'Legacy Grounds',
                         'allocation' => 'USD 9,088.66',
                         'status' => 'Pending',
                     ],
