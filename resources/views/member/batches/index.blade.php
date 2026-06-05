@@ -14,7 +14,7 @@
             @forelse ($activeBatches as $batch)
                 <x-ownership.card :batch="$batch">
                     <x-slot:action>
-                        <span class="cca-button">{{ $batch->batch_code === 'SECURE-GROUNDS-03' ? 'SECURED POSITION PENDING' : 'SECURED POSITION ACTIVE' }}</span>
+                        <span class="cca-button">{{ $batch->status === 'pending' || $batch->batch_code === 'SECURE-GROUNDS-03' ? 'SECURED POSITION PENDING' : 'SECURED POSITION ACTIVE' }}</span>
                     </x-slot:action>
                 </x-ownership.card>
             @empty

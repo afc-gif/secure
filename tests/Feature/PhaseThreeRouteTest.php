@@ -132,6 +132,53 @@ class PhaseThreeRouteTest extends TestCase
         $this->assertDatabaseMissing('batches', ['id' => $batch->id]);
     }
 
+    public function test_pending_admin_cycles_are_visible_on_member_cycle_tab(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+        $unlockBatch = Batch::factory()->create();
+        $token = AccessToken::factory()->used()->for($unlockBatch)->create([
+            'assigned_to_user_id' => $member->id,
+        ]);
+
+        BatchMember::create([
+            'batch_id' => $unlockBatch->id,
+            'user_id' => $member->id,
+            'access_token_id' => $token->id,
+            'participation_status' => 'active',
+            'joined_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.batches.store'), [
+                'title' => 'Pending Studio Revenue Stream',
+                'description' => 'Pending secured revenue stream.',
+                'batch_code' => 'SECURE-PENDING-01',
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-11-01',
+                'status' => 'pending',
+                'max_members' => 100,
+                'ownership_level' => 'Catalog Equity Class',
+                'participation_fee' => 390000,
+                'is_active' => '1',
+            ])
+            ->assertRedirect(route('admin.batches.index'));
+
+        $this->assertDatabaseHas('batches', [
+            'batch_code' => 'SECURE-PENDING-01',
+            'status' => 'pending',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('member.batches.index'))
+            ->assertOk()
+            ->assertSee('Pending Studio Revenue Stream')
+            ->assertSee('pending')
+            ->assertSee('SECURED POSITION PENDING');
+    }
+
     public function test_admin_can_delete_member_from_partner_registry(): void
     {
         $admin = User::factory()->admin()->create();

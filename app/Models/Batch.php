@@ -13,7 +13,7 @@ class Batch extends Model
 {
     use HasFactory;
 
-    public const STATUSES = ['upcoming', 'active', 'archived', 'locked', 'completed'];
+    public const STATUSES = ['pending', 'upcoming', 'active', 'archived', 'locked', 'completed'];
 
     protected $fillable = [
         'title',
@@ -79,7 +79,7 @@ class Batch extends Model
     {
         $today = Carbon::today();
 
-        if (! $this->is_active || $this->status !== 'active') {
+        if (! $this->is_active || ! in_array($this->status, ['active', 'pending'], true)) {
             return false;
         }
 

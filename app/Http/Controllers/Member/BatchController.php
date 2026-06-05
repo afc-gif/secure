@@ -13,7 +13,7 @@ class BatchController extends Controller
         return view('member.batches.index', [
             'activeBatches' => Batch::query()
                 ->where('is_active', true)
-                ->where('status', 'active')
+                ->whereIn('status', ['active', 'pending'])
                 ->latest('start_date')
                 ->get(),
             'participations' => request()->user()
