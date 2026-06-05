@@ -135,7 +135,7 @@
                     <p class="text-sm font-black text-white">Timeline</p>
                     <p class="mt-1 text-xs text-slate-500">Batch 3 Cycle</p>
                 </div>
-                <span class="rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-xs font-bold text-slate-300">Active</span>
+                <span class="rounded-md border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 font-mono text-xs font-bold text-emerald-100">Active</span>
             </div>
 
             <div class="mt-5 space-y-4">

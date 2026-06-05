@@ -20,13 +20,16 @@
                     @php
                         $batchTitle = $participation->batch?->title;
                         $displayBatchTitle = Str::startsWith($batchTitle ?? '', 'Batch 3') ? 'Batch 3' : ($batchTitle ?? 'Batch 3');
+                        $displayStatus = $participation->batch?->status === 'pending' || $participation->batch?->batch_code === 'SECURE-GROUNDS-03'
+                            ? 'pending'
+                            : $participation->participation_status;
                     @endphp
                     <tr class="transition hover:bg-white/[0.035]">
                         <td class="max-w-[14rem] px-5 py-4 font-semibold text-white">
                             {{ $displayBatchTitle }}
                         </td>
                         <td class="px-5 py-4">{{ $participation->accessToken?->ownership_tier ?? $participation->batch?->ownership_level ?? 'Batch 3 Synchronized Class' }}</td>
-                        <td class="px-5 py-4"><x-ownership.status-badge :status="$participation->participation_status" /></td>
+                        <td class="px-5 py-4"><x-ownership.status-badge :status="$displayStatus" /></td>
                         <td class="px-5 py-4">{{ $participation->joined_at?->format('F j, Y') ?? 'June 7, 2025' }}</td>
                     </tr>
                 @empty
