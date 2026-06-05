@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <p class="cca-kicker">Cycle Registry</p>
-                <h2 class="mt-2 text-xl font-black text-white">Open cooperative participation windows</h2>
+                <h2 class="mt-2 text-xl font-black text-white">Secured Revenue Streams</h2>
             </div>
             <span class="rounded-md border border-[#f35aa5]/20 bg-[#f35aa5]/10 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#ffd4e9]">Access Active</span>
         </div>
@@ -14,14 +14,14 @@
             @forelse ($activeBatches as $batch)
                 <x-ownership.card :batch="$batch">
                     <x-slot:action>
-                        <span class="cca-button">Dashboard Privilege Active</span>
+                        <span class="cca-button">{{ $batch->batch_code === 'SECURE-GROUNDS-03' ? 'SECURED POSITION PENDING' : 'SECURED POSITION ACTIVE' }}</span>
                     </x-slot:action>
                 </x-ownership.card>
             @empty
                 <section class="cca-card p-6">
                     <p class="cca-kicker">Cycle Access</p>
                     <h2 class="mt-3 text-2xl font-black text-white">No active ownership cycles</h2>
-                    <p class="mt-3 text-sm leading-6 text-slate-400">CCA has not opened a cooperative participation window at this time.</p>
+                    <p class="mt-3 text-sm leading-6 text-slate-400">No secured revenue streams are available at this time.</p>
                 </section>
             @endforelse
         </section>

@@ -1,4 +1,4 @@
-<x-dashboard.shell title="Edit ownership batch" eyebrow="Batch Controls">
+<x-dashboard.shell title="Edit active cycle" eyebrow="Cycle Controls">
     <section class="cca-card overflow-hidden">
         <div class="border-b border-white/10 px-4 py-4 sm:px-7 sm:py-5">
             <p class="break-all text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ $batch->batch_code }}</p>

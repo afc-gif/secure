@@ -86,9 +86,36 @@ class MemberUserSeeder extends Seeder
     private function seedBatches()
     {
         return collect([
-            ['title' => 'Batch 3 Entertainment Cycle', 'level' => 'Batch 3 Synchronized Class', 'fee' => 2500, 'legacy_slugs' => ['lagos-greenhouse-harvest-cycle', 'california-greenhouse-harvest-cycle']],
-            ['title' => 'Iowa Corn Cooperative Yield', 'level' => 'standard', 'fee' => 1500, 'legacy_slugs' => ['ogun-cassava-cooperative-yield']],
-            ['title' => 'Nebraska Irrigation Ownership Acre', 'level' => 'growth', 'fee' => 2000, 'legacy_slugs' => ['kaduna-irrigation-ownership-acre']],
+            [
+                'title' => 'Sovereign Catalog Equity Share',
+                'description' => 'Synchronized data pipeline tracking studio master recording yields, digital streaming royalties, and primary distribution streams.',
+                'batch_code' => 'SECURE-CATALOG-01',
+                'start_date' => '2023-03-02',
+                'end_date' => '2023-05-01',
+                'level' => 'Catalog Equity Class',
+                'fee' => 390000,
+                'legacy_slugs' => ['lagos-greenhouse-harvest-cycle', 'california-greenhouse-harvest-cycle', 'batch-3-entertainment-cycle'],
+            ],
+            [
+                'title' => 'Publishing & Synchronization Rights',
+                'description' => 'Synchronized ledger tracking publishing asset valuations, composition licensing residuals, and media synchronization rights.',
+                'batch_code' => 'SECURE-PUBLISHING-02',
+                'start_date' => '2025-06-01',
+                'end_date' => '2025-11-10',
+                'level' => 'Catalog Equity Class',
+                'fee' => 390000,
+                'legacy_slugs' => ['ogun-cassava-cooperative-yield', 'iowa-corn-cooperative-yield'],
+            ],
+            [
+                'title' => 'Legacy Grounds',
+                'description' => 'Privilege access pipeline tracking physical venue footprint allocations, legacy grounds distributions, and seasonal live event operational milestones.',
+                'batch_code' => 'SECURE-GROUNDS-03',
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-11-01',
+                'level' => 'Ground Access Class',
+                'fee' => 34000,
+                'legacy_slugs' => ['kaduna-irrigation-ownership-acre', 'nebraska-irrigation-ownership-acre'],
+            ],
         ])->map(function (array $batch) {
             $slug = Str::slug($batch['title']);
             $model = Batch::firstOrNew([
@@ -102,10 +129,10 @@ class MemberUserSeeder extends Seeder
             $model->fill([
                 'title' => $batch['title'],
                 'slug' => $slug,
-                'description' => 'Demo Harvest Cycle for ownership intelligence, contribution analytics, and settlement testing.',
-                'batch_code' => 'CCA-BATCH-'.Str::upper(Str::substr(md5($batch['title']), 0, 6)),
-                'start_date' => now()->subMonth()->toDateString(),
-                'end_date' => now()->addMonths(3)->toDateString(),
+                'description' => $batch['description'],
+                'batch_code' => $batch['batch_code'],
+                'start_date' => $batch['start_date'],
+                'end_date' => $batch['end_date'],
                 'status' => 'active',
                 'max_members' => 50,
                 'ownership_level' => $batch['level'],

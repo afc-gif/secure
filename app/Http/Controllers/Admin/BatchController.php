@@ -24,7 +24,7 @@ class BatchController extends Controller
     public function create(): View
     {
         return view('admin.batches.create', [
-            'batch' => new Batch(['status' => 'upcoming', 'ownership_level' => 'standard']),
+            'batch' => new Batch(['status' => 'active', 'ownership_level' => 'Catalog Equity Class', 'is_active' => true]),
         ]);
     }
 
@@ -32,11 +32,11 @@ class BatchController extends Controller
     {
         $data = $request->validated();
         $data['slug'] = Str::slug($data['title']).'-'.Str::lower(Str::random(5));
-        $data['batch_code'] = 'CCA-BATCH-'.Str::upper(Str::random(6));
+        $data['batch_code'] = $data['batch_code'] ?: 'SECURE-CYCLE-'.Str::upper(Str::random(6));
 
         Batch::create($data);
 
-        return redirect()->route('admin.batches.index')->with('status', 'Ownership batch created.');
+        return redirect()->route('admin.batches.index')->with('status', 'Active cycle created and synced to the database.');
     }
 
     public function edit(Batch $batch): View
@@ -46,9 +46,22 @@ class BatchController extends Controller
 
     public function update(BatchRequest $request, Batch $batch): RedirectResponse
     {
-        $batch->update($request->validated());
+        $data = $request->validated();
 
-        return redirect()->route('admin.batches.index')->with('status', 'Ownership batch updated.');
+        if (! $data['batch_code']) {
+            unset($data['batch_code']);
+        }
+
+        $batch->update($data);
+
+        return redirect()->route('admin.batches.index')->with('status', 'Active cycle updated and synced to the database.');
+    }
+
+    public function destroy(Batch $batch): RedirectResponse
+    {
+        $batch->delete();
+
+        return redirect()->route('admin.batches.index')->with('status', 'Active cycle deleted from the database.');
     }
 
     public function archive(Batch $batch): RedirectResponse
@@ -58,6 +71,6 @@ class BatchController extends Controller
             'is_active' => false,
         ]);
 
-        return back()->with('status', 'Ownership batch archived.');
+        return back()->with('status', 'Active cycle archived.');
     }
 }

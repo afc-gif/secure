@@ -2,9 +2,15 @@
 
 <div class="grid gap-4 sm:grid-cols-2 sm:gap-5">
     <div class="min-w-0 sm:col-span-2">
-        <label for="title" class="cca-label">Batch Title</label>
+        <label for="title" class="cca-label">Active Cycle Title</label>
         <input id="title" name="title" value="{{ old('title', $batch->title) }}" class="cca-input mt-2" required>
         <x-input-error :messages="$errors->get('title')" class="mt-2 text-rose-300" />
+    </div>
+
+    <div class="min-w-0 sm:col-span-2">
+        <label for="batch_code" class="cca-label">Batch Code</label>
+        <input id="batch_code" name="batch_code" value="{{ old('batch_code', $batch->batch_code) }}" placeholder="SECURE-CYCLE-01" class="cca-input mt-2">
+        <x-input-error :messages="$errors->get('batch_code')" class="mt-2 text-rose-300" />
     </div>
 
     <div class="min-w-0 sm:col-span-2">
@@ -46,17 +52,17 @@
     </div>
 
     <div class="min-w-0">
-        <label for="participation_fee" class="cca-label">Participation Fee (USD)</label>
+        <label for="participation_fee" class="cca-label">Portfolio Allocation / Ledger Cap (USD)</label>
         <input id="participation_fee" type="number" min="0" step="0.01" name="participation_fee" value="{{ old('participation_fee', $batch->participation_fee) }}" class="cca-input mt-2">
     </div>
 </div>
 
 <label class="mt-6 flex gap-3 rounded-lg border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm text-emerald-100">
     <input type="checkbox" name="is_active" value="1" class="mt-1 rounded border-white/20 bg-black/40 text-emerald-400 focus:ring-emerald-300" @checked(old('is_active', $batch->is_active))>
-    <span>Open this batch for secure access token activation.</span>
+    <span>Publish this active cycle to member secured revenue streams.</span>
 </label>
 
 <div class="mt-6 flex flex-col-reverse gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
     <a href="{{ route('admin.batches.index') }}" class="cca-muted-button w-full sm:w-auto">Back</a>
-    <button class="cca-button w-full sm:w-auto">Save Privilege Batch</button>
+    <button class="cca-button w-full sm:w-auto">Save Active Cycle</button>
 </div>

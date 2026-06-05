@@ -19,7 +19,7 @@ class PhaseThreeRouteTest extends TestCase
         $admin = User::factory()->admin()->create();
         $member = User::factory()->create(['name' => 'Signed Up Member']);
 
-        $this->actingAs($admin)->get(route('admin.batches.index'))->assertOk()->assertSee('Batch cycle management');
+        $this->actingAs($admin)->get(route('admin.batches.index'))->assertOk()->assertSee('Active cycle management');
         $this->actingAs($admin)->get(route('admin.tokens.index'))->assertOk()->assertSee('Secure Access Token Management');
         $this->actingAs($admin)
             ->get(route('admin.partners.index'))
@@ -53,6 +53,83 @@ class PhaseThreeRouteTest extends TestCase
 
         $this->actingAs($member)->get(route('member.batches.index'))->assertOk()->assertSee('Active ownership cycles');
         $this->actingAs($member)->get(route('member.participation.index'))->assertOk()->assertSee('Participation status');
+    }
+
+    public function test_admin_can_manage_active_cycles_that_sync_to_member_cycle_tab(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+        $unlockBatch = Batch::factory()->create();
+        $token = AccessToken::factory()->used()->for($unlockBatch)->create([
+            'assigned_to_user_id' => $member->id,
+        ]);
+
+        BatchMember::create([
+            'batch_id' => $unlockBatch->id,
+            'user_id' => $member->id,
+            'access_token_id' => $token->id,
+            'participation_status' => 'active',
+            'joined_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.batches.store'), [
+                'title' => 'Studio Revenue Stream',
+                'description' => 'Admin-created secured revenue stream.',
+                'batch_code' => 'SECURE-STUDIO-99',
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-11-01',
+                'status' => 'active',
+                'max_members' => 100,
+                'ownership_level' => 'Catalog Equity Class',
+                'participation_fee' => 390000,
+                'is_active' => '1',
+            ])
+            ->assertRedirect(route('admin.batches.index'));
+
+        $batch = Batch::where('batch_code', 'SECURE-STUDIO-99')->firstOrFail();
+
+        $this->assertDatabaseHas('batches', [
+            'id' => $batch->id,
+            'title' => 'Studio Revenue Stream',
+            'status' => 'active',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('member.batches.index'))
+            ->assertOk()
+            ->assertSee('Studio Revenue Stream')
+            ->assertSee('SECURE-STUDIO-99');
+
+        $this->actingAs($admin)
+            ->put(route('admin.batches.update', $batch), [
+                'title' => 'Edited Studio Revenue Stream',
+                'description' => 'Edited admin-created secured revenue stream.',
+                'batch_code' => 'SECURE-STUDIO-EDIT',
+                'start_date' => '2026-07-01',
+                'end_date' => '2026-12-01',
+                'status' => 'active',
+                'max_members' => 125,
+                'ownership_level' => 'Catalog Equity Class',
+                'participation_fee' => 410000,
+                'is_active' => '1',
+            ])
+            ->assertRedirect(route('admin.batches.index'));
+
+        $this->assertDatabaseHas('batches', [
+            'id' => $batch->id,
+            'title' => 'Edited Studio Revenue Stream',
+            'batch_code' => 'SECURE-STUDIO-EDIT',
+            'participation_fee' => 410000,
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.batches.destroy', $batch))
+            ->assertRedirect(route('admin.batches.index'));
+
+        $this->assertDatabaseMissing('batches', ['id' => $batch->id]);
     }
 
     public function test_admin_can_delete_member_from_partner_registry(): void
