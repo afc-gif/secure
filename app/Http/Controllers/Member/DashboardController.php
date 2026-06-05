@@ -15,8 +15,8 @@ class DashboardController extends Controller
         $user = request()->user();
         $profile = $onboarding->profileFor($user);
         $settlementProfile = $user->settlementProfile;
-        $bankName = $settlementProfile?->bank_name;
         $recipient = $settlementProfile?->account_name ?: ($profile->full_legal_name ?: $user->name);
+        $phone = $profile->phone ?: $user->phone;
         $address = collect([
             $profile->residential_address,
             trim(collect([$profile->city, $profile->state, $profile->postal_code])->filter()->implode(', ')),
@@ -60,10 +60,9 @@ class DashboardController extends Controller
                     ],
                 ],
                 'disbursement' => [
-                    'status' => filled($bankName) ? 'Ready' : 'Pending',
                     'recipient' => $recipient,
+                    'phone' => $phone ?: 'Phone number not provided',
                     'address' => $address ?: 'Address not provided',
-                    'destination' => filled($bankName) ? $bankName : 'Bank account not provided',
                     'withdrawal_status' => $settlementProfile?->withdrawal_status,
                 ],
                 'milestones' => [
