@@ -16,15 +16,16 @@
             <p class="mt-1 text-sm text-slate-500">Every member account created through signup, including VIP participation status, profile status, and confirmed USD contribution totals.</p>
         </div>
         <div class="overflow-x-auto">
-            <table class="min-w-[82rem] divide-y divide-white/10 text-left text-sm">
+            <table class="min-w-[96rem] divide-y divide-white/10 text-left text-sm">
                 <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.12em] text-slate-500">
                     <tr>
                         <th class="px-5 py-4">Member</th>
-                        <th class="px-5 py-4">Reference</th>
+                        <th class="px-5 py-4">Login Token</th>
                         <th class="px-5 py-4">Signup</th>
+                        <th class="px-5 py-4">Contact</th>
                         <th class="px-5 py-4">Registry Address</th>
                         <th class="px-5 py-4">Profile</th>
-                        <th class="px-5 py-4">Participation</th>
+                        <th class="px-5 py-4">Participant Access</th>
                         <th class="px-5 py-4">Settlement</th>
                         <th class="px-5 py-4">Confirmed</th>
                         <th class="px-5 py-4">Action</th>
@@ -39,11 +40,22 @@
                             <td class="max-w-[16rem] px-5 py-4">
                                 <p class="font-semibold text-white">{{ $profile?->full_legal_name ?? $partner->name }}</p>
                                 <p class="mt-1 break-all text-xs text-slate-500">{{ $partner->email }}</p>
+                                <p class="mt-1 text-xs text-slate-500">User ID: {{ $partner->id }}</p>
                             </td>
-                            <td class="px-5 py-4 font-mono text-xs text-slate-300">{{ $partner->reference_token }}</td>
+                            <td class="max-w-[15rem] px-5 py-4">
+                                <p class="font-mono text-xs font-black text-[#ffd4e9]">{{ $partner->reference_token }}</p>
+                                <p class="mt-1 text-xs text-slate-500">Required at member login</p>
+                            </td>
                             <td class="whitespace-nowrap px-5 py-4">
                                 <p class="font-semibold text-white">{{ $partner->created_at->format('M j, Y') }}</p>
                                 <p class="mt-1 text-xs text-slate-500">{{ $partner->created_at->diffForHumans() }}</p>
+                            </td>
+                            <td class="max-w-[13rem] px-5 py-4">
+                                <p class="break-all text-xs font-semibold text-white">{{ $partner->phone ?: 'Phone pending' }}</p>
+                                <p class="mt-1 text-xs text-slate-500">{{ Str::of($partner->status)->title() }}</p>
+                                @if ($profile?->date_of_birth)
+                                    <p class="mt-1 text-xs text-slate-500">DOB {{ $profile->date_of_birth->format('M j, Y') }}</p>
+                                @endif
                             </td>
                             <td class="max-w-[14rem] px-5 py-4">
                                 @if ($profile)
@@ -63,8 +75,15 @@
                             <td class="max-w-[16rem] px-5 py-4">
                                 @if ($latestParticipation)
                                     <x-profile.status-badge tone="emerald">Participant</x-profile.status-badge>
-                                    <p class="mt-2 text-xs font-semibold text-white">{{ $latestParticipation->batch?->title ?? 'VIP cycle' }}</p>
-                                    <p class="mt-1 font-mono text-xs text-slate-500">{{ $latestParticipation->accessToken?->token ?? 'Token unavailable' }}</p>
+                                    <div class="mt-2 space-y-2">
+                                        @foreach ($partner->batchMembers->sortByDesc('joined_at') as $participation)
+                                            <div class="rounded-md border border-white/[0.07] bg-white/[0.025] p-2">
+                                                <p class="text-xs font-semibold text-white">{{ $participation->batch?->title ?? 'VIP cycle' }}</p>
+                                                <p class="mt-1 font-mono text-xs text-[#ffd4e9]">{{ $participation->accessToken?->token ?? 'Token unavailable' }}</p>
+                                                <p class="mt-1 text-xs text-slate-500">{{ Str::of($participation->participation_status)->title() }}{{ $participation->joined_at ? ' / '.$participation->joined_at->format('M j, Y') : '' }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 @else
                                     <x-profile.status-badge tone="gold">Signed Up</x-profile.status-badge>
                                     <p class="mt-2 text-xs text-slate-500">Awaiting VIP payment/token activation</p>
@@ -84,7 +103,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td class="px-5 py-6 text-slate-500" colspan="9">No member signups have been created yet.</td>
+                            <td class="px-5 py-6 text-slate-500" colspan="10">No member signups have been created yet.</td>
                         </tr>
                     @endforelse
                 </tbody>
