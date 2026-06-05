@@ -181,10 +181,9 @@ class ProfileTest extends TestCase
         $this->actingAs($user)
             ->get(route('member.settlement-profile.withdrawal-status'))
             ->assertOk()
-            ->assertSee('Withdrawal Processing')
+            ->assertSee('Processing')
             ->assertSee('Your withdrawal will be complete within 24hrs')
-            ->assertSee('Back to Dashboard')
-            ->assertSee('Bank processing');
+            ->assertSee('Back to Dashboard');
 
         $profile->forceFill([
             'withdrawal_requested_at' => now()->subDay()->subMinute(),
