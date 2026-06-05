@@ -4,7 +4,7 @@
         <div>
             <p class="cca-kicker">Cooperative capital request</p>
             <h2 class="mt-3 text-2xl font-black text-white">Record a crypto payment</h2>
-            <p class="mt-2 text-sm leading-6 text-slate-400">Crypto payment requests enter admin review. Once approved, a VIP token can be issued for full dashboard access. Member payouts remain Cash App-only.</p>
+            <p class="mt-2 text-sm leading-6 text-slate-400">Crypto payment requests enter admin review. Once approved, a VIP token can be issued for full dashboard access. Member payouts use verified bank withdrawal details.</p>
         </div>
 
         <div class="mt-8 grid gap-5 sm:grid-cols-2">

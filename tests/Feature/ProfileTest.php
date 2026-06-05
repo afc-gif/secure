@@ -6,6 +6,7 @@ use App\Models\AccessToken;
 use App\Models\Batch;
 use App\Models\BatchMember;
 use App\Models\MemberProfile;
+use App\Models\SettlementProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -107,7 +108,7 @@ class ProfileTest extends TestCase
         $this->assertSame('Cash App', $settlement->bank_name);
     }
 
-    public function test_unlocked_member_can_add_cash_app_withdrawal_details(): void
+    public function test_unlocked_member_can_add_bank_withdrawal_details(): void
     {
         $user = User::factory()->create();
         MemberProfile::factory()->for($user)->completed()->create(['cash_app_handle' => null]);
@@ -116,41 +117,106 @@ class ProfileTest extends TestCase
         $this->actingAs($user)
             ->get(route('member.dashboard'))
             ->assertOk()
-            ->assertSee('Add Cash App Details');
+            ->assertSee('Add Bank Details');
 
         $this->actingAs($user)
             ->get(route('member.settlement-profile.show'))
             ->assertOk()
-            ->assertSee('Cash App Withdrawal')
-            ->assertSee('Cash App only')
-            ->assertSee('No bank, card, crypto, or alternate payout method is accepted.');
+            ->assertSee('Bank Withdrawal')
+            ->assertSee('Bank Name')
+            ->assertSee('Account Holder Name')
+            ->assertSee('Routing Number')
+            ->assertSee('Account Number')
+            ->assertSee('Account Type');
 
         $this->actingAs($user)
             ->post(route('member.settlement-profile.store'), [
-                'cash_app_handle' => 'cashready',
+                'bank_name' => 'Chase Bank',
+                'account_name' => 'Test Legal User',
+                'routing_number' => '123456789',
+                'account_number' => '9876543210',
+                'account_type' => 'checking',
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('member.settlement-profile.show'));
 
         $settlement = $user->refresh()->settlementProfile;
 
-        $this->assertSame('cash_app', $settlement->payout_platform);
-        $this->assertSame('$cashready', $settlement->cash_app_handle);
-        $this->assertSame('Cash App', $settlement->bank_name);
-        $this->assertSame('$cashready', $settlement->account_number);
+        $this->assertSame('bank', $settlement->payout_platform);
+        $this->assertNull($settlement->cash_app_handle);
+        $this->assertSame('Chase Bank', $settlement->bank_name);
+        $this->assertSame('Test Legal User', $settlement->account_name);
+        $this->assertSame('123456789', $settlement->routing_number);
+        $this->assertSame('9876543210', $settlement->account_number);
+        $this->assertSame('checking', $settlement->account_type);
+
+        $this->actingAs($user)
+            ->get(route('member.settlement-profile.show'))
+            ->assertOk()
+            ->assertSee('Proceed to Withdraw');
     }
 
-    public function test_dashboard_shows_withdraw_to_cash_app_when_cash_app_is_ready(): void
+    public function test_member_can_proceed_to_withdrawal_and_it_completes_after_24_hours(): void
     {
         $user = User::factory()->create();
-        MemberProfile::factory()->for($user)->completed()->create(['cash_app_handle' => '$cashready']);
+        MemberProfile::factory()->for($user)->completed()->create(['cash_app_handle' => null]);
+        $profile = SettlementProfile::factory()->for($user)->create([
+            'bank_name' => 'Chase Bank',
+            'account_name' => 'Test Legal User',
+            'routing_number' => '123456789',
+            'account_number' => '9876543210',
+            'account_type' => 'checking',
+            'withdrawal_status' => null,
+        ]);
+        $this->unlockMember($user);
+
+        $this->actingAs($user)
+            ->post(route('member.settlement-profile.withdraw'))
+            ->assertRedirect(route('member.settlement-profile.withdrawal-status'));
+
+        $profile->refresh();
+        $this->assertSame('processing', $profile->withdrawal_status);
+        $this->assertNotNull($profile->withdrawal_requested_at);
+
+        $this->actingAs($user)
+            ->get(route('member.settlement-profile.withdrawal-status'))
+            ->assertOk()
+            ->assertSee('Withdrawal Processing')
+            ->assertSee('Your withdrawal will be complete within 24hrs')
+            ->assertSee('Back to Dashboard')
+            ->assertSee('Bank processing');
+
+        $profile->forceFill([
+            'withdrawal_requested_at' => now()->subDay()->subMinute(),
+        ])->save();
+
+        $this->actingAs($user)
+            ->get(route('member.settlement-profile.withdrawal-status'))
+            ->assertOk()
+            ->assertSee('Withdrawal Complete')
+            ->assertSee('Your withdrawal has been completed')
+            ->assertSee('Back to Dashboard');
+
+        $this->assertSame('completed', $profile->refresh()->withdrawal_status);
+        $this->assertNotNull($profile->withdrawal_completed_at);
+    }
+
+    public function test_dashboard_shows_withdraw_to_bank_when_bank_details_are_ready(): void
+    {
+        $user = User::factory()->create();
+        MemberProfile::factory()->for($user)->completed()->create(['cash_app_handle' => null]);
+        SettlementProfile::factory()->for($user)->create([
+            'bank_name' => 'Chase Bank',
+            'account_name' => 'Test Legal User',
+            'verification_status' => 'verified',
+        ]);
         $this->unlockMember($user);
 
         $this->actingAs($user)
             ->get(route('member.dashboard'))
             ->assertOk()
-            ->assertSee('Withdraw to Cash App')
-            ->assertSee('Cash App ($cashready)');
+            ->assertSee('Withdraw to Bank')
+            ->assertSee('Chase Bank');
     }
 
     public function test_user_can_delete_their_account(): void

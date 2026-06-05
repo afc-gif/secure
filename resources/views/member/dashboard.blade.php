@@ -162,7 +162,7 @@
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
                         <p class="text-sm font-black text-white">Payout Profile</p>
-                        <p class="mt-1 text-xs text-slate-500">Cash App</p>
+                        <p class="mt-1 text-xs text-slate-500">Bank Account</p>
                     </div>
                     <span class="rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-bold text-slate-300">{{ $panel['disbursement']['status'] }}</span>
                 </div>
@@ -177,7 +177,7 @@
                         <dd class="break-words font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['address'] }}</dd>
                     </div>
                     <div class="grid gap-1 py-3 last:pb-0">
-                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Cash App</dt>
+                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Bank</dt>
                         <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['destination'] }}</dd>
                     </div>
                 </dl>
@@ -185,9 +185,12 @@
                 @if (! $isLocked)
                     <div class="mt-5 border-t border-white/[0.07] pt-5">
                         <a href="{{ route('member.settlement-profile.show') }}" class="cca-button inline-flex w-full justify-center py-2 text-xs">
-                            {{ $panel['disbursement']['status'] === 'Ready' ? 'Withdraw to Cash App' : 'Add Cash App Details' }}
+                            {{ $panel['disbursement']['status'] === 'Ready' ? 'Withdraw to Bank' : 'Add Bank Details' }}
                         </a>
-                        <p class="mt-3 text-xs leading-5 text-slate-500">Withdrawals are Cash App-only. Add a valid Cash App handle before requesting payout.</p>
+                        @if (in_array($panel['disbursement']['withdrawal_status'], ['processing', 'completed'], true))
+                            <a href="{{ route('member.settlement-profile.withdrawal-status') }}" class="cca-muted-button mt-3 inline-flex w-full justify-center py-2 text-xs">Track Withdrawal</a>
+                        @endif
+                        <p class="mt-3 text-xs leading-5 text-slate-500">Add verified bank details before requesting payout.</p>
                     </div>
                 @endif
             </div>

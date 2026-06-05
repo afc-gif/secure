@@ -186,9 +186,13 @@ class MemberUserSeeder extends Seeder
                 'account_name' => $member->name,
                 'account_number' => $cashAppHandle,
                 'routing_number' => null,
+                'account_type' => null,
                 'country' => 'US',
                 'currency' => 'USD',
                 'verification_status' => $index === 5 ? 'pending' : ($index === 7 ? 'rejected' : 'verified'),
+                'withdrawal_status' => null,
+                'withdrawal_requested_at' => null,
+                'withdrawal_completed_at' => null,
                 'rejection_reason' => $index === 7 ? 'Demo incomplete banking verification.' : null,
                 'verified_at' => in_array($index, [5, 7], true) ? null : now()->subDays(30 - $index),
             ]

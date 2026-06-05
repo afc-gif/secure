@@ -18,15 +18,21 @@ class SettlementProfile extends Model
         'account_name',
         'account_number',
         'routing_number',
+        'account_type',
         'country',
         'currency',
         'verification_status',
+        'withdrawal_status',
+        'withdrawal_requested_at',
+        'withdrawal_completed_at',
         'rejection_reason',
         'verified_at',
     ];
 
     protected $casts = [
         'verified_at' => 'datetime',
+        'withdrawal_requested_at' => 'datetime',
+        'withdrawal_completed_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

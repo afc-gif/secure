@@ -74,6 +74,8 @@ Route::middleware(['auth', 'role:member', 'onboarded'])->prefix('member')->name(
         // Settlement Profile Management
         Route::get('/settlement-profile', [MemberSettlementProfileController::class, 'show'])->name('settlement-profile.show');
         Route::post('/settlement-profile', [MemberSettlementProfileController::class, 'store'])->name('settlement-profile.store');
+        Route::get('/settlement-profile/withdrawal', [MemberSettlementProfileController::class, 'withdrawalStatus'])->name('settlement-profile.withdrawal-status');
+        Route::post('/settlement-profile/withdraw', [MemberSettlementProfileController::class, 'withdraw'])->name('settlement-profile.withdraw');
         Route::patch('/settlement-profile/{settlementProfile}', [MemberSettlementProfileController::class, 'update'])->name('settlement-profile.update');
 
         // Contribution Management

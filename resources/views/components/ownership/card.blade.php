@@ -21,7 +21,7 @@
     <div class="mt-5 grid gap-3 sm:grid-cols-3">
         <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-3">
             <p class="text-xs uppercase tracking-[0.14em] text-slate-500">Window</p>
-            <p class="mt-1 text-sm font-semibold text-white">{{ $batch->start_date?->format('M j') ?? 'Open' }} - {{ $batch->end_date?->format('M j, Y') ?? 'Continuous' }}</p>
+            <p class="mt-1 text-sm font-semibold text-white">{{ $batch->start_date?->format('M j') ?? 'Active' }} - {{ $batch->end_date?->format('M j, Y') ?? 'Continuous' }}</p>
         </div>
         <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-3">
             <p class="text-xs uppercase tracking-[0.14em] text-slate-500">Ownership Level</p>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\StoreSettlementProfileRequest;
 use App\Models\SettlementProfile;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SettlementProfileController extends Controller
@@ -17,13 +18,20 @@ class SettlementProfileController extends Controller
         /** @var \App\Models\User $user */
         $user = $request->user();
 
-        $profile = $user->settlementProfile;
+        $profile = $user->settlementProfile()->first();
 
         if (!$profile) {
             $profile = new SettlementProfile();
         }
 
-        return view('member.settlement-profile.show', compact('profile'));
+        if ($profile->exists) {
+            $this->syncWithdrawalStatus($profile);
+        }
+
+        return view('member.settlement-profile.show', [
+            'profile' => $profile,
+            'hasBankDetails' => $this->hasBankDetails($profile),
+        ]);
     }
 
     /**
@@ -35,7 +43,7 @@ class SettlementProfileController extends Controller
         $user = $request->user();
         
         $profile = $user->settlementProfile ?? new SettlementProfile();
-        $data = $this->cashAppPayload($request);
+        $data = $this->bankPayload($request);
 
         $profile->fill($data);
         $profile->user_id = $user->id;
@@ -53,28 +61,96 @@ class SettlementProfileController extends Controller
     {
         $this->authorize('update', $settlementProfile);
 
-        $settlementProfile->update($this->cashAppPayload($request));
+        $settlementProfile->update($this->bankPayload($request));
 
         return redirect()->route('member.settlement-profile.show')
             ->with('success', 'Settlement profile updated successfully.');
     }
 
-    private function cashAppPayload(StoreSettlementProfileRequest $request): array
+    public function withdrawalStatus(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
-        $handle = $request->validated('cash_app_handle');
-        $accountName = $user->memberProfile?->full_legal_name ?: $user->name;
+        $profile = $user->settlementProfile()->first();
+
+        abort_unless($profile && $this->hasBankDetails($profile), 404);
+
+        $this->syncWithdrawalStatus($profile);
+
+        return view('member.settlement-profile.withdrawal-status', [
+            'profile' => $profile->refresh(),
+        ]);
+    }
+
+    public function withdraw(Request $request): RedirectResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $profile = $user->settlementProfile()->first();
+
+        abort_unless($profile, 404);
+
+        $this->syncWithdrawalStatus($profile);
+
+        if (! $this->hasBankDetails($profile)) {
+            return redirect()->route('member.settlement-profile.show')
+                ->with('success', 'Add bank withdrawal details before proceeding.');
+        }
+
+        if ($profile->withdrawal_status === 'completed') {
+            return redirect()->route('member.settlement-profile.withdrawal-status');
+        }
+
+        if ($profile->withdrawal_status !== 'processing') {
+            $profile->update([
+                'withdrawal_status' => 'processing',
+                'withdrawal_requested_at' => now(),
+                'withdrawal_completed_at' => null,
+            ]);
+        }
+
+        return redirect()->route('member.settlement-profile.withdrawal-status')
+            ->with('success', 'Processing, your withdrawal will be complete within 24hrs.');
+    }
+
+    private function bankPayload(StoreSettlementProfileRequest $request): array
+    {
+        $data = $request->validated();
 
         return [
-            'payout_platform' => 'cash_app',
-            'cash_app_handle' => $handle,
-            'bank_name' => 'Cash App',
-            'account_name' => $accountName,
-            'account_number' => $handle,
-            'routing_number' => null,
+            'payout_platform' => 'bank',
+            'cash_app_handle' => null,
+            'bank_name' => $data['bank_name'],
+            'account_name' => $data['account_name'],
+            'account_number' => $data['account_number'],
+            'routing_number' => $data['routing_number'],
+            'account_type' => $data['account_type'],
             'country' => 'US',
             'currency' => 'USD',
         ];
+    }
+
+    private function syncWithdrawalStatus(SettlementProfile $profile): void
+    {
+        if (
+            $profile->withdrawal_status === 'processing'
+            && $profile->withdrawal_requested_at
+            && $profile->withdrawal_requested_at->lte(now()->subDay())
+        ) {
+            $profile->forceFill([
+                'withdrawal_status' => 'completed',
+                'withdrawal_completed_at' => $profile->withdrawal_completed_at ?: now(),
+            ])->save();
+        }
+    }
+
+    private function hasBankDetails(SettlementProfile $profile): bool
+    {
+        return $profile->exists
+            && filled($profile->bank_name)
+            && filled($profile->account_name)
+            && filled($profile->routing_number)
+            && filled($profile->account_number)
+            && filled($profile->account_type);
     }
 }

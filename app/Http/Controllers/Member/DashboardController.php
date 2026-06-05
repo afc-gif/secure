@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $user = request()->user();
         $profile = $onboarding->profileFor($user);
         $settlementProfile = $user->settlementProfile;
-        $cashAppHandle = $settlementProfile?->cash_app_handle ?: $profile->cash_app_handle;
+        $bankName = $settlementProfile?->bank_name;
         $recipient = $settlementProfile?->account_name ?: ($profile->full_legal_name ?: $user->name);
         $address = collect([
             $profile->residential_address,
@@ -60,10 +60,11 @@ class DashboardController extends Controller
                     ],
                 ],
                 'disbursement' => [
-                    'status' => filled($cashAppHandle) ? 'Ready' : 'Pending',
+                    'status' => filled($bankName) ? 'Ready' : 'Pending',
                     'recipient' => $recipient,
                     'address' => $address ?: 'Address not provided',
-                    'destination' => filled($cashAppHandle) ? "Cash App ({$cashAppHandle})" : 'Cash App not provided',
+                    'destination' => filled($bankName) ? $bankName : 'Bank account not provided',
+                    'withdrawal_status' => $settlementProfile?->withdrawal_status,
                 ],
                 'milestones' => [
                     ['date' => 'June 7th, 2025', 'label' => 'Cycle Commenced'],
@@ -83,7 +84,7 @@ class DashboardController extends Controller
                     [
                         'record' => 'Record 02',
                         'date' => '2026-05-31',
-                        'description' => 'Profile Coordinates Updated: Cash App Node Synchronized (Cleared)',
+                        'description' => 'Profile Coordinates Updated: Bank Withdrawal Node Synchronized (Cleared)',
                     ],
                     [
                         'record' => 'Record 03',
