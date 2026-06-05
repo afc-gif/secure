@@ -4,6 +4,10 @@
         $milestones = $panel['milestones'];
         $isLocked = ! $dashboardUnlocked;
         $lockedPanelClasses = $isLocked ? 'pointer-events-none select-none blur-sm' : '';
+        $withdrawalStatus = $panel['disbursement']['withdrawal_status'];
+        $withdrawalHref = in_array($withdrawalStatus, ['processing', 'completed'], true)
+            ? route('member.settlement-profile.withdrawal-status')
+            : route('member.settlement-profile.show');
     @endphp
 
     @if (session('locked'))
@@ -29,6 +33,11 @@
                     </p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
+                    @if (! $isLocked)
+                        <a href="{{ $withdrawalHref }}" class="inline-flex items-center rounded-md border border-white/20 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[#151018] transition hover:bg-white/90">
+                            {{ in_array($withdrawalStatus, ['processing', 'completed'], true) ? 'Track Withdrawal' : 'Withdraw' }}
+                        </a>
+                    @endif
                     <a href="{{ route('profile.edit') }}" class="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/15">Edit Profile</a>
                     <span class="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
                         <span class="h-1.5 w-1.5 rounded-full {{ $isLocked ? 'bg-[#d8bf7a]' : 'bg-white' }}"></span>
