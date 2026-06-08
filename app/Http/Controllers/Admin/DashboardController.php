@@ -8,6 +8,7 @@ use App\Models\Batch;
 use App\Models\BatchMember;
 use App\Models\Contribution;
 use App\Models\MemberProfile;
+use App\Models\SettlementProfile;
 use App\Models\User;
 use App\Services\OwnershipAnalyticsService;
 use Illuminate\View\View;
@@ -31,6 +32,14 @@ class DashboardController extends Controller
             'confirmedPayments' => Contribution::where('status', 'confirmed')->count(),
             'pendingPaymentTotal' => Contribution::where('status', 'pending')->sum('amount'),
             'confirmedPaymentTotal' => Contribution::where('status', 'confirmed')->sum('amount'),
+            'processingWithdrawals' => SettlementProfile::where('withdrawal_status', 'processing')->count(),
+            'processingWithdrawalTotal' => SettlementProfile::where('withdrawal_status', 'processing')->sum('withdrawal_amount'),
+            'latestWithdrawals' => SettlementProfile::query()
+                ->with('user')
+                ->whereNotNull('withdrawal_status')
+                ->latest('withdrawal_requested_at')
+                ->take(5)
+                ->get(),
             'latestOnboarded' => MemberProfile::query()
                 ->with('user')
                 ->where('onboarding_completed', true)

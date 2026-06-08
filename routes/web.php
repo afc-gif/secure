@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BatchController as AdminBatchController;
 use App\Http\Controllers\Admin\SettlementController as AdminSettlementController;
 use App\Http\Controllers\Admin\ContributionController as AdminContributionController;
 use App\Http\Controllers\Admin\PartnerRegistryController as AdminPartnerRegistryController;
+use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
 use App\Http\Controllers\Member\AccessTokenController as MemberAccessTokenController;
 use App\Http\Controllers\Member\BatchController as MemberBatchController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
@@ -42,6 +43,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/settlements/{settlement}', [AdminSettlementController::class, 'show'])->name('settlements.show');
     Route::patch('/settlements/{settlement}/complete', [AdminSettlementController::class, 'complete'])->name('settlements.complete');
     Route::patch('/settlements/{settlement}/reject', [AdminSettlementController::class, 'reject'])->name('settlements.reject');
+    Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
 
     // Contribution Management
     Route::get('/contributions', [AdminContributionController::class, 'index'])->name('contributions.index');

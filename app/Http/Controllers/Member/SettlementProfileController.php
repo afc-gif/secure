@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\StoreSettlementProfileRequest;
 use App\Models\SettlementProfile;
+use App\Models\User;
+use App\Notifications\WithdrawalRequestedNotification;
 use App\Support\MemberBalance;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -117,6 +119,11 @@ class SettlementProfileController extends Controller
                 'withdrawal_requested_at' => now(),
                 'withdrawal_completed_at' => null,
             ]);
+
+            User::query()
+                ->where('role', 'admin')
+                ->get()
+                ->each(fn (User $admin) => $admin->notify(new WithdrawalRequestedNotification($profile->fresh('user'))));
         }
 
         return redirect()->route('member.settlement-profile.withdrawal-status')
