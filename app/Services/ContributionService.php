@@ -49,7 +49,7 @@ class ContributionService
     public function confirm(Contribution $contribution, ?User $admin = null, ?string $adminNotes = null): ?AccessToken
     {
         $contribution->confirm($admin, $adminNotes);
-        $accessToken = $admin ? $this->activateDashboardAccessIfNeeded($contribution, $admin) : null;
+        $accessToken = $admin ? $this->issueDashboardTokenIfNeeded($contribution, $admin) : null;
 
         $contribution->user->notify(new ContributionApprovedNotification($contribution, $accessToken));
 
@@ -97,7 +97,7 @@ class ContributionService
         return $reference;
     }
 
-    private function activateDashboardAccessIfNeeded(Contribution $contribution, User $admin): ?AccessToken
+    private function issueDashboardTokenIfNeeded(Contribution $contribution, User $admin): ?AccessToken
     {
         $user = $contribution->user;
 
@@ -115,8 +115,6 @@ class ContributionService
             ->first();
 
         if ($existingToken) {
-            app(BatchParticipationService::class)->activate($user, $existingToken);
-
             return $existingToken;
         }
 
@@ -140,16 +138,12 @@ class ContributionService
             ->latest()
             ->first();
 
-        $accessToken = app(TokenGenerationService::class)->create($batch, $admin, [
+        return app(TokenGenerationService::class)->create($batch, $admin, [
             'ownership_tier' => 'vip',
             'price' => $paymentTemplate?->price,
             'price_currency' => $paymentTemplate?->price_currency ?? 'USD',
             'btc_wallet_address' => $paymentTemplate?->btc_wallet_address,
             'assigned_to_user_id' => $user->id,
         ]);
-
-        app(BatchParticipationService::class)->activate($user, $accessToken);
-
-        return $accessToken;
     }
 }

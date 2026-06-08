@@ -20,21 +20,9 @@ class AccessTokenController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = request()->user();
-        $paymentToken = $this->availablePaymentTokenFor($user);
-        $pendingPayment = $paymentToken
-            ? Contribution::query()
-                ->where('user_id', $user->id)
-                ->where('batch_id', $paymentToken->batch_id)
-                ->where('contribution_type', 'batch_participation')
-                ->where('status', 'pending')
-                ->latest()
-                ->first()
-            : null;
 
         return view('member.batches.access-token', [
             'dashboardUnlocked' => $user->hasUnlockedDashboard(),
-            'paymentToken' => $paymentToken,
-            'pendingPayment' => $pendingPayment,
             'participations' => $user
                 ->batchMembers()
                 ->with(['batch', 'accessToken'])
@@ -78,8 +66,6 @@ class AccessTokenController extends Controller
             })
             ->firstOrFail();
 
-        abort_unless($paymentToken->batch?->isOpenForParticipation(), 404);
-
         $existingPayment = Contribution::query()
             ->where('user_id', $user->id)
             ->where('batch_id', $paymentToken->batch_id)
@@ -119,26 +105,7 @@ class AccessTokenController extends Controller
             ->get()
             ->each(fn (User $admin) => $admin->notify(new VipPaymentSubmittedNotification($contribution)));
 
-        return back()->with('status', 'Payment confirmation submitted. Admin will review it and activate your dashboard after approval.');
-    }
-
-    private function availablePaymentTokenFor(User $user): ?AccessToken
-    {
-        return AccessToken::query()
-            ->with('batch')
-            ->where('status', 'active')
-            ->whereNotNull('price')
-            ->whereNotNull('btc_wallet_address')
-            ->where(function ($query) use ($user): void {
-                $query->where('assigned_to_user_id', $user->id)
-                    ->orWhereNull('assigned_to_user_id');
-            })
-            ->where(function ($query): void {
-                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
-            })
-            ->latest()
-            ->get()
-            ->first(fn (AccessToken $token): bool => $token->batch?->isOpenForParticipation() ?? false);
+        return back()->with('status', 'Payment confirmation submitted. Admin will review it and issue your VIP token notification after approval.');
     }
 
     private function generatePaymentReference(): string

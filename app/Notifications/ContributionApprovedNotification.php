@@ -25,14 +25,14 @@ class ContributionApprovedNotification extends Notification
         return [
             'title' => 'Contribution approved',
             'body' => $this->accessToken
-                ? 'Your crypto payment was approved. Your dashboard access is now active.'
+                ? 'Your crypto payment was approved. Enter your VIP token to unlock the full dashboard.'
                 : 'Your cooperative contribution has been confirmed.',
             'amount' => $this->contribution->amount,
             'currency' => $this->contribution->currency,
             'reference' => $this->contribution->payment_reference,
             'access_token' => $this->accessToken?->token,
             'url' => $this->accessToken
-                ? route('member.dashboard')
+                ? route('member.access-token.create')
                 : route('member.contributions.show', $this->contribution),
         ];
     }

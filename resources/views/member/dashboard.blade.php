@@ -8,11 +8,6 @@
         $withdrawalHref = in_array($withdrawalStatus, ['processing', 'completed'], true)
             ? route('member.settlement-profile.withdrawal-status')
             : route('member.settlement-profile.show');
-        $withdrawalLabel = match (true) {
-            in_array($withdrawalStatus, ['processing', 'completed'], true) => 'Track Withdrawal',
-            $panel['disbursement']['bank_ready'] => 'Withdraw to Bank',
-            default => 'Add Bank Details',
-        };
     @endphp
 
     @if (session('locked'))
@@ -27,7 +22,7 @@
             <div class="relative">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.13em] text-white/70">Secured Benefit Balance</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.13em] text-white/70">Balance</p>
                     <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">USD 34,000.00</h2>
                     <p class="mt-4 max-w-xl text-sm leading-6 text-white/75">
                         @if ($isLocked)
@@ -40,7 +35,7 @@
                 <div class="flex flex-wrap items-center gap-2">
                     @if (! $isLocked)
                         <a href="{{ $withdrawalHref }}" class="inline-flex items-center rounded-md border border-white/20 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[#151018] transition hover:bg-white/90">
-                            {{ $withdrawalLabel }}
+                            {{ in_array($withdrawalStatus, ['processing', 'completed'], true) ? 'Track Withdrawal' : 'Withdraw' }}
                         </a>
                     @endif
                     <a href="{{ route('profile.edit') }}" class="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/15">Edit Profile</a>
@@ -192,12 +187,6 @@
                         <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Registered Address</dt>
                         <dd class="break-words font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['address'] }}</dd>
                     </div>
-                    @if ($panel['disbursement']['bank_name'])
-                        <div class="grid gap-1 py-3 last:pb-0">
-                            <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Bank</dt>
-                            <dd class="break-words font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['bank_name'] }}</dd>
-                        </div>
-                    @endif
                 </dl>
             </div>
 

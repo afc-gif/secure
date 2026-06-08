@@ -63,9 +63,6 @@ class DashboardController extends Controller
                     'recipient' => $recipient,
                     'phone' => $phone ?: 'Phone number not provided',
                     'address' => $address ?: 'Address not provided',
-                    'bank_name' => $settlementProfile?->bank_name,
-                    'bank_ready' => filled($settlementProfile?->bank_name)
-                        && filled($settlementProfile?->account_name),
                     'withdrawal_status' => $settlementProfile?->withdrawal_status,
                 ],
                 'milestones' => [
