@@ -42,18 +42,18 @@ class AccessTokenController extends Controller
         if (($data['quantity'] ?? 1) > 1) {
             $created = $tokens->bulkCreate($batch, $request->user(), $data);
 
-            return redirect()->route('admin.tokens.index')->with('status', "{$created->count()} secure access tokens generated.");
+            return redirect()->route('admin.tokens.index')->with('status', "{$created->count()} VIP payment setups saved.");
         }
 
         $tokens->create($batch, $request->user(), $data);
 
-        return redirect()->route('admin.tokens.index')->with('status', 'Secure access token generated.');
+        return redirect()->route('admin.tokens.index')->with('status', 'VIP payment setup saved.');
     }
 
     public function revoke(AccessToken $token): RedirectResponse
     {
         if ($token->status === 'used') {
-            return back()->withErrors(['token' => 'Used tokens cannot be revoked after participation activation.']);
+            return back()->withErrors(['token' => 'Activated payment setups cannot be disabled after member access is granted.']);
         }
 
         $token->forceFill([
@@ -61,6 +61,6 @@ class AccessTokenController extends Controller
             'revoked_at' => now(),
         ])->save();
 
-        return back()->with('status', 'Secure access token revoked.');
+        return back()->with('status', 'VIP payment setup disabled.');
     }
 }

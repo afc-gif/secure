@@ -1,17 +1,17 @@
-<x-dashboard.shell title="Secure Access Token Management" eyebrow="Secure Token Ledger">
+<x-dashboard.shell title="VIP Payment Setup" eyebrow="Super Admin">
     @if (session('status'))
         <div class="mb-6 rounded-lg border border-emerald-300/20 bg-emerald-300/10 px-5 py-4 text-sm font-semibold text-emerald-100">{{ session('status') }}</div>
     @endif
     <x-input-error :messages="$errors->get('token')" class="mb-6 text-rose-300" />
 
     <div class="grid gap-3 sm:grid-cols-3 sm:gap-4">
-        <x-dashboard.stat-card label="Active VIP Tokens" :value="$activeTokens" detail="Available for secure validation" />
-        <x-dashboard.stat-card label="Used VIP Tokens" :value="$usedTokens" detail="Granted dashboard privilege" tone="gold" />
-        <x-dashboard.stat-card label="Revoked Tokens" :value="$revokedTokens" detail="Removed from circulation" tone="slate" />
+        <x-dashboard.stat-card label="Active Setups" :value="$activeTokens" detail="Shown to locked members" />
+        <x-dashboard.stat-card label="Activated Members" :value="$usedTokens" detail="Approved and unlocked" tone="gold" />
+        <x-dashboard.stat-card label="Disabled Setups" :value="$revokedTokens" detail="No longer available" tone="slate" />
     </div>
 
     <div class="my-4 flex sm:my-6 sm:justify-end">
-        <a href="{{ route('admin.tokens.create') }}" class="cca-button w-full sm:w-auto">Generate Secure Token</a>
+        <a href="{{ route('admin.tokens.create') }}" class="cca-button w-full sm:w-auto">Add Payment Setup</a>
     </div>
 
     <section class="cca-card overflow-hidden">
@@ -19,13 +19,13 @@
             <table class="min-w-[76rem] divide-y divide-white/10 text-left text-sm">
                 <thead class="bg-white/[0.03] text-xs uppercase tracking-[0.12em] text-slate-500">
                     <tr>
-                        <th class="px-5 py-4">Token</th>
+                        <th class="px-5 py-4">Setup ID</th>
                         <th class="px-5 py-4">Batch</th>
-                        <th class="px-5 py-4">Tier</th>
+                        <th class="px-5 py-4">Access Level</th>
                         <th class="px-5 py-4">Price</th>
-                        <th class="px-5 py-4">BTC Wallet</th>
+                        <th class="px-5 py-4">Bitcoin Wallet</th>
                         <th class="px-5 py-4">Status</th>
-                        <th class="px-5 py-4">Assigned</th>
+                        <th class="px-5 py-4">Member</th>
                         <th class="px-5 py-4">Action</th>
                     </tr>
                 </thead>
@@ -47,12 +47,12 @@
                                         <button class="cca-muted-button">Revoke</button>
                                     </form>
                                 @else
-                                    <span class="text-xs text-slate-500">Locked</span>
+                                    <span class="text-xs text-slate-500">No action</span>
                                 @endif
                             </td>
                         </tr>
                     @empty
-                        <tr><td class="px-5 py-6 text-slate-500" colspan="8">No secure access tokens generated yet.</td></tr>
+                        <tr><td class="px-5 py-6 text-slate-500" colspan="8">No VIP payment setup has been created yet.</td></tr>
                     @endforelse
                 </tbody>
             </table>

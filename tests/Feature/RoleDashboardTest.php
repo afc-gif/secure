@@ -18,8 +18,9 @@ class RoleDashboardTest extends TestCase
         $this->actingAs($admin)
             ->get('/admin/dashboard')
             ->assertOk()
-            ->assertSee('Entertainment Asset Console')
-            ->assertSee('USD 780,000.00');
+            ->assertSee('Super Admin')
+            ->assertSee('Manage members, batches, payments, and dashboard access')
+            ->assertSee('Add Payment Setup');
     }
 
     public function test_member_can_access_member_dashboard(): void

@@ -20,7 +20,7 @@ class PhaseThreeRouteTest extends TestCase
         $member = User::factory()->create(['name' => 'Signed Up Member']);
 
         $this->actingAs($admin)->get(route('admin.batches.index'))->assertOk()->assertSee('Active cycle management');
-        $this->actingAs($admin)->get(route('admin.tokens.index'))->assertOk()->assertSee('Secure Access Token Management');
+        $this->actingAs($admin)->get(route('admin.tokens.index'))->assertOk()->assertSee('VIP Payment Setup');
         $this->actingAs($admin)
             ->get(route('admin.partners.index'))
             ->assertOk()

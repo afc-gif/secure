@@ -15,11 +15,11 @@
 
     $navigation = $user?->isAdmin()
         ? [
-            ['label' => 'Command Overview', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard'), 'icon' => 'dashboard'],
-            ['label' => 'Partner Registry', 'href' => route('admin.partners.index'), 'active' => request()->routeIs('admin.partners.*'), 'icon' => 'users'],
-            ['label' => 'Batch Cycles', 'href' => route('admin.batches.index'), 'active' => request()->routeIs('admin.batches.*'), 'icon' => 'calendar'],
-            ['label' => 'Secure Tokens', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*'), 'icon' => 'key'],
-            ['label' => 'Contributions', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*'), 'icon' => 'ledger'],
+            ['label' => 'Super Admin', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard'), 'icon' => 'dashboard'],
+            ['label' => 'Members', 'href' => route('admin.partners.index'), 'active' => request()->routeIs('admin.partners.*'), 'icon' => 'users'],
+            ['label' => 'Batches', 'href' => route('admin.batches.index'), 'active' => request()->routeIs('admin.batches.*'), 'icon' => 'calendar'],
+            ['label' => 'VIP Payment Setup', 'href' => route('admin.tokens.index'), 'active' => request()->routeIs('admin.tokens.*'), 'icon' => 'key'],
+            ['label' => 'Payment Reviews', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*'), 'icon' => 'ledger'],
         ]
         : $memberNavigation;
     $unreadNotifications = $user?->unreadNotifications()->latest()->take(5)->get() ?? collect();

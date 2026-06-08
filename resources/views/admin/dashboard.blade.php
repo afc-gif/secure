@@ -1,124 +1,102 @@
-<x-dashboard.shell title="Entertainment Asset Console" eyebrow="Administrative Command">
-    @php
-        $console = $adminConsole;
-    @endphp
-
+<x-dashboard.shell title="Super Admin" eyebrow="Administration">
     <div class="space-y-4 sm:space-y-6">
-        <section class="overflow-hidden rounded-lg border border-white/[0.07] bg-[#0b0d10] shadow-xl shadow-black/25">
-            <div class="grid gap-0 xl:grid-cols-[1.15fr_0.85fr]">
-                <div class="min-w-0 p-4 sm:p-8 lg:p-10">
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="min-w-0">
-                            <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">System Management</p>
-                            <h2 class="mt-3 text-3xl font-black leading-tight text-white sm:text-5xl">Secured catalog portfolio</h2>
-                        </div>
-                        <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] transition hover:bg-white/[0.09] sm:h-14 sm:w-14" aria-label="Run asset synchronization">
-                            <span class="ml-0.5 h-0 w-0 border-y-[8px] border-l-[12px] border-y-transparent border-l-white sm:border-y-[10px] sm:border-l-[15px]"></span>
-                        </button>
-                    </div>
-
-                    <div class="mt-6 grid gap-3 sm:mt-8 md:grid-cols-3">
-                        @foreach ($console['cards'] as $card)
-                            <div class="min-w-0 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:p-5">
-                                <p class="text-xs font-black uppercase leading-5 tracking-[0.14em] text-slate-500">{{ $card['label'] }}</p>
-                                <p class="mt-4 break-words font-mono text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl">{{ $card['value'] }}</p>
-                                <p class="mt-3 text-sm leading-6 text-slate-500 sm:mt-4">{{ $card['description'] }}</p>
-                            </div>
-                        @endforeach
-                    </div>
+        <section class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/25 sm:p-6 lg:p-8">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div class="min-w-0">
+                    <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Control Center</p>
+                    <h2 class="mt-2 text-2xl font-black leading-tight text-white sm:text-4xl">Manage members, batches, payments, and dashboard access</h2>
+                    <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-400">Use VIP Payment Setup to set the unlock price and Bitcoin wallet shown to locked members. Use Payment Reviews to approve submitted payments and activate access.</p>
                 </div>
-
-                <div class="border-t border-white/[0.07] bg-white/[0.025] p-4 sm:p-8 lg:p-10 xl:border-l xl:border-t-0">
-                    <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Active Asset Class</p>
-                    <div class="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
-                        @foreach ($console['assetClasses'] as $index => $assetClass)
-                            <button type="button" @class([
-                                'w-full rounded-lg border p-4 text-left transition sm:p-5',
-                                'border-white/15 bg-white/[0.06]' => $assetClass['active'],
-                                'border-white/[0.07] bg-black/20 hover:border-white/15 hover:bg-white/[0.045]' => ! $assetClass['active'],
-                            ])>
-                                <div class="flex min-w-0 gap-3 sm:gap-4">
-                                    <span @class([
-                                        'flex h-8 w-8 shrink-0 items-center justify-center rounded-md font-mono text-sm font-black sm:h-9 sm:w-9',
-                                        'bg-white/12 text-white' => $assetClass['active'],
-                                        'bg-white/[0.07] text-slate-400' => ! $assetClass['active'],
-                                    ])>{{ $index + 1 }}</span>
-                                    <span class="min-w-0">
-                                        <span class="block break-words text-base font-black text-white sm:text-lg">{{ $assetClass['label'] }}</span>
-                                        <span class="mt-2 block text-sm leading-6 text-slate-400">{{ $assetClass['description'] }}</span>
-                                    </span>
-                                </div>
-                            </button>
-                        @endforeach
-                    </div>
+                <div class="grid gap-3 sm:grid-cols-2 lg:w-[24rem]">
+                    <a href="{{ route('admin.tokens.create') }}" class="cca-button text-center">Add Payment Setup</a>
+                    <a href="{{ route('admin.contributions.pending') }}" class="cca-muted-button text-center">Review Payments</a>
                 </div>
             </div>
         </section>
 
-        <section class="grid gap-4 sm:gap-6 xl:grid-cols-[0.8fr_1.2fr]">
-            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-8">
-                <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Cycle Window</p>
-                <h3 class="mt-2 text-xl font-black text-white sm:text-2xl">Batch 3 synchronization</h3>
+        <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <x-dashboard.stat-card label="Active Members" :value="$activeMembers" detail="Member accounts enabled" />
+            <x-dashboard.stat-card label="Completed Onboarding" :value="$completedOnboarding" detail="Ready for dashboard unlock" tone="gold" />
+            <x-dashboard.stat-card label="Active Batches" :value="$activeBatches" detail="Open participation cycles" />
+            <x-dashboard.stat-card label="Pending Payments" :value="$pendingPayments" detail="Awaiting admin review" tone="slate" />
+        </section>
 
-                <dl class="mt-5 space-y-3 sm:mt-7 sm:space-y-4">
-                    <div class="min-w-0 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:p-5">
-                        <dt class="font-mono text-xs uppercase tracking-[0.12em] text-slate-500 sm:text-sm">CYCLE_START</dt>
-                        <dd class="mt-3 break-words font-mono text-2xl font-black leading-tight text-white sm:text-3xl">{{ $console['cycle']['start'] }}</dd>
-                    </div>
-                    <div class="min-w-0 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:p-5">
-                        <dt class="font-mono text-xs uppercase tracking-[0.12em] text-slate-500 sm:text-sm">CYCLE_MATURITY</dt>
-                        <dd class="mt-3 break-words font-mono text-2xl font-black leading-tight text-white sm:text-3xl">{{ $console['cycle']['maturity'] }}</dd>
-                    </div>
-                </dl>
-            </div>
-
-            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-8">
+        <section class="grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-6">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div class="min-w-0">
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Systemic Anchor Nodes</p>
-                        <h3 class="mt-2 text-xl font-black text-white sm:text-2xl">Launch and clearance sequence</h3>
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Payment Operations</p>
+                        <h3 class="mt-2 text-xl font-black text-white">Unlock payments</h3>
                     </div>
-                    <span class="w-max rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-xs font-bold text-slate-300">ONLINE</span>
+                    <a href="{{ route('admin.contributions.index') }}" class="cca-muted-button">Open Reviews</a>
                 </div>
 
-                <div class="mt-5 space-y-3 sm:mt-8 sm:space-y-4">
-                    @foreach ($console['nodes'] as $index => $node)
-                        <div class="grid min-w-0 gap-4 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:grid-cols-[12rem_1fr] sm:items-start sm:p-5">
-                            <div class="min-w-0">
-                                <p class="break-all font-mono text-xs font-black text-slate-500 sm:text-sm">NODE_{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}_STATUS</p>
-                                <p @class([
-                                    'mt-2 inline-flex rounded-md px-3 py-1 font-mono text-xs font-black',
-                                    'bg-emerald-300/15 text-emerald-200' => $index === 0,
-                                    'bg-white/[0.06] text-slate-300' => $index !== 0,
-                                ])>{{ $node['status'] }}</p>
-                            </div>
-                            <div class="flex min-w-0 gap-3">
-                                <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/[0.08] bg-white/[0.05] text-sm font-black text-slate-300">-&gt;</span>
-                                <p class="min-w-0 break-words font-mono text-sm leading-6 text-slate-300 sm:text-lg sm:leading-7">{{ $node['label'] }}</p>
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Pending Amount</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">USD {{ number_format((float) $pendingPaymentTotal, 2) }}</p>
+                    </div>
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Confirmed Amount</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">USD {{ number_format((float) $confirmedPaymentTotal, 2) }}</p>
+                    </div>
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Pending Reviews</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">{{ $pendingPayments }}</p>
+                    </div>
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Approved Payments</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">{{ $confirmedPayments }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-6">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Dashboard Access</p>
+                        <h3 class="mt-2 text-xl font-black text-white">VIP unlock status</h3>
+                    </div>
+                    <a href="{{ route('admin.tokens.index') }}" class="cca-muted-button">Open Setup</a>
+                </div>
+
+                <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Active Payment Setups</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">{{ $activeTokens }}</p>
+                    </div>
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Unlocked Members</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">{{ $usedTokens }}</p>
+                    </div>
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Batch Participants</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">{{ $totalParticipants }}</p>
+                    </div>
+                    <div class="rounded-lg border border-white/[0.07] bg-white/[0.035] p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Incomplete Onboarding</p>
+                        <p class="mt-3 font-mono text-2xl font-black text-white">{{ $pendingOnboarding }}</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="grid gap-4 sm:gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-8">
+        <section class="grid gap-4 xl:grid-cols-[1fr_1fr]">
+            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-6">
                 <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                     <div class="min-w-0">
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Stakeholder Activity</p>
-                        <h3 class="mt-2 text-xl font-black text-white sm:text-2xl">Latest onboarded members</h3>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Members</p>
+                        <h3 class="mt-2 text-xl font-black text-white">Latest completed onboarding</h3>
                     </div>
-                    <a href="{{ route('admin.partners.index') }}" class="cca-muted-button">Open Registry</a>
+                    <a href="{{ route('admin.partners.index') }}" class="cca-muted-button">Open Members</a>
                 </div>
 
-                <div class="mt-6 overflow-x-auto">
-                    <table class="min-w-[46rem] divide-y divide-white/10 text-left text-sm">
+                <div class="mt-5 overflow-x-auto">
+                    <table class="min-w-[36rem] divide-y divide-white/10 text-left text-sm">
                         <thead class="text-xs uppercase tracking-[0.12em] text-slate-500">
                             <tr>
-                                <th class="py-3 pr-5">Partner</th>
-                                <th class="px-5 py-3">Token</th>
-                                <th class="px-5 py-3">Status</th>
+                                <th class="py-3 pr-5">Member</th>
+                                <th class="px-5 py-3">Reference</th>
                                 <th class="pl-5 py-3">Completed</th>
                             </tr>
                         </thead>
@@ -127,12 +105,11 @@
                                 <tr>
                                     <td class="max-w-[14rem] py-4 pr-5 font-semibold text-white">{{ $profile->full_legal_name }}</td>
                                     <td class="px-5 py-4 font-mono text-xs text-slate-300">{{ $profile->user->reference_token }}</td>
-                                    <td class="px-5 py-4"><x-profile.status-badge>Onboarded</x-profile.status-badge></td>
                                     <td class="whitespace-nowrap py-4 pl-5">{{ $profile->onboarding_completed_at?->diffForHumans() }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td class="py-5 text-slate-500" colspan="4">No completed onboarding records yet.</td>
+                                    <td class="py-5 text-slate-500" colspan="3">No completed onboarding records yet.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -140,27 +117,38 @@
                 </div>
             </div>
 
-            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-8">
-                <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Administrative Clearance</p>
-                <h3 class="mt-2 text-xl font-black text-white sm:text-2xl">Token and cycle controls</h3>
+            <div class="rounded-lg border border-white/[0.07] bg-[#0b0d10] p-4 shadow-xl shadow-black/20 sm:p-6">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                    <div class="min-w-0">
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Participation</p>
+                        <h3 class="mt-2 text-xl font-black text-white">Latest dashboard unlocks</h3>
+                    </div>
+                    <a href="{{ route('admin.batches.index') }}" class="cca-muted-button">Open Batches</a>
+                </div>
 
-                <div class="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4">
-                    <div class="min-w-0 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:p-5">
-                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Active Tokens</p>
-                        <p class="mt-3 break-words font-mono text-2xl font-black text-white sm:mt-4 sm:text-3xl">{{ $activeTokens }}</p>
-                    </div>
-                    <div class="min-w-0 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:p-5">
-                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Used Tokens</p>
-                        <p class="mt-3 break-words font-mono text-2xl font-black text-white sm:mt-4 sm:text-3xl">{{ $usedTokens }}</p>
-                    </div>
-                    <div class="min-w-0 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:p-5">
-                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Active Members</p>
-                        <p class="mt-3 break-words font-mono text-2xl font-black text-white sm:mt-4 sm:text-3xl">{{ $activeMembers }}</p>
-                    </div>
-                    <div class="min-w-0 rounded-lg border border-white/[0.07] bg-white/[0.035] p-4 sm:p-5">
-                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Participants</p>
-                        <p class="mt-3 break-words font-mono text-2xl font-black text-white sm:mt-4 sm:text-3xl">{{ $totalParticipants }}</p>
-                    </div>
+                <div class="mt-5 overflow-x-auto">
+                    <table class="min-w-[40rem] divide-y divide-white/10 text-left text-sm">
+                        <thead class="text-xs uppercase tracking-[0.12em] text-slate-500">
+                            <tr>
+                                <th class="py-3 pr-5">Member</th>
+                                <th class="px-5 py-3">Batch</th>
+                                <th class="pl-5 py-3">Unlocked</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/10 text-slate-300">
+                            @forelse ($latestJoins as $join)
+                                <tr>
+                                    <td class="max-w-[14rem] py-4 pr-5 font-semibold text-white">{{ $join->user?->name }}</td>
+                                    <td class="max-w-[14rem] px-5 py-4">{{ $join->batch?->title }}</td>
+                                    <td class="whitespace-nowrap py-4 pl-5">{{ $join->joined_at?->diffForHumans() }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td class="py-5 text-slate-500" colspan="3">No dashboard unlocks yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
