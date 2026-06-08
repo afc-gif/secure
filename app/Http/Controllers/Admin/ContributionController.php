@@ -57,7 +57,7 @@ class ContributionController extends Controller
 
         return redirect()->route('admin.contributions.show', $contribution)
             ->with('success', $accessToken
-                ? "Contribution approved. VIP token {$accessToken->token} was issued to {$contribution->user->name}."
+                ? "Contribution approved. VIP dashboard access was activated for {$contribution->user->name}."
                 : 'Contribution approved.');
     }
 
