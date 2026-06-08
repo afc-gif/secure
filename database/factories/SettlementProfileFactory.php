@@ -26,6 +26,8 @@ class SettlementProfileFactory extends Factory
             'currency' => 'USD',
             'verification_status' => fake()->randomElement(['pending', 'verified', 'rejected']),
             'withdrawal_status' => null,
+            'withdrawal_amount' => 0,
+            'total_withdrawn_amount' => 0,
             'withdrawal_requested_at' => null,
             'withdrawal_completed_at' => null,
             'rejection_reason' => null,

@@ -46,21 +46,42 @@
             <h2 class="mt-3 text-2xl font-black text-white">{{ $profile->exists ? 'Update bank details' : 'Add bank details' }}</h2>
             <p class="mt-3 text-sm leading-6 text-slate-400">Enter the bank account details that should receive payout review.</p>
 
+            <div class="mt-5 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Available Balance</p>
+                    <p class="mt-2 font-mono text-xl font-black text-white">USD {{ number_format($balance['available'], 2) }}</p>
+                </div>
+                <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Withdrawn</p>
+                    <p class="mt-2 font-mono text-xl font-black text-white">USD {{ number_format($balance['completed_withdrawals'], 2) }}</p>
+                </div>
+                <div class="rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Processing</p>
+                    <p class="mt-2 font-mono text-xl font-black text-white">USD {{ number_format($balance['processing_withdrawal'], 2) }}</p>
+                </div>
+            </div>
+
             @if ($hasBankDetails)
                 <div class="mt-6 rounded-lg border border-white/[0.07] bg-white/[0.025] p-4">
                     @if ($profile->withdrawal_status === 'completed')
                         <p class="text-xs font-black uppercase tracking-[0.14em] text-[#ffd4e9]">Withdrawal Complete</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-300">Your withdrawal has been completed.</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-300">Your withdrawal has been completed. Amount: USD {{ number_format((float) $profile->withdrawal_amount, 2) }}.</p>
                         <a href="{{ route('member.settlement-profile.withdrawal-status') }}" class="cca-button mt-4 inline-flex w-full justify-center sm:w-auto">Track Withdrawal</a>
                     @elseif ($profile->withdrawal_status === 'processing')
                         <p class="text-xs font-black uppercase tracking-[0.14em] text-[#ffd4e9]">Processing</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-300">Your withdrawal will be complete within 24hrs.</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-300">Your withdrawal will be complete within 24hrs. Amount: USD {{ number_format((float) $profile->withdrawal_amount, 2) }}.</p>
                         <a href="{{ route('member.settlement-profile.withdrawal-status') }}" class="cca-button mt-4 inline-flex w-full justify-center sm:w-auto">Track Withdrawal</a>
                     @else
                         <p class="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Ready</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-300">Your bank details are saved. Proceed when you are ready to start withdrawal processing.</p>
-                        <form method="POST" action="{{ route('member.settlement-profile.withdraw') }}" class="mt-4">
+                        <p class="mt-2 text-sm leading-6 text-slate-300">Your bank details are saved. Enter the amount you want to withdraw.</p>
+                        <form method="POST" action="{{ route('member.settlement-profile.withdraw') }}" class="mt-4 space-y-4">
                             @csrf
+                            <div>
+                                <label for="withdrawal_amount" class="cca-label">Withdrawal Amount</label>
+                                <input id="withdrawal_amount" name="withdrawal_amount" value="{{ old('withdrawal_amount') }}" inputmode="decimal" class="cca-input mt-2 font-mono" placeholder="0.00" required>
+                                <p class="mt-2 text-xs text-slate-500">Maximum available: USD {{ number_format($balance['available'], 2) }}</p>
+                                <x-input-error :messages="$errors->get('withdrawal_amount')" class="mt-2 text-rose-300" />
+                            </div>
                             <button class="cca-button w-full sm:w-auto">Proceed to Withdraw</button>
                         </form>
                     @endif

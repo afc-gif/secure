@@ -28,10 +28,12 @@
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
                     <p class="text-xs font-bold uppercase tracking-[0.13em] text-white/70">Secured Benefit Balance</p>
-                    <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">USD 34,000.00</h2>
+                    <h2 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">{{ $panel['balance']['formatted_available'] }}</h2>
                     <p class="mt-4 max-w-xl text-sm leading-6 text-white/75">
                         @if ($isLocked)
                             Crypto payment is pending admin-approved VIP activation. Enter the issued token to open the full dashboard.
+                        @elseif ($panel['balance']['processing_withdrawal'] > 0)
+                            Withdrawal of {{ $panel['balance']['formatted_processing_withdrawal'] }} is processing. Available balance has been updated.
                         @else
                             Legally verified carried contract allocation synchronized to the active Batch 3 member cycle.
                         @endif
@@ -181,6 +183,20 @@
 
                 <dl class="mt-5 divide-y divide-white/[0.07]">
                     <div class="grid gap-1 py-3 first:pt-0">
+                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Available Balance</dt>
+                        <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['balance']['formatted_available'] }}</dd>
+                    </div>
+                    <div class="grid gap-1 py-3">
+                        <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Withdrawn</dt>
+                        <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['balance']['formatted_completed_withdrawals'] }}</dd>
+                    </div>
+                    @if ($panel['balance']['processing_withdrawal'] > 0)
+                        <div class="grid gap-1 py-3">
+                            <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Processing Withdrawal</dt>
+                            <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['balance']['formatted_processing_withdrawal'] }}</dd>
+                        </div>
+                    @endif
+                    <div class="grid gap-1 py-3">
                         <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Name</dt>
                         <dd class="font-mono text-sm leading-6 text-slate-200">{{ $panel['disbursement']['recipient'] }}</dd>
                     </div>

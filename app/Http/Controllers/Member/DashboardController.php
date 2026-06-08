@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Services\OnboardingService;
 use App\Services\OwnershipCalculationService;
+use App\Support\MemberBalance;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -22,6 +23,7 @@ class DashboardController extends Controller
             trim(collect([$profile->city, $profile->state, $profile->postal_code])->filter()->implode(', ')),
             $profile->country,
         ])->filter()->implode(', ');
+        $balance = MemberBalance::for($user);
 
         return view('member.dashboard', [
             'profile' => $profile,
@@ -42,8 +44,18 @@ class DashboardController extends Controller
                     'access_input' => 'VIP015',
                 ],
                 'core' => [
-                    'value' => 'TOTAL BALANCE: USD 34,000.00',
+                    'value' => 'TOTAL BALANCE: '.MemberBalance::formatted($balance['available']),
                     'verification' => 'STATUS: LEGALLY VERIFIED / CARRIED CONTRACT ALLOCATION',
+                ],
+                'balance' => [
+                    'available' => $balance['available'],
+                    'base' => $balance['base'],
+                    'completed_withdrawals' => $balance['completed_withdrawals'],
+                    'processing_withdrawal' => $balance['processing_withdrawal'],
+                    'formatted_available' => MemberBalance::formatted($balance['available']),
+                    'formatted_base' => MemberBalance::formatted($balance['base']),
+                    'formatted_completed_withdrawals' => MemberBalance::formatted($balance['completed_withdrawals']),
+                    'formatted_processing_withdrawal' => MemberBalance::formatted($balance['processing_withdrawal']),
                 ],
                 'dataBlocks' => [
                     [

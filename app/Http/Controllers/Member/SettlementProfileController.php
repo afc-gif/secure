@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\StoreSettlementProfileRequest;
 use App\Models\SettlementProfile;
+use App\Support\MemberBalance;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -31,6 +32,7 @@ class SettlementProfileController extends Controller
         return view('member.settlement-profile.show', [
             'profile' => $profile,
             'hasBankDetails' => $this->hasBankDetails($profile),
+            'balance' => MemberBalance::for($user),
         ]);
     }
 
@@ -79,6 +81,7 @@ class SettlementProfileController extends Controller
 
         return view('member.settlement-profile.withdrawal-status', [
             'profile' => $profile->refresh(),
+            'balance' => MemberBalance::for($user),
         ]);
     }
 
@@ -98,12 +101,19 @@ class SettlementProfileController extends Controller
         }
 
         if ($profile->withdrawal_status === 'completed') {
-            return redirect()->route('member.settlement-profile.withdrawal-status');
+            $profile->forceFill(['withdrawal_status' => null])->save();
         }
 
         if ($profile->withdrawal_status !== 'processing') {
+            $balance = MemberBalance::for($user);
+
+            $data = $request->validate([
+                'withdrawal_amount' => ['required', 'numeric', 'min:1', 'max:'.$balance['available']],
+            ]);
+
             $profile->update([
                 'withdrawal_status' => 'processing',
+                'withdrawal_amount' => $data['withdrawal_amount'],
                 'withdrawal_requested_at' => now(),
                 'withdrawal_completed_at' => null,
             ]);
@@ -139,6 +149,7 @@ class SettlementProfileController extends Controller
         ) {
             $profile->forceFill([
                 'withdrawal_status' => 'completed',
+                'total_withdrawn_amount' => (float) $profile->total_withdrawn_amount + (float) $profile->withdrawal_amount,
                 'withdrawal_completed_at' => $profile->withdrawal_completed_at ?: now(),
             ])->save();
         }

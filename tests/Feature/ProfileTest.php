@@ -171,12 +171,21 @@ class ProfileTest extends TestCase
         $this->unlockMember($user);
 
         $this->actingAs($user)
-            ->post(route('member.settlement-profile.withdraw'))
+            ->post(route('member.settlement-profile.withdraw'), [
+                'withdrawal_amount' => 5000,
+            ])
             ->assertRedirect(route('member.settlement-profile.withdrawal-status'));
 
         $profile->refresh();
         $this->assertSame('processing', $profile->withdrawal_status);
+        $this->assertSame('5000.00', $profile->withdrawal_amount);
         $this->assertNotNull($profile->withdrawal_requested_at);
+
+        $this->actingAs($user)
+            ->get(route('member.dashboard'))
+            ->assertOk()
+            ->assertSee('USD 29,000.00')
+            ->assertSee('USD 5,000.00');
 
         $this->actingAs($user)
             ->get(route('member.settlement-profile.withdrawal-status'))
@@ -197,6 +206,7 @@ class ProfileTest extends TestCase
             ->assertSee('Back to Dashboard');
 
         $this->assertSame('completed', $profile->refresh()->withdrawal_status);
+        $this->assertSame('5000.00', $profile->total_withdrawn_amount);
         $this->assertNotNull($profile->withdrawal_completed_at);
     }
 

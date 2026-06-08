@@ -23,6 +23,8 @@ class SettlementProfile extends Model
         'currency',
         'verification_status',
         'withdrawal_status',
+        'withdrawal_amount',
+        'total_withdrawn_amount',
         'withdrawal_requested_at',
         'withdrawal_completed_at',
         'rejection_reason',
@@ -33,6 +35,8 @@ class SettlementProfile extends Model
         'verified_at' => 'datetime',
         'withdrawal_requested_at' => 'datetime',
         'withdrawal_completed_at' => 'datetime',
+        'withdrawal_amount' => 'decimal:2',
+        'total_withdrawn_amount' => 'decimal:2',
     ];
 
     public function user(): BelongsTo
