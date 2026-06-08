@@ -12,6 +12,7 @@ use App\Http\Controllers\Member\DashboardController as MemberDashboardController
 use App\Http\Controllers\Member\ParticipationController as MemberParticipationController;
 use App\Http\Controllers\Member\SettlementProfileController as MemberSettlementProfileController;
 use App\Http\Controllers\Member\ContributionController as MemberContributionController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Onboarding\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Support\AuthRedirector;
@@ -88,6 +89,11 @@ Route::middleware(['auth', 'role:member', 'onboarded'])->prefix('member')->name(
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::get('/notifications/{notification}/open', [NotificationController::class, 'open'])->name('notifications.open');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

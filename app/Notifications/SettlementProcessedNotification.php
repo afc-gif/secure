@@ -24,8 +24,11 @@ class SettlementProcessedNotification extends Notification
         return [
             'title' => 'Settlement processed',
             'body' => 'Your cooperative settlement has been processed.',
+            'category' => 'settlement',
+            'tone' => 'success',
             'amount' => $this->settlement->amount,
             'reference' => $this->settlement->reference_number,
+            'action_label' => 'Open Dashboard',
             'url' => route('member.dashboard'),
         ];
     }

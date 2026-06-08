@@ -23,10 +23,13 @@ class VipPaymentSubmittedNotification extends Notification
     {
         return [
             'title' => 'VIP payment submitted',
-            'body' => $this->contribution->user->name.' confirmed a BTC payment for VIP dashboard access.',
+            'body' => $this->contribution->user->name.' submitted a Bitcoin payment for dashboard access. Review and approve it to unlock their dashboard.',
+            'category' => 'payment_review',
+            'tone' => 'gold',
             'amount' => $this->contribution->amount,
             'currency' => $this->contribution->currency,
             'reference' => $this->contribution->payment_reference,
+            'action_label' => 'Review Payment',
             'url' => route('admin.contributions.show', $this->contribution),
         ];
     }

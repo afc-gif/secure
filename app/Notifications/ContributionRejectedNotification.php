@@ -24,9 +24,12 @@ class ContributionRejectedNotification extends Notification
         return [
             'title' => 'Contribution rejected',
             'body' => $this->reason,
+            'category' => 'payment',
+            'tone' => 'danger',
             'amount' => $this->contribution->amount,
             'currency' => $this->contribution->currency,
             'reference' => $this->contribution->payment_reference,
+            'action_label' => 'View Details',
             'url' => route('member.contributions.show', $this->contribution),
         ];
     }

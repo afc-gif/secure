@@ -22,9 +22,12 @@ class BatchParticipationConfirmedNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'Harvest Cycle confirmed',
-            'body' => "Your participation in {$this->batch->title} is active.",
+            'title' => 'Dashboard access active',
+            'body' => "Your access to {$this->batch->title} is active.",
+            'category' => 'dashboard_access',
+            'tone' => 'success',
             'batch_id' => $this->batch->id,
+            'action_label' => 'View Batches',
             'url' => route('member.batches.index'),
         ];
     }

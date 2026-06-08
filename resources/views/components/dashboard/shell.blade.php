@@ -22,7 +22,8 @@
             ['label' => 'Payment Reviews', 'href' => route('admin.contributions.index'), 'active' => request()->routeIs('admin.contributions.*'), 'icon' => 'ledger'],
         ]
         : $memberNavigation;
-    $unreadNotifications = $user?->unreadNotifications()->latest()->take(5)->get() ?? collect();
+    $recentNotifications = $user?->notifications()->latest()->take(8)->get() ?? collect();
+    $unreadNotificationCount = $user?->unreadNotifications()->count() ?? 0;
 @endphp
 
 <x-app-layout>
@@ -112,7 +113,7 @@
                         <h1 class="mt-1 truncate text-xl font-black text-white sm:text-2xl">{{ $title }}</h1>
                     </div>
                     <div class="flex min-w-0 shrink-0 items-center gap-3">
-                        <x-dashboard.notification-bell :notifications="$unreadNotifications" />
+                        <x-dashboard.notification-bell :notifications="$recentNotifications" :unread-count="$unreadNotificationCount" />
                         <div class="hidden min-w-0 text-right sm:block">
                             <p class="truncate text-sm font-bold text-white">{{ $user->name }}</p>
                             <p class="truncate text-xs text-slate-500">{{ $user->reference_token }}</p>
