@@ -3,6 +3,7 @@
         $panel = $individualPanel;
         $milestones = $panel['milestones'];
         $isLocked = ! $dashboardUnlocked;
+        $paymentToken = $paymentToken ?? null;
         $lockedPanelClasses = $isLocked ? 'pointer-events-none select-none blur-sm' : '';
         $withdrawalStatus = $panel['disbursement']['withdrawal_status'];
         $withdrawalHref = in_array($withdrawalStatus, ['processing', 'completed'], true)
@@ -52,6 +53,27 @@
                     </span>
                 </div>
             </div>
+
+            @if ($isLocked)
+                <div class="mt-6 rounded-lg border border-[#d8bf7a]/20 bg-[#08090c]/70 p-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#fff0bf]/70">Unlock Dashboard</p>
+                    @if ($paymentToken)
+                        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Required Amount</p>
+                                <p class="mt-2 font-mono text-xl font-black text-white">{{ $paymentToken->price_currency }} {{ number_format((float) $paymentToken->price, 2) }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">BTC Wallet</p>
+                                <p class="mt-2 break-all font-mono text-sm text-slate-300">{{ $paymentToken->btc_wallet_address }}</p>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-slate-400">Send the unlock amount to the wallet above, then submit the payment reference on the unlock page to activate your dashboard.</p>
+                    @else
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Admin has not created a VIP unlock payment yet. Once a payment setup is added, the amount and wallet will appear here.</p>
+                    @endif
+                </div>
+            @endif
 
             <div class="mt-8 h-16 rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3">
                 <div class="flex h-full items-end gap-2">

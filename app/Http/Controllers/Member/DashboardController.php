@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccessToken;
+use App\Models\User;
 use App\Services\OnboardingService;
 use App\Services\OwnershipCalculationService;
 use App\Support\MemberBalance;
@@ -24,6 +26,7 @@ class DashboardController extends Controller
             $profile->country,
         ])->filter()->implode(', ');
         $balance = MemberBalance::for($user);
+        $paymentToken = $this->availablePaymentTokenFor($user);
 
         return view('member.dashboard', [
             'profile' => $profile,
@@ -33,6 +36,7 @@ class DashboardController extends Controller
             'recentActivity' => $user->activityLogs()->latest()->take(6)->get(),
             'notifications' => $user->unreadNotifications()->latest()->take(5)->get(),
             'dashboardUnlocked' => $user->hasUnlockedDashboard(),
+            'paymentToken' => $paymentToken,
             'participations' => $user
                 ->batchMembers()
                 ->with(['batch', 'accessToken'])
@@ -108,5 +112,23 @@ class DashboardController extends Controller
                 ],
             ],
         ]);
+    }
+
+    private function availablePaymentTokenFor(User $user): ?AccessToken
+    {
+        return AccessToken::query()
+            ->with('batch')
+            ->where('status', 'active')
+            ->whereNotNull('price')
+            ->whereNotNull('btc_wallet_address')
+            ->where(function ($query) use ($user): void {
+                $query->where('assigned_to_user_id', $user->id)
+                    ->orWhereNull('assigned_to_user_id');
+            })
+            ->where(function ($query): void {
+                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            })
+            ->latest()
+            ->first();
     }
 }

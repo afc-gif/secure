@@ -78,8 +78,6 @@ class AccessTokenController extends Controller
             })
             ->firstOrFail();
 
-        abort_unless($paymentToken->batch?->isOpenForParticipation(), 404);
-
         $existingPayment = Contribution::query()
             ->where('user_id', $user->id)
             ->where('batch_id', $paymentToken->batch_id)
@@ -138,7 +136,7 @@ class AccessTokenController extends Controller
             })
             ->latest()
             ->get()
-            ->first(fn (AccessToken $token): bool => $token->batch?->isOpenForParticipation() ?? false);
+            ->first();
     }
 
     private function generatePaymentReference(): string

@@ -114,6 +114,46 @@ class BatchParticipationTest extends TestCase
             ->assertDontSee('BTC Wallet');
     }
 
+    public function test_member_can_see_shared_payment_setup_even_when_batch_is_not_open_for_participation(): void
+    {
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+        $batch = Batch::factory()->create([
+            'status' => 'locked',
+            'is_active' => false,
+        ]);
+        $paymentToken = AccessToken::factory()->for($batch)->create([
+            'price' => 250.00,
+            'price_currency' => 'USD',
+            'btc_wallet_address' => 'bc1qsharedpaymentsetupwallet000000000000000',
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('member.access-token.create'))
+            ->assertOk()
+            ->assertSee($paymentToken->btc_wallet_address)
+            ->assertDontSee('Payment Setup Missing');
+    }
+
+    public function test_locked_dashboard_shows_payment_setup_details_when_admin_has_created_them(): void
+    {
+        $member = User::factory()->create();
+        MemberProfile::factory()->for($member)->completed()->create();
+        $batch = Batch::factory()->create();
+        $paymentToken = AccessToken::factory()->for($batch)->create([
+            'price' => 250.00,
+            'price_currency' => 'USD',
+            'btc_wallet_address' => 'bc1qlockeddashboardpaymentwallet000000000000000',
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('member.dashboard'))
+            ->assertOk()
+            ->assertSee('Unlock Dashboard')
+            ->assertSee('USD 250.00')
+            ->assertSee($paymentToken->btc_wallet_address);
+    }
+
     public function test_member_can_confirm_vip_btc_payment_for_admin_review(): void
     {
         Notification::fake();
